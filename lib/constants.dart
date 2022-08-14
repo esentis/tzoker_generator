@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 Logger kLog = Logger();
@@ -12,3 +13,5 @@ extension DetailedWhere<K, V> on Map<K, V> {
   Map<K, V> whereValue(bool Function(V value) f) =>
       {...where((key, value) => f(value))};
 }
+
+TextStyle kStyleDefault = const TextStyle(fontFamily: 'Anton', fontSize: 20);

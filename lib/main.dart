@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Tzoker Generator',
+      debugShowCheckedModeBanner: false,
       home: LandingPage(title: 'Flutter Demo Home Page'),
     );
   }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:tzoker_generator/api/connection.dart';
 import 'package:tzoker_generator/constants.dart';
 import 'package:tzoker_generator/models/tzoker_response.dart';
+import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
 
 class LandingPage extends StatefulWidget {
@@ -38,7 +38,8 @@ class _LandingPageState extends State<LandingPage> {
     int months = 12;
 
     for (int i = 0; i <= months; i++) {
-      final resp = await getTzokerResults(DateFormat("yyyy-MM-dd").format(to),
+      final resp = await Tzoker.instance.getDrawsInRange(
+          DateFormat("yyyy-MM-dd").format(to),
           DateFormat("yyyy-MM-dd").format(from));
 
       if (resp != null) {
@@ -105,7 +106,11 @@ class _LandingPageState extends State<LandingPage> {
                 child: MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: getResults,
+                    onTap: () async {
+                      final res = await Tzoker.instance.getJackpot();
+
+                      kLog.wtf(res);
+                    },
                     child: Icon(
                       Icons.star,
                       color: Colors.orange,

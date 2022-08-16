@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:slide_countdown/slide_countdown.dart';
 import 'package:tzoker_generator/constants.dart';
+import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/tzoker_response.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
@@ -21,9 +23,14 @@ class _LandingPageState extends State<LandingPage> {
   int draws = 0;
 
   double loadingPercentage = 0;
+  double currentJackpot = 0;
 
-  bool _loading = false;
+  bool _loading = true;
+
   DateTime? latestDraw;
+  DateTime? nextDraw;
+
+  LastResult? lastResult;
 
   void getResults() async {
     setState(() {
@@ -90,6 +97,29 @@ class _LandingPageState extends State<LandingPage> {
     return Colors.red;
   }
 
+  Future<void> _prepareLandingPage() async {
+    kLog.i('Preparing landing page');
+    final res = await Tzoker.instance.getJackpot();
+
+    lastResult = await Tzoker.instance.getLastResult();
+    nextDraw = await Tzoker.instance.getUpcomingDrawDate();
+
+    final stats = await Tzoker.instance.getStatistics();
+
+    kLog.wtf(stats.toJson());
+
+    currentJackpot = res;
+    setState(() {
+      _loading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _prepareLandingPage();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,26 +130,6 @@ class _LandingPageState extends State<LandingPage> {
             flexibleSpace: Image.asset('assets/tzoker_generator.png'),
             toolbarHeight: 100,
             backgroundColor: Colors.white,
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(right: 40),
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () async {
-                      final res = await Tzoker.instance.getJackpot();
-
-                      kLog.wtf(res);
-                    },
-                    child: Icon(
-                      Icons.star,
-                      color: Colors.orange,
-                      size: 50,
-                    ),
-                  ),
-                ),
-              )
-            ],
           ),
           if (_loading)
             SliverFillRemaining(
@@ -128,61 +138,215 @@ class _LandingPageState extends State<LandingPage> {
                   Lottie.asset(
                     'assets/tzoker.json',
                   ),
-                  Text(
-                    '${loadingPercentage.toStringAsFixed(0)}%',
-                    style: kStyleDefault,
-                  )
+                  if (loadingPercentage != 0)
+                    Text(
+                      '${loadingPercentage.toStringAsFixed(0)}%',
+                      style: kStyleDefault,
+                    )
+                ],
+              ),
+            )
+          else ...[
+            SliverToBoxAdapter(
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      'Επομένη κλήρωση ${DateFormat("dd MMMM yyyy, HH:ss").format(nextDraw!)}',
+                      style: kStyleDefault.copyWith(
+                        fontFamily: 'Arial',
+                        fontSize: 17,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    SlideCountdown(
+                      decoration: BoxDecoration(
+                        color: const Color(0xfff8b828),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      duration: nextDraw!.difference(DateTime.now()),
+                      separatorType: SeparatorType.title,
+                      textStyle: kStyleDefault.copyWith(
+                        color: const Color(0xff3c5c8f),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  if (numberOccurences.isNotEmpty)
+                    Text(
+                      'Occurences in $draws draws\nsince $latestDraw',
+                      style: kStyleDefault,
+                    ),
+                  Wrap(
+                    children: [
+                      for (int i = 1; i <= 45; i++)
+                        if (numberOccurences[i] != null)
+                          TzokerBall(
+                            color: getColor(i),
+                            number: i,
+                          ),
+                    ],
+                  ),
                 ],
               ),
             ),
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                if (numberOccurences.isNotEmpty)
-                  Text(
-                    'Occurences in $draws draws\nsince $latestDraw',
-                    style: kStyleDefault,
-                  ),
-                Wrap(
-                  children: [
-                    for (int i = 1; i <= 45; i++)
-                      if (numberOccurences[i] != null)
-                        TzokerBall(
-                          color: getColor(i),
-                          number: i,
-                          occurences: numberOccurences[i].toString(),
-                          percentage:
-                              '${((numberOccurences[i] ?? 0) / (draws * 5) * 100).toStringAsFixed(2)}%',
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 55.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Jackpot',
+                          style: kStyleDefault.copyWith(fontSize: 25),
                         ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                if (numberOccurences.isNotEmpty)
-                  Text(
-                    'Tzokers',
-                    style: kStyleDefault,
+                        if (currentJackpot == 0)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: Text(
+                              'Σύντομα κληρώνει...!',
+                              style: kStyleDefault.copyWith(
+                                fontFamily: 'Arial',
+                                fontSize: 25,
+                              ),
+                            ),
+                          )
+                        else
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '€',
+                                style: kStyleDefault.copyWith(
+                                  fontSize: 70,
+                                ),
+                              ),
+                              Text(
+                                NumberFormat(
+                                  "###,###.###",
+                                ).format(currentJackpot),
+                                style: kStyleDefault.copyWith(
+                                  fontSize: 70,
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
                   ),
-                Wrap(
-                  children: [
-                    for (int i = 1; i <= 20; i++)
-                      if (tzokerOccurences[i] != null)
-                        TzokerBall(
-                          color: getColor(i),
-                          number: i,
-                          occurences: tzokerOccurences[i].toString(),
-                          percentage:
-                              '${((tzokerOccurences[i] ?? 0) / draws * 100).toStringAsFixed(2)}%',
-                        ),
-                  ],
-                ),
-              ],
+                  if (numberOccurences.isNotEmpty)
+                    Text(
+                      'Tzokers',
+                      style: kStyleDefault,
+                    ),
+                  Wrap(
+                    children: [
+                      for (int i = 1; i <= 20; i++)
+                        if (tzokerOccurences[i] != null)
+                          TzokerBall(
+                            color: getColor(i),
+                            number: i,
+                          ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
+            const SliverPadding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+            ),
+            SliverToBoxAdapter(
+              child: Center(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Τελευταία κλήρωση',
+                        style: kStyleDefault.copyWith(
+                          fontSize: 25,
+                          fontFamily: 'Arial',
+                        ),
+                      ),
+                      Text(
+                        DateFormat("dd MMMM yyyy, HH:ss")
+                            .format(lastResult!.date),
+                        style: kStyleDefault.copyWith(
+                          fontSize: 18,
+                          fontFamily: 'Arial',
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15.0),
+                            child: Text(
+                              'Tzoker',
+                              style: kStyleDefault,
+                            ),
+                          ),
+                          Wrap(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  right: 30.0,
+                                  top: 12,
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    color: const Color(0xfff8b828),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: TzokerBall(
+                                    color: getColor(lastResult!.tzoker),
+                                    number: lastResult!.tzoker,
+                                  ),
+                                ),
+                              ),
+                              ...lastResult!.sortedWinningNumbers.map(
+                                (e) => Padding(
+                                  padding: const EdgeInsets.only(
+                                    right: 6.0,
+                                    top: 12,
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: TzokerBall(
+                                      color: getColor(e),
+                                      number: e,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    ]),
+              ),
+            ),
+          ]
         ],
       ),
 // This trailing comma makes auto-formatting nicer for build methods.

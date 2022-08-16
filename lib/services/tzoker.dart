@@ -1,14 +1,11 @@
-import 'package:dio/dio.dart';
-import 'package:tzoker_generator/constants.dart';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+import 'package:tzoker_generator/models/last_result.dart';
+import 'package:tzoker_generator/models/statistics.dart';
 import 'package:tzoker_generator/models/tzoker_response.dart';
 
-BaseOptions httpOptions = BaseOptions(
-  baseUrl: 'https://api.opap.gr/draws/v3.0/5104/',
-  receiveDataWhenStatusError: true,
-  connectTimeout: 6 * 1000, // 6 seconds
-  receiveTimeout: 6 * 1000, // 6 seconds
-);
-Dio tzoker = Dio(httpOptions);
+String baseUrl = 'https://api.opap.gr';
 
 class Tzoker {
   Tzoker._private();
@@ -20,27 +17,57 @@ class Tzoker {
   ///
   /// Maximum range is one month since the results have limit 10 draws per request.
   Future<TzokerResponse?> getDrawsInRange(String from, String to) async {
-    try {
-      final response = await tzoker.get(
-        'draw-date/$from/$to/',
-      );
-      final data = response.data.cast<String, dynamic>();
+    final response = await http.get(
+      Uri.parse('$baseUrl/draws/v3.0/5104/draw-date/$from/$to/'),
+    );
+    final Map<String, dynamic> data = jsonDecode(response.body);
 
-      TzokerResponse tzokerResp = TzokerResponse.fromJson(data);
-
-      return tzokerResp;
-    } on DioError catch (e) {
-      kLog.e(e.message);
-      return null;
-    }
+    TzokerResponse tzokerResp = TzokerResponse.fromJson(data);
   }
 
+  /// Returns the current minimum amount distributed for 5 + 1.
   Future<double> getJackpot() async {
-    final response = await tzoker.get('/active');
-    final data = response.data.cast<String, dynamic>();
+    final response =
+        await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/last/1'));
 
-    kLog.wtf(data);
+    final List<dynamic> data = jsonDecode(response.body);
 
-    return data['prizeCategories'][0]['jackpot'];
+    return data.first['prizeCategories'][0]['minimumDistributed'];
+  }
+
+  Future<DateTime> getUpcomingDrawDate() async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/upcoming/1'));
+
+    final List<dynamic> data = jsonDecode(response.body);
+
+    return DateTime.fromMillisecondsSinceEpoch(data.first['drawTime']);
+  }
+
+  Future<LastResult> getLastResult() async {
+    final response = await http
+        .get(Uri.parse('$baseUrl/draws/v3.0/5104/last-result-and-active'));
+
+    final data = jsonDecode(response.body);
+
+    List<dynamic> winningNumbers = data['last']['winningNumbers']['list'];
+    int tzoker = data['last']['winningNumbers']['bonus'].first;
+    DateTime drawDate =
+        DateTime.fromMillisecondsSinceEpoch(data['last']['drawTime']);
+
+    return LastResult(
+        date: drawDate,
+        tzoker: tzoker,
+        winningNumbers: winningNumbers,
+        sortedWinningNumbers: winningNumbers..sort());
+  }
+
+  Future<Statistics> getStatistics() async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/games/v1.0/5104/statistics'));
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    final stats = Statistics.fromJson(data);
+
+    return stats;
   }
 }

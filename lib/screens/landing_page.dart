@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:slide_countdown/slide_countdown.dart';
@@ -9,8 +10,9 @@ import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
 
 class LandingPage extends StatefulWidget {
-  const LandingPage({Key? key, required this.title}) : super(key: key);
-  final String title;
+  const LandingPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<LandingPage> createState() => _LandingPageState();
@@ -127,7 +129,12 @@ class _LandingPageState extends State<LandingPage> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            flexibleSpace: Image.asset('assets/tzoker_generator.png'),
+            flexibleSpace: Hero(
+              tag: 'logo',
+              child: Image.asset(
+                'assets/tzoker_generator.png',
+              ),
+            ),
             toolbarHeight: 100,
             backgroundColor: Colors.white,
           ),
@@ -147,6 +154,14 @@ class _LandingPageState extends State<LandingPage> {
               ),
             )
           else ...[
+            SliverToBoxAdapter(
+              child: TextButton(
+                onPressed: () => Get.toNamed('stats'),
+                child: Text(
+                  'Στατιστικά',
+                ),
+              ),
+            ),
             SliverToBoxAdapter(
               child: Center(
                 child: Column(

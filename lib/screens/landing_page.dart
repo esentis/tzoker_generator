@@ -80,35 +80,12 @@ class _LandingPageState extends State<LandingPage> {
     });
   }
 
-  Color getColor(int num) {
-    if (num >= 1 && num <= 10) {
-      return const Color(0xff344ed6);
-    }
-    if (num > 10 && num <= 20) {
-      return const Color(0xff8d0d46);
-    }
-    if (num >= 21 && num <= 30) {
-      return const Color(0xffb9d4ef);
-    }
-    if (num >= 31 && num <= 40) {
-      return const Color(0xffc0e051);
-    }
-    if (num >= 41 && num <= 45) {
-      return const Color(0xff3b6250);
-    }
-    return Colors.red;
-  }
-
   Future<void> _prepareLandingPage() async {
     kLog.i('Preparing landing page');
     final res = await Tzoker.instance.getJackpot();
 
     lastResult = await Tzoker.instance.getLastResult();
     nextDraw = await Tzoker.instance.getUpcomingDrawDate();
-
-    final stats = await Tzoker.instance.getStatistics();
-
-    kLog.wtf(stats.toJson());
 
     currentJackpot = res;
     setState(() {
@@ -209,7 +186,7 @@ class _LandingPageState extends State<LandingPage> {
                       for (int i = 1; i <= 45; i++)
                         if (numberOccurences[i] != null)
                           TzokerBall(
-                            color: getColor(i),
+                            color: Tzoker.instance.getColor(i),
                             number: i,
                           ),
                     ],
@@ -273,7 +250,7 @@ class _LandingPageState extends State<LandingPage> {
                       for (int i = 1; i <= 20; i++)
                         if (tzokerOccurences[i] != null)
                           TzokerBall(
-                            color: getColor(i),
+                            color: Tzoker.instance.getColor(i),
                             number: i,
                           ),
                     ],
@@ -331,7 +308,8 @@ class _LandingPageState extends State<LandingPage> {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: TzokerBall(
-                                    color: getColor(lastResult!.tzoker),
+                                    color: Tzoker.instance
+                                        .getColor(lastResult!.tzoker),
                                     number: lastResult!.tzoker,
                                   ),
                                 ),
@@ -348,7 +326,7 @@ class _LandingPageState extends State<LandingPage> {
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     child: TzokerBall(
-                                      color: getColor(e),
+                                      color: Tzoker.instance.getColor(e),
                                       number: e,
                                     ),
                                   ),

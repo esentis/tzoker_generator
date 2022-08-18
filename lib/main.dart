@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tzoker_generator/screens/generate_tzoker.dart';
 import 'package:tzoker_generator/screens/landing_page.dart';
 import 'package:tzoker_generator/screens/statistics.dart';
 
@@ -26,6 +27,10 @@ class MyApp extends StatelessWidget {
           name: '/stats',
           page: () => const StatsScreen(),
         ),
+        GetPage(
+          name: '/generate',
+          page: () => const GenerateTzokerScreen(),
+        )
       ],
     );
   }

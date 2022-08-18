@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/statistics.dart';
@@ -69,5 +70,37 @@ class Tzoker {
     final stats = Statistics.fromJson(data);
 
     return stats;
+  }
+
+  Color getColor(int num) {
+    if (num >= 1 && num <= 10) {
+      return const Color(0xff344ed6);
+    }
+    if (num > 10 && num <= 20) {
+      return const Color(0xff8d0d46);
+    }
+    if (num >= 21 && num <= 30) {
+      return const Color(0xffb9d4ef);
+    }
+    if (num >= 31 && num <= 40) {
+      return const Color(0xffc0e051);
+    }
+    if (num >= 41 && num <= 45) {
+      return const Color(0xff3b6250);
+    }
+    return Colors.red;
+  }
+
+  Color getColorOccurence(int delays) {
+    if (delays >= 0 && delays <= 2) {
+      return const Color(0xff5FD068);
+    }
+    if (delays > 2 && delays <= 7) {
+      return const Color(0xffF5DF99);
+    }
+    if (delays >= 8 && delays <= 12) {
+      return const Color(0xffFF5B00);
+    }
+    return const Color(0xffFF1E00);
   }
 }

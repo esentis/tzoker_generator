@@ -10,6 +10,13 @@ import 'package:tzoker_generator/models/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
 
+enum SortFilter {
+  number,
+  delay,
+  occurences,
+  percentage,
+}
+
 class StatsScreen extends StatefulWidget {
   const StatsScreen({Key? key}) : super(key: key);
 
@@ -39,6 +46,8 @@ class _StatsScreenScreenState extends State<StatsScreen> {
 
   GeneratedNumbers? generatedNumbers;
 
+  SortFilter _currentFilter = SortFilter.number;
+
   @override
   void initState() {
     super.initState();
@@ -64,7 +73,7 @@ class _StatsScreenScreenState extends State<StatsScreen> {
     almostNotDelayedNumbers =
         stats?.numbers.where(((n) => (n.delays <= 4) && (n.delays > 0)));
 
-    highDelayedTzokers = stats?.bonusNumbers.where(((n) => n.delays > 20));
+    highDelayedTzokers = stats?.bonusNumbers.where(((n) => n.delays >= 10));
 
     mediumDelayedTzokers =
         stats?.bonusNumbers.where(((n) => (n.delays <= 20) && (n.delays > 10)));
@@ -258,11 +267,266 @@ class _StatsScreenScreenState extends State<StatsScreen> {
                           controller: ScrollController(),
                           slivers: [
                             SliverAppBar(
+                              elevation: 1,
+                              forceElevated: true,
+                              shadowColor: Colors.white,
                               leading: const SizedBox(),
                               backgroundColor: const Color(0xff3c5c8f),
                               title: Text(
                                 'Numbers',
                                 style: kStyleDefault,
+                              ),
+                              centerTitle: true,
+                              pinned: true,
+                            ),
+                            SliverAppBar(
+                              elevation: 6,
+                              primary: false,
+                              leading: const SizedBox(),
+                              backgroundColor: const Color(0xff3c5c8f),
+                              flexibleSpace: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          if (_currentFilter ==
+                                              SortFilter.number) {
+                                            if (stats!.numbers[0].number >
+                                                stats!.numbers[1].number) {
+                                              stats!.numbers.sort(
+                                                (a, b) => a.number
+                                                    .compareTo(b.number),
+                                              );
+                                            } else {
+                                              stats!.numbers.sort(
+                                                (a, b) => b.number
+                                                    .compareTo(a.number),
+                                              );
+                                            }
+                                          } else {
+                                            stats!.numbers.sort(
+                                              (a, b) =>
+                                                  a.number.compareTo(b.number),
+                                            );
+                                          }
+                                          _currentFilter = SortFilter.number;
+                                          setState(() {});
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Numbers',
+                                              style: kStyleDefault.copyWith(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            if (_currentFilter ==
+                                                SortFilter.number)
+                                              if (stats!.numbers[0].number >
+                                                  stats!.numbers[1].number)
+                                                const Icon(
+                                                  Icons.arrow_upward,
+                                                  color: Colors.white,
+                                                )
+                                              else
+                                                const Icon(
+                                                  Icons.arrow_downward,
+                                                  color: Colors.white,
+                                                )
+                                          ],
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          if (_currentFilter ==
+                                              SortFilter.delay) {
+                                            if (stats!.numbers[0].delays == 0) {
+                                              stats!.numbers.sort(
+                                                (a, b) => b.delays
+                                                    .compareTo(a.delays),
+                                              );
+                                            } else {
+                                              stats!.numbers.sort(
+                                                (a, b) => a.delays
+                                                    .compareTo(b.delays),
+                                              );
+                                            }
+                                          } else {
+                                            stats!.numbers.sort(
+                                              (a, b) =>
+                                                  a.delays.compareTo(b.delays),
+                                            );
+                                          }
+                                          _currentFilter = SortFilter.delay;
+                                          setState(() {});
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Delays',
+                                              style: kStyleDefault.copyWith(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            if (_currentFilter ==
+                                                SortFilter.delay)
+                                              if (stats!.numbers[0].delays >
+                                                  stats!.numbers[1].delays)
+                                                const Icon(
+                                                  Icons.arrow_upward,
+                                                  color: Colors.white,
+                                                )
+                                              else
+                                                const Icon(
+                                                  Icons.arrow_downward,
+                                                  color: Colors.white,
+                                                )
+                                          ],
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          kLog.wtf(stats!
+                                                  .numbers[0].occurrences >
+                                              stats!.numbers[1].occurrences);
+
+                                          if (_currentFilter ==
+                                              SortFilter.occurences) {
+                                            if (stats!.numbers[0].occurrences >
+                                                stats!.numbers[1].occurrences) {
+                                              stats!.numbers.sort(
+                                                (a, b) => a.occurrences
+                                                    .compareTo(b.occurrences),
+                                              );
+                                            } else {
+                                              stats!.numbers.sort(
+                                                (a, b) => b.occurrences
+                                                    .compareTo(a.occurrences),
+                                              );
+                                            }
+                                          } else {
+                                            stats!.numbers.sort(
+                                              (a, b) => a.occurrences
+                                                  .compareTo(b.occurrences),
+                                            );
+                                          }
+
+                                          _currentFilter =
+                                              SortFilter.occurences;
+                                          setState(() {});
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Occurences',
+                                              style: kStyleDefault.copyWith(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            if (_currentFilter ==
+                                                SortFilter.occurences)
+                                              if (stats!
+                                                      .numbers[0].occurrences >
+                                                  stats!.numbers[1].occurrences)
+                                                const Icon(
+                                                  Icons.arrow_upward,
+                                                  color: Colors.white,
+                                                )
+                                              else
+                                                const Icon(
+                                                  Icons.arrow_downward,
+                                                  color: Colors.white,
+                                                )
+                                          ],
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          kLog.wtf(stats!
+                                                  .numbers[0].occurrences >
+                                              stats!.numbers[1].occurrences);
+
+                                          if (_currentFilter ==
+                                              SortFilter.percentage) {
+                                            if (stats!.numbers[0].occurrences >
+                                                stats!.numbers[1].occurrences) {
+                                              stats!.numbers.sort(
+                                                (a, b) => (a.occurrences *
+                                                        100 /
+                                                        (stats!
+                                                            .header.drawCount))
+                                                    .compareTo(b.occurrences *
+                                                        100 /
+                                                        (stats!
+                                                            .header.drawCount)),
+                                              );
+                                            } else {
+                                              stats!.numbers.sort(
+                                                (a, b) => (b.occurrences *
+                                                        100 /
+                                                        (stats!
+                                                            .header.drawCount))
+                                                    .compareTo(a.occurrences *
+                                                        100 /
+                                                        (stats!
+                                                            .header.drawCount)),
+                                              );
+                                            }
+                                          } else {
+                                            stats!.numbers.sort(
+                                              (a, b) => (a.occurrences *
+                                                      100 /
+                                                      (stats!.header.drawCount))
+                                                  .compareTo(b.occurrences *
+                                                      100 /
+                                                      (stats!
+                                                          .header.drawCount)),
+                                            );
+                                          }
+
+                                          _currentFilter =
+                                              SortFilter.percentage;
+                                          setState(() {});
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Percentages',
+                                              style: kStyleDefault.copyWith(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            if (_currentFilter ==
+                                                SortFilter.percentage)
+                                              if ((((stats!.numbers[0]
+                                                              .occurrences *
+                                                          100) /
+                                                      stats!
+                                                          .header.drawCount)) >
+                                                  (((stats!.numbers[1]
+                                                              .occurrences *
+                                                          100) /
+                                                      stats!.header.drawCount)))
+                                                const Icon(
+                                                  Icons.arrow_upward,
+                                                  color: Colors.white,
+                                                )
+                                              else
+                                                const Icon(
+                                                  Icons.arrow_downward,
+                                                  color: Colors.white,
+                                                )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                               centerTitle: true,
                               pinned: true,
@@ -278,7 +542,7 @@ class _StatsScreenScreenState extends State<StatsScreen> {
                                             stats!.numbers[i].delays),
                                     leading: TzokerBall(
                                       color: Tzoker.instance.getColor(i + 1),
-                                      number: i + 1,
+                                      number: stats!.numbers[i].number,
                                     ),
                                     title: Text(
                                       'Delays ${stats?.numbers[i].delays}',
@@ -321,7 +585,7 @@ class _StatsScreenScreenState extends State<StatsScreen> {
                                               stats!.bonusNumbers[i].delays),
                                       leading: TzokerBall(
                                         color: Tzoker.instance.getColor(i + 1),
-                                        number: i + 1,
+                                        number: stats!.bonusNumbers[i].number,
                                       ),
                                       title: Text(
                                         'Delays ${stats?.bonusNumbers[i].delays}',

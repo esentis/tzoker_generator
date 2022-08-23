@@ -105,6 +105,9 @@ class _LandingPageState extends State<LandingPage> {
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
+          SliverPadding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+          ),
           SliverAppBar(
             flexibleSpace: Hero(
               tag: 'logo',
@@ -114,6 +117,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             toolbarHeight: 100,
             backgroundColor: Colors.white,
+            primary: true,
           ),
           if (_loading)
             SliverFillRemaining(
@@ -342,7 +346,7 @@ class _LandingPageState extends State<LandingPage> {
           ]
         ],
       ),
-// This trailing comma makes auto-formatting nicer for build methods.
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

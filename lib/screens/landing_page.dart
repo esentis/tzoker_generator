@@ -19,9 +19,6 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  Map<int, int> numberOccurences = {};
-  Map<int, int> tzokerOccurences = {};
-
   int draws = 0;
 
   double loadingPercentage = 0;
@@ -34,15 +31,12 @@ class _LandingPageState extends State<LandingPage> {
 
   LastResult? lastResult;
 
-  void getResults() async {
-    setState(() {
-      _loading = true;
-    });
-    numberOccurences = {};
-    tzokerOccurences = {};
+  Future<List<Map<int, int>>> getResults() async {
+    Map<int, int> numberOccurences = {};
+    Map<int, int> tzokerOccurences = {};
 
     DateTime from = DateTime.now();
-    DateTime to = DateTime.now().subtract(const Duration(days: 30));
+    DateTime to = from.subtract(const Duration(days: 30));
 
     int months = 12;
 
@@ -73,11 +67,9 @@ class _LandingPageState extends State<LandingPage> {
         loadingPercentage = (i / months) * 100;
       });
     }
+    loadingPercentage = 0;
 
-    setState(() {
-      _loading = false;
-      loadingPercentage = 0;
-    });
+    return [numberOccurences, tzokerOccurences];
   }
 
   Future<void> _prepareLandingPage() async {
@@ -180,27 +172,6 @@ class _LandingPageState extends State<LandingPage> {
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  if (numberOccurences.isNotEmpty)
-                    Text(
-                      'Occurences in $draws draws\nsince $latestDraw',
-                      style: kStyleDefault,
-                    ),
-                  Wrap(
-                    children: [
-                      for (int i = 1; i <= 45; i++)
-                        if (numberOccurences[i] != null)
-                          TzokerBall(
-                            color: Tzoker.instance.getColor(i),
-                            number: i,
-                          ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 55.0),
                     child: Column(
@@ -244,21 +215,6 @@ class _LandingPageState extends State<LandingPage> {
                       ],
                     ),
                   ),
-                  if (numberOccurences.isNotEmpty)
-                    Text(
-                      'Tzokers',
-                      style: kStyleDefault,
-                    ),
-                  Wrap(
-                    children: [
-                      for (int i = 1; i <= 20; i++)
-                        if (tzokerOccurences[i] != null)
-                          TzokerBall(
-                            color: Tzoker.instance.getColor(i),
-                            number: i,
-                          ),
-                    ],
-                  ),
                 ],
               ),
             ),
@@ -288,55 +244,39 @@ class _LandingPageState extends State<LandingPage> {
                       const SizedBox(
                         height: 5,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Wrap(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 15.0),
-                            child: Text(
-                              'Tzoker',
-                              style: kStyleDefault,
+                            padding: const EdgeInsets.only(
+                              right: 6.0,
+                              top: 6.0,
+                            ),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Color(0xfff8b828),
+                                shape: BoxShape.circle,
+                              ),
+                              child: TzokerBall(
+                                color: Tzoker.instance
+                                    .getColor(lastResult!.tzoker),
+                                number: lastResult!.tzoker,
+                                height: 50,
+                                width: 50,
+                              ),
                             ),
                           ),
-                          Wrap(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  right: 30.0,
-                                  top: 12,
-                                ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    color: const Color(0xfff8b828),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: TzokerBall(
-                                    color: Tzoker.instance
-                                        .getColor(lastResult!.tzoker),
-                                    number: lastResult!.tzoker,
-                                  ),
-                                ),
+                          ...lastResult!.sortedWinningNumbers.map(
+                            (e) => Padding(
+                              padding: const EdgeInsets.only(
+                                top: 6.0,
                               ),
-                              ...lastResult!.sortedWinningNumbers.map(
-                                (e) => Padding(
-                                  padding: const EdgeInsets.only(
-                                    right: 6.0,
-                                    top: 12,
-                                  ),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: TzokerBall(
-                                      color: Tzoker.instance.getColor(e),
-                                      number: e,
-                                    ),
-                                  ),
-                                ),
+                              child: TzokerBall(
+                                color: Tzoker.instance.getColor(e),
+                                height: 50,
+                                width: 50,
+                                number: e,
                               ),
-                            ],
+                            ),
                           ),
                         ],
                       )

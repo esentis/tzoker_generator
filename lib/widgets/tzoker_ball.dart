@@ -2,19 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:tzoker_generator/constants.dart';
 
 class TzokerBall extends StatelessWidget {
-  const TzokerBall({required this.color, required this.number, Key? key})
+  const TzokerBall(
+      {required this.color,
+      required this.number,
+      this.height,
+      this.width,
+      Key? key})
       : super(key: key);
 
   final int number;
   final Color color;
-
+  final double? height;
+  final double? width;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Container(
-        height: 70,
-        width: 70,
+        height: height ?? 70,
+        width: width ?? 70,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: color,

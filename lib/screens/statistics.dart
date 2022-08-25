@@ -9,6 +9,7 @@ import 'package:tzoker_generator/models/generated_numbers.dart';
 import 'package:tzoker_generator/models/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
+import 'package:tzoker_generator/widgets/tzoker_stats.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({Key? key}) : super(key: key);
@@ -134,6 +135,7 @@ class _StatsScreenScreenState extends State<StatsScreen> {
         elevation: 0,
         leading: const SizedBox(),
         backgroundColor: Colors.white,
+        toolbarHeight: 0,
       ),
       body: loading
           ? Center(
@@ -154,114 +156,133 @@ class _StatsScreenScreenState extends State<StatsScreen> {
                       tag: 'logo',
                       child: Image.asset(
                         'assets/tzoker_generator.png',
+                        height: 100,
                       ),
                     ),
                   ),
                 ),
                 if (!loading) ...[
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Text(
-                    'Total draws ${stats?.header.drawCount}',
-                    style: kStyleDefault,
-                  ),
-                  Text(
-                    '${DateFormat("dd/MM/yyyy").format(DateTime.fromMillisecondsSinceEpoch(stats!.header.dateFrom * 1000))} - ${DateFormat("dd/MM/yyyy").format(DateTime.now())}',
-                    style: kStyleDefault,
+                  SizedBox(
+                    height: 100,
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          'Total draws ${stats?.header.drawCount}',
+                          style: kStyleDefault,
+                        ),
+                        Text(
+                          '${DateFormat("dd/MM/yyyy").format(DateTime.fromMillisecondsSinceEpoch(stats!.header.dateFrom * 1000))} - ${DateFormat("dd/MM/yyyy").format(DateTime.now())}',
+                          style: kStyleDefault,
+                        ),
+                      ],
+                    ),
                   )
                 ],
-                Center(
-                  child: Wrap(
-                    children: [
-                      if (generatedNumbers != null) ...[
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            right: 6.0,
-                            top: 12,
-                          ),
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xfff8b828),
-                            ),
-                            child: TzokerBall(
-                              color: Tzoker.instance
-                                  .getColor(generatedNumbers!.tzoker.number),
-                              number: generatedNumbers!.tzoker.number,
-                            ),
-                          ),
-                        ),
-                        ...generatedNumbers!.numbers.map(
-                          (e) => Padding(
+                SizedBox(
+                  height: 80,
+                  child: Center(
+                    child: Wrap(
+                      children: [
+                        if (generatedNumbers != null) ...[
+                          Padding(
                             padding: const EdgeInsets.only(
                               right: 6.0,
                               top: 12,
                             ),
-                            child: TzokerBall(
-                              height: 60,
-                              width: 60,
-                              color: Tzoker.instance.getColor(e.number),
-                              number: e.number,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xfff8b828),
+                              ),
+                              child: TzokerBall(
+                                color: Tzoker.instance
+                                    .getColor(generatedNumbers!.tzoker.number),
+                                number: generatedNumbers!.tzoker.number,
+                              ),
                             ),
                           ),
-                        ),
-                      ] else
-                        SizedBox(
-                          height: 70,
-                          child: Text(
-                            'Generate numbers & tzoker based on highest delays',
-                            textAlign: TextAlign.center,
-                            style: kStyleDefault.copyWith(
-                              fontSize: 20,
+                          ...generatedNumbers!.numbers.map(
+                            (e) => Padding(
+                              padding: const EdgeInsets.only(
+                                right: 6.0,
+                                top: 12,
+                              ),
+                              child: TzokerBall(
+                                height: 60,
+                                width: 60,
+                                color: Tzoker.instance.getColor(e.number),
+                                number: e.number,
+                              ),
                             ),
                           ),
-                        )
-                    ],
+                        ] else
+                          SizedBox(
+                            height: 70,
+                            child: Text(
+                              'Generate numbers & tzoker based on highest delays',
+                              textAlign: TextAlign.center,
+                              style: kStyleDefault.copyWith(
+                                fontSize: 20,
+                              ),
+                            ),
+                          )
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                TextButton(
-                  onPressed: () {
-                    _generatedNumbers();
-                  },
-                  child: Text(
-                    'Generate',
-                    style: kStyleDefault,
+                SizedBox(
+                  height: 50,
+                  child: Center(
+                    child: TextButton(
+                      onPressed: () {
+                        _generatedNumbers();
+                      },
+                      child: Text(
+                        'Generate',
+                        style: kStyleDefault,
+                      ),
+                    ),
                   ),
                 ),
-                // Row(
-                //   children: [
-                //     Expanded(
-                //       child: Padding(
-                //         padding: const EdgeInsets.only(
-                //           left: 15.0,
-                //           right: 5,
-                //         ),
-                //         child: TzokerStats(
-                //           numbers: stats!.numbers,
-                //           drawCount: stats!.header.drawCount,
-                //           title: 'Numbers',
-                //         ),
-                //       ),
-                //     ),
-                //     Expanded(
-                //       child: Padding(
-                //         padding: const EdgeInsets.only(
-                //           right: 15.0,
-                //           left: 5,
-                //         ),
-                //         child: TzokerStats(
-                //           numbers: stats!.bonusNumbers,
-                //           drawCount: stats!.header.drawCount,
-                //           title: 'Tzokers',
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height - 350,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 15.0,
+                            right: 5,
+                          ),
+                          child: TzokerStats(
+                            numbers: stats!.numbers,
+                            drawCount: stats!.header.drawCount,
+                            title: 'Numbers',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            right: 15.0,
+                            left: 5,
+                          ),
+                          child: TzokerStats(
+                            numbers: stats!.bonusNumbers,
+                            drawCount: stats!.header.drawCount,
+                            title: 'Tzokers',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
     );

@@ -128,10 +128,16 @@ class _LandingPageState extends State<LandingPage> {
             )
           else ...[
             SliverToBoxAdapter(
-              child: TextButton(
-                onPressed: () => Get.toNamed('stats'),
-                child: Text(
-                  'Στατιστικά',
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 25.0),
+                  child: TextButton(
+                    onPressed: () => Get.toNamed('stats'),
+                    child: Text(
+                      'Generate tzoker',
+                      style: kStyleDefault,
+                    ),
+                  ),
                 ),
               ),
             ),

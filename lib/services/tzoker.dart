@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:tzoker_generator/constants.dart';
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/statistics.dart';
 import 'package:tzoker_generator/models/tzoker_response.dart';
@@ -51,16 +53,21 @@ class Tzoker {
 
     final data = jsonDecode(response.body);
 
-    List<dynamic> winningNumbers = data['last']['winningNumbers']['list'];
+    List<int> winningNumbers = List<int>.generate(
+        data['last']['winningNumbers']['list'].length,
+        (index) => data['last']['winningNumbers']['list'][index]);
+
     int tzoker = data['last']['winningNumbers']['bonus'].first;
     DateTime drawDate =
         DateTime.fromMillisecondsSinceEpoch(data['last']['drawTime']);
 
     return LastResult(
-        date: drawDate,
-        tzoker: tzoker,
-        winningNumbers: winningNumbers,
-        sortedWinningNumbers: winningNumbers..sort());
+      date: drawDate,
+      tzoker: tzoker,
+      winningNumbers: winningNumbers,
+      drawCount: data['last']['drawId'],
+      sortedWinningNumbers: winningNumbers..sort(),
+    );
   }
 
   Future<Statistics> getStatistics() async {
@@ -70,6 +77,60 @@ class Tzoker {
     final stats = Statistics.fromJson(data);
 
     return stats;
+  }
+
+  Future<Statistics> getStatsForDrawCount(int drawCount) async {
+    PostgrestResponse<dynamic> response;
+
+    response = await Supabase.instance.client
+        .from('StatHistory')
+        .select()
+        .eq('drawCount', drawCount)
+        .execute();
+
+    Statistics stats =
+        Statistics.fromJson(jsonDecode(response.data[0]['stats']));
+
+    return stats;
+  }
+
+  Future<bool> checkIfStatsExist(int drawCount) async {
+    PostgrestResponse<dynamic> response;
+
+    response = await Supabase.instance.client
+        .from('StatHistory')
+        .select()
+        .eq('drawCount', drawCount)
+        .execute();
+
+    if (response.data == null || response.data.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> updateStats(int drawCount, Map<String, dynamic> json) async {
+    final exists = await checkIfStatsExist(drawCount);
+
+    if (exists) {
+      kLog.w('The current stats are already saved.');
+    } else {
+      await Supabase.instance.client.from('StatHistory').insert({
+        'stats': jsonEncode(json),
+        'drawCount': drawCount,
+      }).execute();
+
+      kLog.i('Stats for latest draw has been saved.');
+    }
+  }
+
+  Future<void> getStats() async {
+    PostgrestResponse<dynamic> response;
+
+    response =
+        await Supabase.instance.client.from('StatHistory').select().execute();
+
+    kLog.wtf(response.data);
   }
 
   Color getColor(int num) {

@@ -77,6 +77,9 @@ class _LandingPageState extends State<LandingPage> {
     final res = await Tzoker.instance.getJackpot();
 
     lastResult = await Tzoker.instance.getLastResult();
+
+    kLog.wtf(lastResult?.toJson());
+
     nextDraw = await Tzoker.instance.getUpcomingDrawDate();
 
     currentJackpot = res;

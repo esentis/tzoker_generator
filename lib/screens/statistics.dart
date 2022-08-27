@@ -54,6 +54,8 @@ class _StatsScreenScreenState extends State<StatsScreen> {
     }
     stats = await Tzoker.instance.getStatistics();
 
+    await Tzoker.instance.updateStats(stats!.header.drawCount, stats!.toJson());
+
     highDelayedNumbers = stats?.numbers.where(((n) => n.delays > 20));
 
     mediumDelayedNumbers =
@@ -174,7 +176,7 @@ class _StatsScreenScreenState extends State<StatsScreen> {
                           style: kStyleDefault,
                         ),
                         Text(
-                          '${DateFormat("dd/MM/yyyy").format(DateTime.fromMillisecondsSinceEpoch(stats!.header.dateFrom * 1000))} - ${DateFormat("dd/MM/yyyy").format(DateTime.now())}',
+                          '${DateFormat("dd/MM/yyyy").format(DateTime.fromMillisecondsSinceEpoch(stats!.header.dateFrom * 1000))} - ${DateFormat("dd/MM/yyyy").format(DateTime.fromMillisecondsSinceEpoch(stats!.header.dateTo * 1000))}',
                           style: kStyleDefault,
                         ),
                       ],

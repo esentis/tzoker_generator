@@ -39,6 +39,7 @@ dependencies:
   http: ^0.13.5
   slide_countdown: ^0.2.12
   get: ^4.6.5
+  supabase_flutter: ^0.3.3
 
 dev_dependencies:
   flutter_test:

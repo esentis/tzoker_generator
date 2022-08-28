@@ -47,6 +47,7 @@ class Tzoker {
     return DateTime.fromMillisecondsSinceEpoch(data.first['drawTime']);
   }
 
+  /// Returns the latest draw result.
   Future<LastResult> getLastResult() async {
     final response = await http
         .get(Uri.parse('$baseUrl/draws/v3.0/5104/last-result-and-active'));
@@ -70,6 +71,7 @@ class Tzoker {
     );
   }
 
+  /// Returns the stats from the OPAP services.
   Future<Statistics> getStatistics() async {
     final response =
         await http.get(Uri.parse('$baseUrl/games/v1.0/5104/statistics'));
@@ -79,6 +81,7 @@ class Tzoker {
     return stats;
   }
 
+  /// Returns the stats for a specific draw.
   Future<Statistics> getStatsForDrawCount(int drawCount) async {
     PostgrestResponse<dynamic> response;
 
@@ -94,6 +97,7 @@ class Tzoker {
     return stats;
   }
 
+  /// Checks whether the stats are already saved in the database.
   Future<bool> checkIfStatsExist(int drawCount) async {
     PostgrestResponse<dynamic> response;
 
@@ -109,6 +113,7 @@ class Tzoker {
     return true;
   }
 
+  /// Updates the stats in the database.
   Future<void> updateStats(int drawCount, Map<String, dynamic> json) async {
     final exists = await checkIfStatsExist(drawCount);
 
@@ -124,6 +129,7 @@ class Tzoker {
     }
   }
 
+  /// Returns all stats from the database.
   Future<void> getStats() async {
     PostgrestResponse<dynamic> response;
 

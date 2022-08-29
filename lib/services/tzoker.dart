@@ -85,6 +85,8 @@ class Tzoker {
   Future<Statistics> getStatsForDrawCount(int drawCount) async {
     PostgrestResponse<dynamic> response;
 
+    kLog.wtf('Looking stats for $drawCount');
+
     response = await Supabase.instance.client
         .from('StatHistory')
         .select()
@@ -96,6 +98,23 @@ class Tzoker {
 
     return stats;
   }
+
+  /// Returns the stats for a specific draw.
+//   Future<void> getSpecificStat() async {
+//     PostgrestResponse<dynamic> response;
+
+//     kLog.wtf('Looking specific stats');
+
+//     response = await Supabase.instance.client.from('StatHistory').select('''
+// stats->numb
+// ''').execute();
+
+//     kLog.wtf(response.data);
+//     // Statistics stats =
+//     //     Statistics.fromJson(jsonDecode(response.data[0]['stats']));
+
+//     // return stats;
+//   }
 
   /// Checks whether the stats are already saved in the database.
   Future<bool> checkIfStatsExist(int drawCount) async {
@@ -137,6 +156,14 @@ class Tzoker {
         await Supabase.instance.client.from('StatHistory').select().execute();
 
     kLog.wtf(response.data);
+  }
+
+  Future<Draw> getDraw(int drawId) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/$drawId'));
+    final Map<String, dynamic> data = jsonDecode(response.body);
+
+    return Draw.fromJson(data);
   }
 
   Color getColor(int num) {

@@ -48,7 +48,7 @@ class Tzoker {
   }
 
   /// Returns the latest draw result.
-  Future<LastResult> getLastResult() async {
+  Future<DrawResult> getLastResult() async {
     final response = await http
         .get(Uri.parse('$baseUrl/draws/v3.0/5104/last-result-and-active'));
 
@@ -62,7 +62,7 @@ class Tzoker {
     DateTime drawDate =
         DateTime.fromMillisecondsSinceEpoch(data['last']['drawTime']);
 
-    return LastResult(
+    return DrawResult(
       date: drawDate,
       tzoker: tzoker,
       winningNumbers: winningNumbers,

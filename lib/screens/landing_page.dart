@@ -1,89 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 import 'package:tzoker_generator/constants.dart';
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/statistics.dart';
-import 'package:tzoker_generator/models/tzoker_response.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
-
-Map<String, dynamic> tempStats = {
-  "header": {"dateFrom": 946742400, "dateTo": 946742400, "drawCount": 0},
-  "numbers": [
-    {"occurrences": 0, "delays": 0, "number": 1},
-    {"occurrences": 0, "delays": 0, "number": 2},
-    {"occurrences": 0, "delays": 0, "number": 3},
-    {"occurrences": 0, "delays": 0, "number": 4},
-    {"occurrences": 0, "delays": 0, "number": 5},
-    {"occurrences": 0, "delays": 0, "number": 6},
-    {"occurrences": 0, "delays": 0, "number": 7},
-    {"occurrences": 0, "delays": 0, "number": 8},
-    {"occurrences": 0, "delays": 0, "number": 9},
-    {"occurrences": 0, "delays": 0, "number": 10},
-    {"occurrences": 0, "delays": 0, "number": 11},
-    {"occurrences": 0, "delays": 0, "number": 12},
-    {"occurrences": 0, "delays": 0, "number": 13},
-    {"occurrences": 0, "delays": 0, "number": 14},
-    {"occurrences": 0, "delays": 0, "number": 15},
-    {"occurrences": 0, "delays": 0, "number": 16},
-    {"occurrences": 0, "delays": 0, "number": 17},
-    {"occurrences": 0, "delays": 0, "number": 18},
-    {"occurrences": 0, "delays": 0, "number": 19},
-    {"occurrences": 0, "delays": 0, "number": 20},
-    {"occurrences": 0, "delays": 0, "number": 21},
-    {"occurrences": 0, "delays": 0, "number": 22},
-    {"occurrences": 0, "delays": 0, "number": 23},
-    {"occurrences": 0, "delays": 0, "number": 24},
-    {"occurrences": 0, "delays": 0, "number": 25},
-    {"occurrences": 0, "delays": 0, "number": 26},
-    {"occurrences": 0, "delays": 0, "number": 27},
-    {"occurrences": 0, "delays": 0, "number": 28},
-    {"occurrences": 0, "delays": 0, "number": 29},
-    {"occurrences": 0, "delays": 0, "number": 30},
-    {"occurrences": 0, "delays": 0, "number": 31},
-    {"occurrences": 0, "delays": 0, "number": 32},
-    {"occurrences": 0, "delays": 0, "number": 33},
-    {"occurrences": 0, "delays": 0, "number": 34},
-    {"occurrences": 0, "delays": 0, "number": 35},
-    {"occurrences": 0, "delays": 0, "number": 36},
-    {"occurrences": 0, "delays": 0, "number": 37},
-    {"occurrences": 0, "delays": 0, "number": 38},
-    {"occurrences": 0, "delays": 0, "number": 39},
-    {"occurrences": 0, "delays": 0, "number": 40},
-    {"occurrences": 0, "delays": 0, "number": 41},
-    {"occurrences": 0, "delays": 0, "number": 42},
-    {"occurrences": 0, "delays": 0, "number": 43},
-    {"occurrences": 0, "delays": 0, "number": 44},
-    {"occurrences": 0, "delays": 0, "number": 45}
-  ],
-  "bonusNumbers": [
-    {"occurrences": 0, "delays": 0, "number": 1},
-    {"occurrences": 0, "delays": 0, "number": 2},
-    {"occurrences": 0, "delays": 0, "number": 3},
-    {"occurrences": 0, "delays": 0, "number": 4},
-    {"occurrences": 0, "delays": 0, "number": 5},
-    {"occurrences": 0, "delays": 0, "number": 6},
-    {"occurrences": 0, "delays": 0, "number": 7},
-    {"occurrences": 0, "delays": 0, "number": 8},
-    {"occurrences": 0, "delays": 0, "number": 9},
-    {"occurrences": 0, "delays": 0, "number": 10},
-    {"occurrences": 0, "delays": 0, "number": 11},
-    {"occurrences": 0, "delays": 0, "number": 12},
-    {"occurrences": 0, "delays": 0, "number": 13},
-    {"occurrences": 0, "delays": 0, "number": 14},
-    {"occurrences": 0, "delays": 0, "number": 15},
-    {"occurrences": 0, "delays": 0, "number": 16},
-    {"occurrences": 0, "delays": 0, "number": 17},
-    {"occurrences": 0, "delays": 0, "number": 18},
-    {"occurrences": 0, "delays": 0, "number": 19},
-    {"occurrences": 0, "delays": 0, "number": 20}
-  ]
-};
-
-Statistics tempStatsModel = Statistics.fromJson(tempStats);
 
 class LandingPage extends StatefulWidget {
   const LandingPage({
@@ -95,60 +18,63 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  int draws = 0;
+  // int draws = 0;
+
+  int currentDraw = 0;
+  int latestDraw = 0;
 
   double loadingPercentage = 0;
   double currentJackpot = 0;
 
   bool _loading = true;
 
-  DateTime? latestDraw;
+  DateTime? latestDrawDate;
   DateTime? nextDraw;
 
-  LastResult? lastResult;
+  DrawResult? showingDraw;
 
   Statistics? latestResultStatistics;
 
-  Future<List<Map<int, int>>> getResults() async {
-    Map<int, int> numberOccurences = {};
-    Map<int, int> tzokerOccurences = {};
+  // Future<List<Map<int, int>>> getResults() async {
+  //   Map<int, int> numberOccurences = {};
+  //   Map<int, int> tzokerOccurences = {};
 
-    DateTime from = DateTime.now();
-    DateTime to = from.subtract(const Duration(days: 30));
+  //   DateTime from = DateTime.now();
+  //   DateTime to = from.subtract(const Duration(days: 30));
 
-    int months = 12;
+  //   int months = 12;
 
-    for (int i = 0; i <= months; i++) {
-      final resp = await Tzoker.instance.getDrawsInRange(
-          DateFormat("yyyy-MM-dd").format(to),
-          DateFormat("yyyy-MM-dd").format(from));
+  //   for (int i = 0; i <= months; i++) {
+  //     final resp = await Tzoker.instance.getDrawsInRange(
+  //         DateFormat("yyyy-MM-dd").format(to),
+  //         DateFormat("yyyy-MM-dd").format(from));
 
-      if (resp != null) {
-        draws += resp.draws.length;
+  //     if (resp != null) {
+  //       draws += resp.draws.length;
 
-        for (Draw draw in resp.draws) {
-          // Increment the tzoker occurence
-          tzokerOccurences[draw.winningNumbers.tzoker.first] =
-              (tzokerOccurences[draw.winningNumbers.tzoker.first] ?? 0) + 1;
+  //       for (Draw draw in resp.draws) {
+  //         // Increment the tzoker occurence
+  //         tzokerOccurences[draw.winningNumbers.tzoker.first] =
+  //             (tzokerOccurences[draw.winningNumbers.tzoker.first] ?? 0) + 1;
 
-          for (int num in draw.winningNumbers.numbers) {
-            // Increment the number occurence
-            numberOccurences[num] = (numberOccurences[num] ?? 0) + 1;
-          }
-        }
-      }
+  //         for (int num in draw.winningNumbers.numbers) {
+  //           // Increment the number occurence
+  //           numberOccurences[num] = (numberOccurences[num] ?? 0) + 1;
+  //         }
+  //       }
+  //     }
 
-      from = to;
-      to = to.subtract(const Duration(days: 30));
-      latestDraw = to;
-      setState(() {
-        loadingPercentage = (i / months) * 100;
-      });
-    }
-    loadingPercentage = 0;
+  //     from = to;
+  //     to = to.subtract(const Duration(days: 30));
+  //     latestDraw = to;
+  //     setState(() {
+  //       loadingPercentage = (i / months) * 100;
+  //     });
+  //   }
+  //   loadingPercentage = 0;
 
-    return [numberOccurences, tzokerOccurences];
-  }
+  //   return [numberOccurences, tzokerOccurences];
+  // }
 
   Future<void> _prepareLandingPage() async {
     kLog.i('Preparing landing page');
@@ -156,9 +82,13 @@ class _LandingPageState extends State<LandingPage> {
 
     // await Tzoker.instance.getSpecificStat();
 
-    lastResult = await Tzoker.instance.getLastResult();
+    showingDraw = await Tzoker.instance.getLastResult();
+
+    currentDraw = showingDraw!.drawCount;
+    latestDraw = showingDraw!.drawCount;
+
     latestResultStatistics = await Tzoker.instance
-        .getStatsForDrawCount((lastResult?.drawCount ?? 0) - 1);
+        .getStatsForDrawCount((showingDraw?.drawCount ?? 0) - 1);
 
     nextDraw = await Tzoker.instance.getUpcomingDrawDate();
 
@@ -249,31 +179,16 @@ class _LandingPageState extends State<LandingPage> {
           else ...[
             SliverToBoxAdapter(
               child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 25.0),
-                  child: TextButton(
-                    onPressed: () => Get.toNamed('stats'),
-                    child: Text(
-                      'Generate tzoker',
-                      style: kStyleDefault,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Center(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(
                       height: 15,
                     ),
                     Text(
-                      'Επομένη κλήρωση ${DateFormat("dd MMMM yyyy, HH:ss").format(nextDraw!)}',
+                      'Next draw ${DateFormat("dd MMMM yyyy, HH:ss").format(nextDraw!)}',
                       style: kStyleDefault.copyWith(
-                        fontFamily: 'Arial',
                         fontSize: 17,
                       ),
                     ),
@@ -284,11 +199,19 @@ class _LandingPageState extends State<LandingPage> {
                       decoration: BoxDecoration(
                         color: const Color(0xfff8b828),
                         borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 10,
+                            color: Colors.grey[400]!,
+                            offset: Offset(0, 3),
+                            spreadRadius: 1,
+                          )
+                        ],
                       ),
                       duration: nextDraw!.difference(DateTime.now()),
                       separatorType: SeparatorType.title,
                       textStyle: kStyleDefault.copyWith(
-                        color: const Color(0xff3c5c8f),
+                        color: Colors.black,
                       ),
                     ),
                   ],
@@ -303,7 +226,7 @@ class _LandingPageState extends State<LandingPage> {
                     child: Column(
                       children: [
                         Text(
-                          'Jackpot',
+                          'Minimum distributed on next draw',
                           style: kStyleDefault.copyWith(fontSize: 25),
                         ),
                         if (currentJackpot == 0)
@@ -344,6 +267,12 @@ class _LandingPageState extends State<LandingPage> {
                 ],
               ),
             ),
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Divider(),
+              ),
+            ),
             const SliverPadding(
               padding: EdgeInsets.symmetric(vertical: 3),
             ),
@@ -352,26 +281,92 @@ class _LandingPageState extends State<LandingPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      'Latest Draw',
-                      style: kStyleDefault.copyWith(
-                        fontSize: 25,
+                    SizedBox(
+                      width: 350,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () async {
+                              currentDraw--;
+                              final draw =
+                                  await Tzoker.instance.getDraw(currentDraw);
+
+                              showingDraw = DrawResult.fromDraw(draw);
+
+                              latestResultStatistics = await Tzoker.instance
+                                  .getStatsForDrawCount(currentDraw - 1);
+
+                              setState(() {});
+                            },
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color:
+                                  currentDraw == 1 ? Colors.grey : Colors.blue,
+                              size: 45,
+                            ),
+                          ),
+                          Text(
+                            latestDraw != currentDraw
+                                ? 'Draw $currentDraw'
+                                : 'Latest Draw',
+                            style: kStyleDefault.copyWith(
+                              fontSize: 25,
+                            ),
+                          ),
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: currentDraw == latestDraw
+                                ? null
+                                : () async {
+                                    currentDraw++;
+                                    final draw = await Tzoker.instance
+                                        .getDraw(currentDraw);
+
+                                    showingDraw = DrawResult.fromDraw(draw);
+
+                                    latestResultStatistics = await Tzoker
+                                        .instance
+                                        .getStatsForDrawCount(currentDraw - 1);
+
+                                    setState(() {});
+                                  },
+                            icon: Icon(
+                              Icons.arrow_forward,
+                              size: 45,
+                              color: currentDraw == latestDraw
+                                  ? Colors.grey
+                                  : Colors.blue,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Text(
                       DateFormat("dd MMMM yyyy, HH:ss")
-                          .format(lastResult!.date),
+                          .format(showingDraw!.date),
                       style: kStyleDefault.copyWith(
                         fontSize: 18,
-                        fontFamily: 'Arial',
+                        color: const Color(0xff3b6250).withOpacity(0.6),
                       ),
                     ),
                     const SizedBox(
-                      height: 5,
+                      height: 6,
                     ),
+                    const SizedBox(
+                      width: 350,
+                      child: Divider(
+                        color: Color(0xfff8b828),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    // TZOKER NUMBER
                     Padding(
                       padding: const EdgeInsets.only(
-                        top: 6.0,
+                        bottom: 6.0,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -383,10 +378,10 @@ class _LandingPageState extends State<LandingPage> {
                             ),
                             child: TzokerBall(
                               color:
-                                  Tzoker.instance.getColor(lastResult!.tzoker),
+                                  Tzoker.instance.getColor(showingDraw!.tzoker),
                               height: 50,
                               width: 50,
-                              number: lastResult!.tzoker,
+                              number: showingDraw!.tzoker,
                             ),
                           ),
                           const SizedBox(
@@ -397,15 +392,15 @@ class _LandingPageState extends State<LandingPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Appeared after ${latestResultStatistics?.bonusNumbers.firstWhere((n) => n.number == lastResult!.tzoker).delays} delays',
+                                'Appeared after ${latestResultStatistics?.bonusNumbers.firstWhere((n) => n.number == showingDraw!.tzoker).delays} delays',
                                 style: kStyleDefault,
                               ),
                               Text(
-                                'Had ${((latestResultStatistics!.bonusNumbers.firstWhere((n) => n.number == lastResult!.tzoker).occurrences * 100) / (lastResult!.drawCount - 1)).toStringAsFixed(2)}% total appearence chance',
+                                'Had ${((latestResultStatistics!.bonusNumbers.firstWhere((n) => n.number == showingDraw!.tzoker).occurrences * 100) / (showingDraw!.drawCount - 1)).toStringAsFixed(2)}% total appearence chance',
                                 style: kStyleDefault.copyWith(
                                   fontSize: 16,
                                   color:
-                                      const Color(0xff3b6250).withOpacity(0.6),
+                                      const Color(0xff8d0d46).withOpacity(0.6),
                                 ),
                               ),
                             ],
@@ -413,7 +408,13 @@ class _LandingPageState extends State<LandingPage> {
                         ],
                       ),
                     ),
-                    ...lastResult!.sortedWinningNumbers.map(
+                    const SizedBox(
+                      width: 350,
+                      child: Divider(
+                        color: Color(0xfff8b828),
+                      ),
+                    ),
+                    ...showingDraw!.sortedWinningNumbers.map(
                       (e) => Padding(
                         padding: const EdgeInsets.only(
                           top: 6.0,
@@ -438,10 +439,10 @@ class _LandingPageState extends State<LandingPage> {
                                   style: kStyleDefault,
                                 ),
                                 Text(
-                                  'Had ${((latestResultStatistics!.numbers.firstWhere((n) => n.number == e).occurrences * 100) / (lastResult!.drawCount - 1)).toStringAsFixed(2)}% total appearence chance',
+                                  'Had ${((latestResultStatistics!.numbers.firstWhere((n) => n.number == e).occurrences * 100) / (showingDraw!.drawCount - 1)).toStringAsFixed(2)}% total appearence chance',
                                   style: kStyleDefault.copyWith(
                                     fontSize: 16,
-                                    color: const Color(0xff3b6250)
+                                    color: const Color(0xff8d0d46)
                                         .withOpacity(0.6),
                                   ),
                                 ),

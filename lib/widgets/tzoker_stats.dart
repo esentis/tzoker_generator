@@ -273,6 +273,7 @@ class _TzokerStatsState extends State<TzokerStats> {
                   leading: TzokerBall(
                     color: Tzoker.instance.getColor(i + 1),
                     number: widget.numbers[i].number,
+                    isLoading: false,
                   ),
                   title: Text(
                     'Delays ${widget.numbers[i].delays}',

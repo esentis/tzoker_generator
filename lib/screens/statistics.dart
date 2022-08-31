@@ -203,6 +203,7 @@ class _StatsScreenScreenState extends State<StatsScreen> {
                                 color: Tzoker.instance
                                     .getColor(generatedNumbers!.tzoker.number),
                                 number: generatedNumbers!.tzoker.number,
+                                isLoading: false,
                               ),
                             ),
                           ),
@@ -217,6 +218,7 @@ class _StatsScreenScreenState extends State<StatsScreen> {
                                 width: 60,
                                 color: Tzoker.instance.getColor(e.number),
                                 number: e.number,
+                                isLoading: false,
                               ),
                             ),
                           ),

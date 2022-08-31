@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 import 'package:tzoker_generator/constants.dart';
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/statistics.dart';
+import 'package:tzoker_generator/screens/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
 
@@ -27,6 +30,7 @@ class _LandingPageState extends State<LandingPage> {
   double currentJackpot = 0;
 
   bool _loading = true;
+  bool _loadingNewDraw = false;
 
   DateTime? latestDrawDate;
   DateTime? nextDraw;
@@ -160,6 +164,20 @@ class _LandingPageState extends State<LandingPage> {
             toolbarHeight: 100,
             backgroundColor: Colors.white,
             primary: true,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 25.0),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () => Get.to(() => const StatsScreen()),
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.red,
+                    size: 45,
+                  ),
+                ),
+              ),
+            ],
           ),
           if (_loading)
             SliverFillRemaining(
@@ -203,7 +221,7 @@ class _LandingPageState extends State<LandingPage> {
                           BoxShadow(
                             blurRadius: 10,
                             color: Colors.grey[400]!,
-                            offset: Offset(0, 3),
+                            offset: const Offset(0, 3),
                             spreadRadius: 1,
                           )
                         ],
@@ -211,7 +229,7 @@ class _LandingPageState extends State<LandingPage> {
                       duration: nextDraw!.difference(DateTime.now()),
                       separatorType: SeparatorType.title,
                       textStyle: kStyleDefault.copyWith(
-                        color: Colors.black,
+                        color: const Color(0xff0a85c9).withOpacity(0.7),
                       ),
                     ),
                   ],
@@ -248,7 +266,7 @@ class _LandingPageState extends State<LandingPage> {
                               Text(
                                 '€',
                                 style: kStyleDefault.copyWith(
-                                  fontSize: 70,
+                                  fontSize: 50,
                                 ),
                               ),
                               Text(
@@ -256,7 +274,7 @@ class _LandingPageState extends State<LandingPage> {
                                   "###,###.###",
                                 ).format(currentJackpot),
                                 style: kStyleDefault.copyWith(
-                                  fontSize: 70,
+                                  fontSize: 50,
                                 ),
                               ),
                             ],
@@ -269,18 +287,48 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
+                padding: EdgeInsets.only(bottom: 3.0),
                 child: Divider(),
               ),
-            ),
-            const SliverPadding(
-              padding: EdgeInsets.symmetric(vertical: 3),
             ),
             SliverToBoxAdapter(
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    TextButton(
+                      onPressed: latestDraw == currentDraw
+                          ? null
+                          : () async {
+                              setState(() {
+                                _loadingNewDraw = true;
+                                currentDraw = latestDraw;
+                              });
+
+                              final draw =
+                                  await Tzoker.instance.getDraw(currentDraw);
+
+                              showingDraw = DrawResult.fromDraw(draw);
+
+                              latestResultStatistics = await Tzoker.instance
+                                  .getStatsForDrawCount(currentDraw - 1);
+
+                              setState(() {
+                                _loadingNewDraw = false;
+                              });
+                            },
+                      child: Text(
+                        latestDraw == currentDraw
+                            ? 'Latest draw'
+                            : 'Go to the latest draw',
+                        style: kStyleDefault.copyWith(
+                          fontSize: 20,
+                          color: latestDraw != currentDraw
+                              ? Colors.blue
+                              : Colors.grey[400],
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       width: 350,
                       child: Row(
@@ -289,6 +337,9 @@ class _LandingPageState extends State<LandingPage> {
                           IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
+                              setState(() {
+                                _loadingNewDraw = true;
+                              });
                               currentDraw--;
                               final draw =
                                   await Tzoker.instance.getDraw(currentDraw);
@@ -298,7 +349,9 @@ class _LandingPageState extends State<LandingPage> {
                               latestResultStatistics = await Tzoker.instance
                                   .getStatsForDrawCount(currentDraw - 1);
 
-                              setState(() {});
+                              setState(() {
+                                _loadingNewDraw = false;
+                              });
                             },
                             icon: Icon(
                               Icons.arrow_back,
@@ -308,11 +361,10 @@ class _LandingPageState extends State<LandingPage> {
                             ),
                           ),
                           Text(
-                            latestDraw != currentDraw
-                                ? 'Draw $currentDraw'
-                                : 'Latest Draw',
+                            'Draw $currentDraw',
                             style: kStyleDefault.copyWith(
                               fontSize: 25,
+                              color: const Color(0xff8d0d46),
                             ),
                           ),
                           IconButton(
@@ -320,6 +372,9 @@ class _LandingPageState extends State<LandingPage> {
                             onPressed: currentDraw == latestDraw
                                 ? null
                                 : () async {
+                                    setState(() {
+                                      _loadingNewDraw = true;
+                                    });
                                     currentDraw++;
                                     final draw = await Tzoker.instance
                                         .getDraw(currentDraw);
@@ -330,7 +385,9 @@ class _LandingPageState extends State<LandingPage> {
                                         .instance
                                         .getStatsForDrawCount(currentDraw - 1);
 
-                                    setState(() {});
+                                    setState(() {
+                                      _loadingNewDraw = false;
+                                    });
                                   },
                             icon: Icon(
                               Icons.arrow_forward,
@@ -382,6 +439,7 @@ class _LandingPageState extends State<LandingPage> {
                               height: 50,
                               width: 50,
                               number: showingDraw!.tzoker,
+                              isLoading: _loadingNewDraw,
                             ),
                           ),
                           const SizedBox(
@@ -391,18 +449,49 @@ class _LandingPageState extends State<LandingPage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Appeared after ${latestResultStatistics?.bonusNumbers.firstWhere((n) => n.number == showingDraw!.tzoker).delays} delays',
-                                style: kStyleDefault,
-                              ),
-                              Text(
-                                'Had ${((latestResultStatistics!.bonusNumbers.firstWhere((n) => n.number == showingDraw!.tzoker).occurrences * 100) / (showingDraw!.drawCount - 1)).toStringAsFixed(2)}% total appearence chance',
-                                style: kStyleDefault.copyWith(
-                                  fontSize: 16,
-                                  color:
-                                      const Color(0xff8d0d46).withOpacity(0.6),
+                              if (_loadingNewDraw) ...[
+                                Shimmer.fromColors(
+                                  baseColor: Colors.white,
+                                  highlightColor: Colors.black.withOpacity(0.6),
+                                  child: Container(
+                                    width: 200,
+                                    height: 25,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(7),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Shimmer.fromColors(
+                                  baseColor: Colors.white,
+                                  highlightColor:
+                                      const Color(0xff8d0d46).withOpacity(0.6),
+                                  child: Container(
+                                    width: 250,
+                                    height: 18,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(7),
+                                    ),
+                                  ),
+                                ),
+                              ] else ...[
+                                Text(
+                                  'Appeared after ${latestResultStatistics?.bonusNumbers.firstWhere((n) => n.number == showingDraw!.tzoker).delays} delays',
+                                  style: kStyleDefault,
+                                ),
+                                Text(
+                                  'Had ${((latestResultStatistics!.bonusNumbers.firstWhere((n) => n.number == showingDraw!.tzoker).occurrences * 100) / (showingDraw!.drawCount - 1)).toStringAsFixed(2)}% total appearence chance',
+                                  style: kStyleDefault.copyWith(
+                                    fontSize: 16,
+                                    color: const Color(0xff8d0d46)
+                                        .withOpacity(0.6),
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ],
@@ -427,27 +516,61 @@ class _LandingPageState extends State<LandingPage> {
                               height: 50,
                               width: 50,
                               number: e,
+                              isLoading: _loadingNewDraw,
                             ),
                             const SizedBox(
                               width: 20,
                             ),
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Appeared after ${latestResultStatistics?.numbers.firstWhere((n) => n.number == e).delays} delays',
-                                  style: kStyleDefault,
-                                ),
-                                Text(
-                                  'Had ${((latestResultStatistics!.numbers.firstWhere((n) => n.number == e).occurrences * 100) / (showingDraw!.drawCount - 1)).toStringAsFixed(2)}% total appearence chance',
-                                  style: kStyleDefault.copyWith(
-                                    fontSize: 16,
-                                    color: const Color(0xff8d0d46)
-                                        .withOpacity(0.6),
-                                  ),
-                                ),
-                              ],
-                            ),
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (_loadingNewDraw) ...[
+                                    Shimmer.fromColors(
+                                      baseColor: Colors.white,
+                                      highlightColor:
+                                          Colors.black.withOpacity(0.6),
+                                      child: Container(
+                                        width: 200,
+                                        height: 25,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(7),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Shimmer.fromColors(
+                                      baseColor: Colors.white,
+                                      highlightColor: const Color(0xff8d0d46)
+                                          .withOpacity(0.6),
+                                      child: Container(
+                                        width: 250,
+                                        height: 18,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(7),
+                                        ),
+                                      ),
+                                    ),
+                                  ] else ...[
+                                    Text(
+                                      'Appeared after ${latestResultStatistics?.numbers.firstWhere((n) => n.number == e).delays} delays',
+                                      style: kStyleDefault,
+                                    ),
+                                    Text(
+                                      'Had ${((latestResultStatistics!.numbers.firstWhere((n) => n.number == e).occurrences * 100) / (showingDraw!.drawCount - 1)).toStringAsFixed(2)}% total appearence chance',
+                                      style: kStyleDefault.copyWith(
+                                        fontSize: 16,
+                                        color: const Color(0xff8d0d46)
+                                            .withOpacity(0.6),
+                                      ),
+                                    ),
+                                  ],
+                                ]),
                           ],
                         ),
                       ),

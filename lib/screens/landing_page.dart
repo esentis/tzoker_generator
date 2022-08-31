@@ -84,6 +84,8 @@ class _LandingPageState extends State<LandingPage> {
     kLog.i('Preparing landing page');
     final res = await Tzoker.instance.getJackpot();
 
+    //Tzoker.instance.getStats();
+    updateDatabase();
     // await Tzoker.instance.getSpecificStat();
 
     showingDraw = await Tzoker.instance.getLastResult();
@@ -102,41 +104,60 @@ class _LandingPageState extends State<LandingPage> {
     });
   }
 
-  // Future<void> updateDatabase() async {
-  //   tempStats = await Tzoker.instance
-  //       .getStatsForDrawCount(2043)
-  //       .then((value) => value.toJson());
-  //   for (int i = 2043; i <= 2483; i++) {
-  //     final draw = await Tzoker.instance.getDraw(i);
+  Future<void> updateDatabase() async {
+    // final response = await Supabase.instance.client
+    //     .from('Draws')
+    //     .select()
+    //     .contains('numbers', '{1}')
+    //     .execute();
 
-  //     for (Map<String, dynamic> stat in tempStats['numbers']) {
-  //       if (draw.winningNumbers.numbers.contains(stat['number'])) {
-  //         stat['occurrences']++;
-  //         stat['delays'] = 0;
-  //       } else {
-  //         stat['delays']++;
-  //       }
-  //     }
+    // kLog.wtf(response.data);
 
-  //     for (Map<String, dynamic> stat in tempStats['bonusNumbers']) {
-  //       if (draw.winningNumbers.tzoker.contains(stat['number'])) {
-  //         stat['occurrences']++;
-  //         stat['delays'] = 0;
-  //       } else {
-  //         stat['delays']++;
-  //       }
-  //     }
+    // tempStats = await Tzoker.instance
+    //     .getStatsForDrawCount(2043)
+    //     .then((value) => value.toJson());
 
-  //     tempStats['header']['dateTo'] =
-  //         draw.drawDate.millisecondsSinceEpoch / 1000;
+    // for (int i = 3; i <= 2486; i++) {
+    //   final draw = await Tzoker.instance.getDraw(i);
 
-  //     tempStats['header']['drawCount'] = i;
+    //   final res = await Supabase.instance.client.from('Draws').insert({
+    //     'id': draw.drawId,
+    //     'drawDate': draw.drawDate.toIso8601String(),
+    //     'tzoker': draw.winningNumbers.tzoker.first,
+    //     'numbers': draw.winningNumbers.numbers,
+    //   }).execute();
 
-  //     await Tzoker.instance.updateStats(i, tempStats);
-  //   }
+    //   if (res.error != null) {
+    //     kLog.e(res.error);
+    //   } else {
+    //     kLog.i('Draw $i added in the database.');
+    //   }
+    // for (Map<String, dynamic> stat in tempStats['numbers']) {
+    //   if (draw.winningNumbers.numbers.contains(stat['number'])) {
+    //     stat['occurrences']++;
+    //     stat['delays'] = 0;
+    //   } else {
+    //     stat['delays']++;
+    //   }
+    // }
 
-  //   kLog.wtf(tempStats);
-  // }
+    // for (Map<String, dynamic> stat in tempStats['bonusNumbers']) {
+    //   if (draw.winningNumbers.tzoker.contains(stat['number'])) {
+    //     stat['occurrences']++;
+    //     stat['delays'] = 0;
+    //   } else {
+    //     stat['delays']++;
+    //   }
+    // }
+
+    // tempStats['header']['dateTo'] =
+    //     draw.drawDate.millisecondsSinceEpoch / 1000;
+
+    // tempStats['header']['drawCount'] = i;
+
+    // await Tzoker.instance.updateStats(i, tempStats);
+    // }
+  }
 
   @override
   void initState() {

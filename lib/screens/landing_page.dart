@@ -7,6 +7,7 @@ import 'package:slide_countdown/slide_countdown.dart';
 import 'package:tzoker_generator/constants.dart';
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/statistics.dart';
+import 'package:tzoker_generator/screens/number_stats.dart';
 import 'package:tzoker_generator/screens/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
@@ -105,13 +106,15 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   Future<void> updateDatabase() async {
-    // final response = await Supabase.instance.client
-    //     .from('Draws')
-    //     .select()
-    //     .contains('numbers', '{1}')
-    //     .execute();
+    // final response = await Tzoker.instance.getDrawsOfSpecificSequence(
+    //   [2, 24],
+    // );
 
-    // kLog.wtf(response.data);
+    // if (response.isNotEmpty) {
+    //   response.forEach((d) {
+    //     kLog.wtf(d.toJson());
+    //   });
+    // }
 
     // tempStats = await Tzoker.instance
     //     .getStatsForDrawCount(2043)
@@ -454,13 +457,23 @@ class _LandingPageState extends State<LandingPage> {
                               color: Color(0xfff8b828),
                               shape: BoxShape.circle,
                             ),
-                            child: TzokerBall(
-                              color:
-                                  Tzoker.instance.getColor(showingDraw!.tzoker),
-                              height: 50,
-                              width: 50,
-                              number: showingDraw!.tzoker,
-                              isLoading: _loadingNewDraw,
+                            child: GestureDetector(
+                              onTap: () {
+                                kLog.wtf(
+                                    'Tapped on tzoker ${showingDraw!.tzoker}');
+                                Get.to(
+                                  () => NumberStatsScreen(
+                                      number: showingDraw!.tzoker),
+                                );
+                              },
+                              child: TzokerBall(
+                                color: Tzoker.instance
+                                    .getColor(showingDraw!.tzoker),
+                                height: 50,
+                                width: 50,
+                                number: showingDraw!.tzoker,
+                                isLoading: _loadingNewDraw,
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -532,12 +545,16 @@ class _LandingPageState extends State<LandingPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            TzokerBall(
-                              color: Tzoker.instance.getColor(e),
-                              height: 50,
-                              width: 50,
-                              number: e,
-                              isLoading: _loadingNewDraw,
+                            GestureDetector(
+                              onTap: () =>
+                                  Get.to(() => NumberStatsScreen(number: e)),
+                              child: TzokerBall(
+                                color: Tzoker.instance.getColor(e),
+                                height: 50,
+                                width: 50,
+                                number: e,
+                                isLoading: _loadingNewDraw,
+                              ),
                             ),
                             const SizedBox(
                               width: 20,

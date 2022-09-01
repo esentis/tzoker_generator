@@ -15,13 +15,6 @@ class DrawResult {
   final int drawCount;
   final List sortedWinningNumbers;
 
-  Map<String, dynamic> toJson() => {
-        "date": date,
-        "drawCount": drawCount,
-        "winningNumbers": sortedWinningNumbers.map((e) => e),
-        "tzoker": tzoker,
-      };
-
   factory DrawResult.fromDraw(Draw draw) {
     return DrawResult(
       date: DateTime.fromMillisecondsSinceEpoch(draw.drawTime),
@@ -32,4 +25,23 @@ class DrawResult {
       drawCount: draw.drawId,
     );
   }
+
+  factory DrawResult.fromJson(Map<String, dynamic> draw) {
+    return DrawResult(
+      date: DateTime.parse(draw['drawDate']),
+      tzoker: draw['tzoker'],
+      winningNumbers:
+          List<int>.generate(5, (index) => draw['numbers'][index]).toList(),
+      sortedWinningNumbers:
+          List<int>.generate(5, (index) => draw['numbers'][index]).toList()
+            ..sort(((a, b) => a.compareTo(b))),
+      drawCount: draw['id'],
+    );
+  }
+  Map<String, dynamic> toJson() => {
+        "date": date,
+        "drawCount": drawCount,
+        "winningNumbers": sortedWinningNumbers.map((e) => e),
+        "tzoker": tzoker,
+      };
 }

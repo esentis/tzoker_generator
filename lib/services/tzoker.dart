@@ -149,7 +149,7 @@ class Tzoker {
   }
 
   /// Returns all stats from the database.
-  Future<void> getStats() async {
+  Future<void> getAllStatsHistory() async {
     PostgrestResponse<dynamic> response;
 
     response =
@@ -164,6 +164,52 @@ class Tzoker {
     final Map<String, dynamic> data = jsonDecode(response.body);
 
     return Draw.fromJson(data);
+  }
+
+  Future<List<DrawResult>> getDrawsOfSpecificSequence(
+      {List<int>? nums, int? tzoker}) async {
+    String normalizedNums =
+        "{${nums?.map((e) => e)}}".replaceAll("(", '').replaceAll(')', '');
+
+    PostgrestResponse response;
+
+    if (tzoker != null) {
+      if (nums != null) {
+        response = await Supabase.instance.client
+            .from('Draws')
+            .select()
+            .contains('numbers', normalizedNums)
+            .eq('tzoker', '$tzoker')
+            .execute();
+      } else {
+        response = await Supabase.instance.client
+            .from('Draws')
+            .select()
+            .eq('tzoker', '$tzoker')
+            .execute();
+      }
+    } else {
+      if (nums != null) {
+        response = await Supabase.instance.client
+            .from('Draws')
+            .select()
+            .contains('numbers', normalizedNums)
+            .execute();
+      } else {
+        response = const PostgrestResponse(data: []);
+      }
+    }
+
+    if (response.data.isNotEmpty) {
+      return List<DrawResult>.generate(
+        response.data.length,
+        (index) => DrawResult.fromJson(
+          response.data[index],
+        ),
+      );
+    } else {
+      return [];
+    }
   }
 
   Color getColor(int num) {

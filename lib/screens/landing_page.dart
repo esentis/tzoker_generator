@@ -94,6 +94,8 @@ class _LandingPageState extends State<LandingPage> {
     currentDraw = showingDraw!.drawCount;
     latestDraw = showingDraw!.drawCount;
 
+    await Tzoker.instance.saveDraw(showingDraw!);
+
     latestResultStatistics = await Tzoker.instance
         .getStatsForDrawCount((showingDraw?.drawCount ?? 0) - 1);
 
@@ -121,14 +123,14 @@ class _LandingPageState extends State<LandingPage> {
     //     .then((value) => value.toJson());
 
     // for (int i = 3; i <= 2486; i++) {
-    //   final draw = await Tzoker.instance.getDraw(i);
+    // final draw = await Tzoker.instance.getDraw(i);
 
-    //   final res = await Supabase.instance.client.from('Draws').insert({
-    //     'id': draw.drawId,
-    //     'drawDate': draw.drawDate.toIso8601String(),
-    //     'tzoker': draw.winningNumbers.tzoker.first,
-    //     'numbers': draw.winningNumbers.numbers,
-    //   }).execute();
+    // final res = await Supabase.instance.client.from('Draws').insert({
+    //   'id': draw.drawId,
+    //   'drawDate': draw.drawDate.toIso8601String(),
+    //   'tzoker': draw.winningNumbers.tzoker.first,
+    //   'numbers': draw.winningNumbers.numbers,
+    // }).execute();
 
     //   if (res.error != null) {
     //     kLog.e(res.error);

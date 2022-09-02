@@ -212,6 +212,37 @@ class Tzoker {
     }
   }
 
+  /// Checks whether the stats are already saved in the database.
+  Future<bool> checkIfDrawExist(int id) async {
+    PostgrestResponse<dynamic> response;
+
+    response = await Supabase.instance.client
+        .from('Draws')
+        .select()
+        .eq('id', id)
+        .execute();
+
+    if (response.data == null || response.data.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> saveDraw(DrawResult draw) async {
+    if (await checkIfDrawExist(draw.drawCount)) {
+      kLog.w('Draw ${draw.drawCount} is already saved');
+    } else {
+      await Supabase.instance.client.from('Draws').insert({
+        'id': draw.drawCount,
+        'drawDate': draw.date.toIso8601String(),
+        'tzoker': draw.tzoker,
+        'numbers': draw.winningNumbers,
+      }).execute();
+
+      kLog.i('Draw ${draw.drawCount} successfully saved');
+    }
+  }
+
   Color getColor(int num) {
     if (num >= 1 && num <= 10) {
       return const Color(0xff344ed6);

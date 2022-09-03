@@ -19,14 +19,14 @@ class Tzoker {
   /// [from] & [to] are `String` with format '2018-06-01' (for June 1st, 2018).
   ///
   /// Maximum range is one month since the results have limit 10 draws per request.
-  Future<TzokerResponse?> getDrawsInRange(String from, String to) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/draws/v3.0/5104/draw-date/$from/$to/'),
-    );
-    final Map<String, dynamic> data = jsonDecode(response.body);
+  // Future<TzokerResponse?> getDrawsInRange(String from, String to) async {
+  //   final response = await http.get(
+  //     Uri.parse('$baseUrl/draws/v3.0/5104/draw-date/$from/$to/'),
+  //   );
+  //   final Map<String, dynamic> data = jsonDecode(response.body);
 
-    TzokerResponse tzokerResp = TzokerResponse.fromJson(data);
-  }
+  //   TzokerResponse tzokerResp = TzokerResponse.fromJson(data);
+  // }
 
   /// Returns the current minimum amount distributed for 5 + 1.
   Future<double> getJackpot() async {

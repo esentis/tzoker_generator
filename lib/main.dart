@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tzoker_generator/screens/landing_page.dart';
+import 'package:tzoker_generator/screens/number_stats.dart';
 import 'package:tzoker_generator/screens/statistics.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 Future<void> main() async {
+  setPathUrlStrategy();
   await Supabase.initialize(
     url: 'https://qvliopsxcffejpcxxmfb.supabase.co',
     anonKey:
@@ -34,6 +37,10 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/stats',
           page: () => const StatsScreen(),
+        ),
+        GetPage(
+          name: '/numberStats',
+          page: () => const NumberStatsScreen(),
         ),
       ],
     );

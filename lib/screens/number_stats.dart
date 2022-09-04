@@ -7,16 +7,32 @@ import 'package:tzoker_generator/models/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
 
-class NumberStatsScreen extends StatefulWidget {
-  const NumberStatsScreen({required this.number, Key? key}) : super(key: key);
+class NumberDelayStat {
+  final DateTime from;
+  final DateTime to;
+  final int fromDrawCount;
+  final int toDrawCount;
+  final int delay;
 
-  final int number;
+  NumberDelayStat({
+    required this.from,
+    required this.to,
+    required this.fromDrawCount,
+    required this.toDrawCount,
+    required this.delay,
+  });
+}
+
+class NumberStatsScreen extends StatefulWidget {
+  const NumberStatsScreen({Key? key}) : super(key: key);
 
   @override
   State<NumberStatsScreen> createState() => _NumberStatsScreenState();
 }
 
 class _NumberStatsScreenState extends State<NumberStatsScreen> {
+  /// The current number that we are looking for its stats.
+  late int checkingNumber;
   List<DrawResult> drawsAsNumberResponse = [];
   List<DrawResult> drawsAsTzokerResponse = [];
 
@@ -37,15 +53,50 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
   Map<int, int> allNumberOccurencesAsNumber = {};
   Map<int, int> allNumberOccurencesAsTzoker = {};
 
+// TODO: Finished delay stats to get longest and shortest occurences
+  void getLongestAndShortestDelays(List<DrawResult> draws) {
+    List<NumberDelayStat> drawDelays = [];
+
+    for (int i = 0; i < draws.length - 1; i++) {
+      drawDelays.add(
+        NumberDelayStat(
+          from: draws[i].date,
+          to: draws[i + 1].date,
+          fromDrawCount: draws[i].drawCount,
+          toDrawCount: draws[i + 1].drawCount,
+          delay: draws[i + 1].drawCount - draws[i].drawCount,
+        ),
+      );
+    }
+
+    /// Least delays
+    kLog.wtf(drawDelays.fold(drawDelays.first.delay, (previousValue, element) {
+      if ((previousValue as int? ?? 0) < element.delay) {
+        return previousValue;
+      } else {
+        return element.delay;
+      }
+    }));
+
+    /// Max delays
+    kLog.wtf(drawDelays.fold(drawDelays.first.delay, (previousValue, element) {
+      if ((previousValue as int? ?? 0) > element.delay) {
+        return previousValue;
+      } else {
+        return element.delay;
+      }
+    }));
+  }
+
   Future<void> getNumberStats() async {
     allNumberOccurencesAsNumber = {};
     allNumberOccurencesAsTzoker = {};
 
     final res = await Future.wait([
-      Tzoker.instance.getDrawsOfSpecificSequence(nums: [widget.number]),
+      Tzoker.instance.getDrawsOfSpecificSequence(nums: [checkingNumber]),
       Tzoker.instance.getStatistics(),
-      if (widget.number <= 20)
-        Tzoker.instance.getDrawsOfSpecificSequence(tzoker: widget.number),
+      if (checkingNumber <= 20)
+        Tzoker.instance.getDrawsOfSpecificSequence(tzoker: checkingNumber),
     ]);
 
     drawsAsNumberResponse = res[0] as List<DrawResult>;
@@ -54,10 +105,10 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
 
 //  Generating stats for number when it appears as a number ----------------------------------------
     List<int> allDrawNumbersAsNumber = [];
-
+    getLongestAndShortestDelays(drawsAsNumberResponse);
     for (final DrawResult draw in drawsAsNumberResponse) {
       allDrawNumbersAsNumber
-          .addAll(draw.winningNumbers.where((n) => n != widget.number));
+          .addAll(draw.winningNumbers.where((n) => n != checkingNumber));
     }
 
     for (final int num in allDrawNumbersAsNumber) {
@@ -97,7 +148,9 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
         .keys
         .first;
 // -------------------------------------------------------------------------------------------------
-    if (widget.number <= 20) drawsAsTzokerResponse = res[2] as List<DrawResult>;
+    if (checkingNumber <= 20) {
+      drawsAsTzokerResponse = res[2] as List<DrawResult>;
+    }
 
     List<int> allDrawNumbersAsTzoker = [];
 
@@ -151,6 +204,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
   @override
   void initState() {
     super.initState();
+    checkingNumber = int.parse(Get.parameters['number'] ?? '0');
     getNumberStats();
   }
 
@@ -186,10 +240,10 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TzokerBall(
-                    color: Tzoker.instance.getColor(widget.number),
+                    color: Tzoker.instance.getColor(checkingNumber),
                     height: 100,
                     width: 100,
-                    number: widget.number,
+                    number: checkingNumber,
                     isLoading: false,
                   ),
                   const SizedBox(
@@ -198,26 +252,26 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (widget.number <= 20)
+                      if (checkingNumber <= 20)
                         Text(
                           stats?.bonusNumbers
                                       .firstWhere(
-                                          (n) => n.number == widget.number)
+                                          (n) => n.number == checkingNumber)
                                       .delays ==
                                   0
                               ? 'Appeared on last draw as Tzoker'
-                              : 'As a Tzoker has ${stats?.bonusNumbers.firstWhere((n) => n.number == widget.number).delays} delays',
+                              : 'As a Tzoker has ${stats?.bonusNumbers.firstWhere((n) => n.number == checkingNumber).delays} delays',
                           style: kStyleDefault,
                         ),
-                      if (widget.number <= 20)
+                      if (checkingNumber <= 20)
                         Text(
-                          'Total appearence percentage ${((stats!.bonusNumbers.firstWhere((n) => n.number == widget.number).occurrences * 100) / (stats!.header.drawCount - 1)).toStringAsFixed(2)}% ',
+                          'Total appearence percentage ${((stats!.bonusNumbers.firstWhere((n) => n.number == checkingNumber).occurrences * 100) / (stats!.header.drawCount - 1)).toStringAsFixed(2)}% ',
                           style: kStyleDefault.copyWith(
                             fontSize: 16,
                             color: const Color(0xff8d0d46).withOpacity(0.6),
                           ),
                         ),
-                      if (widget.number <= 20) ...[
+                      if (checkingNumber <= 20) ...[
                         Text(
                             'Appeared in ${drawsAsTzokerResponse.length} draws'),
                         Text(
@@ -234,15 +288,15 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                       Text(
                         stats?.numbers
                                     .firstWhere(
-                                        (n) => n.number == widget.number)
+                                        (n) => n.number == checkingNumber)
                                     .delays ==
                                 0
                             ? 'Appeared on last draw as number'
-                            : 'As a Number has ${stats?.numbers.firstWhere((n) => n.number == widget.number).delays} delays',
+                            : 'As a Number has ${stats?.numbers.firstWhere((n) => n.number == checkingNumber).delays} delays',
                         style: kStyleDefault,
                       ),
                       Text(
-                        'Total appearence percentage ${((stats!.numbers.firstWhere((n) => n.number == widget.number).occurrences * 100) / (stats!.header.drawCount - 1)).toStringAsFixed(2)}% ',
+                        'Total appearence percentage ${((stats!.numbers.firstWhere((n) => n.number == checkingNumber).occurrences * 100) / (stats!.header.drawCount - 1)).toStringAsFixed(2)}% ',
                         style: kStyleDefault.copyWith(
                           fontSize: 16,
                           color: const Color(0xff8d0d46).withOpacity(0.6),

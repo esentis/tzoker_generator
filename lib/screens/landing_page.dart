@@ -7,7 +7,6 @@ import 'package:slide_countdown/slide_countdown.dart';
 import 'package:tzoker_generator/constants.dart';
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/statistics.dart';
-import 'package:tzoker_generator/screens/number_stats.dart';
 import 'package:tzoker_generator/screens/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
@@ -459,22 +458,24 @@ class _LandingPageState extends State<LandingPage> {
                               color: Color(0xfff8b828),
                               shape: BoxShape.circle,
                             ),
-                            child: GestureDetector(
-                              onTap: () {
-                                kLog.wtf(
-                                    'Tapped on tzoker ${showingDraw!.tzoker}');
-                                Get.to(
-                                  () => NumberStatsScreen(
-                                      number: showingDraw!.tzoker),
-                                );
-                              },
-                              child: TzokerBall(
-                                color: Tzoker.instance
-                                    .getColor(showingDraw!.tzoker),
-                                height: 50,
-                                width: 50,
-                                number: showingDraw!.tzoker,
-                                isLoading: _loadingNewDraw,
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () {
+                                  kLog.wtf(
+                                      'Tapped on tzoker ${showingDraw!.tzoker}');
+
+                                  Get.toNamed(
+                                      '/numberStats?number=${showingDraw!.tzoker}');
+                                },
+                                child: TzokerBall(
+                                  color: Tzoker.instance
+                                      .getColor(showingDraw!.tzoker),
+                                  height: 50,
+                                  width: 50,
+                                  number: showingDraw!.tzoker,
+                                  isLoading: _loadingNewDraw,
+                                ),
                               ),
                             ),
                           ),
@@ -547,15 +548,18 @@ class _LandingPageState extends State<LandingPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            GestureDetector(
-                              onTap: () =>
-                                  Get.to(() => NumberStatsScreen(number: e)),
-                              child: TzokerBall(
-                                color: Tzoker.instance.getColor(e),
-                                height: 50,
-                                width: 50,
-                                number: e,
-                                isLoading: _loadingNewDraw,
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () =>
+                                    Get.toNamed('/numberStats?number=$e'),
+                                child: TzokerBall(
+                                  color: Tzoker.instance.getColor(e),
+                                  height: 50,
+                                  width: 50,
+                                  number: e,
+                                  isLoading: _loadingNewDraw,
+                                ),
                               ),
                             ),
                             const SizedBox(

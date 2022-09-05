@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tzoker_generator/constants.dart';
 import 'package:tzoker_generator/models/last_result.dart';
@@ -53,39 +54,69 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
   Map<int, int> allNumberOccurencesAsNumber = {};
   Map<int, int> allNumberOccurencesAsTzoker = {};
 
-// TODO: Finished delay stats to get longest and shortest occurences
-  void getLongestAndShortestDelays(List<DrawResult> draws) {
-    List<NumberDelayStat> drawDelays = [];
+  List<NumberDelayStat> drawDelaysAsNumber = [];
+  List<NumberDelayStat> drawDelaysAsTzoker = [];
 
-    for (int i = 0; i < draws.length - 1; i++) {
-      drawDelays.add(
+  void getLongestAndShortestDelays({
+    required List<DrawResult> drawsAsNumber,
+    required List<DrawResult> drawsAsTzoker,
+  }) {
+    drawDelaysAsNumber = [];
+    drawDelaysAsTzoker = [];
+
+    List<DrawResult> sortedDrawsAsNumber = drawsAsNumber
+      ..sort(
+        (a, b) => a.drawCount.compareTo(b.drawCount),
+      );
+
+    for (int i = 0; i < sortedDrawsAsNumber.length - 1; i++) {
+      drawDelaysAsNumber.add(
         NumberDelayStat(
-          from: draws[i].date,
-          to: draws[i + 1].date,
-          fromDrawCount: draws[i].drawCount,
-          toDrawCount: draws[i + 1].drawCount,
-          delay: draws[i + 1].drawCount - draws[i].drawCount,
+          from: sortedDrawsAsNumber[i].date,
+          to: sortedDrawsAsNumber[i + 1].date,
+          fromDrawCount: sortedDrawsAsNumber[i].drawCount,
+          toDrawCount: sortedDrawsAsNumber[i + 1].drawCount,
+          delay: sortedDrawsAsNumber[i + 1].drawCount -
+              sortedDrawsAsNumber[i].drawCount,
         ),
       );
     }
 
-    /// Least delays
-    kLog.wtf(drawDelays.fold(drawDelays.first.delay, (previousValue, element) {
-      if ((previousValue as int? ?? 0) < element.delay) {
-        return previousValue;
-      } else {
-        return element.delay;
-      }
-    }));
+    drawDelaysAsNumber.sort(
+      (a, b) => a.delay.compareTo(b.delay),
+    );
 
-    /// Max delays
-    kLog.wtf(drawDelays.fold(drawDelays.first.delay, (previousValue, element) {
-      if ((previousValue as int? ?? 0) > element.delay) {
-        return previousValue;
-      } else {
-        return element.delay;
+    kLog.wtf(drawDelaysAsNumber.map((e) => '${e.from}-${e.to}'));
+    kLog.wtf(drawDelaysAsNumber.first.delay);
+    kLog.wtf(drawDelaysAsNumber.last.delay);
+
+    if (drawsAsTzoker.isNotEmpty) {
+      List<DrawResult> sortedDrawsAsTzoker = drawsAsTzoker
+        ..sort(
+          (a, b) => a.drawCount.compareTo(b.drawCount),
+        );
+
+      for (int i = 0; i < sortedDrawsAsTzoker.length - 1; i++) {
+        drawDelaysAsTzoker.add(
+          NumberDelayStat(
+            from: sortedDrawsAsTzoker[i].date,
+            to: sortedDrawsAsTzoker[i + 1].date,
+            fromDrawCount: sortedDrawsAsTzoker[i].drawCount,
+            toDrawCount: sortedDrawsAsTzoker[i + 1].drawCount,
+            delay: sortedDrawsAsTzoker[i + 1].drawCount -
+                sortedDrawsAsTzoker[i].drawCount,
+          ),
+        );
       }
-    }));
+
+      drawDelaysAsTzoker.sort(
+        (a, b) => a.delay.compareTo(b.delay),
+      );
+
+      kLog.wtf(drawDelaysAsTzoker.map((e) => '${e.from}-${e.to}'));
+      kLog.wtf(drawDelaysAsTzoker.first.delay);
+      kLog.wtf(drawDelaysAsTzoker.last.delay);
+    }
   }
 
   Future<void> getNumberStats() async {
@@ -105,7 +136,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
 
 //  Generating stats for number when it appears as a number ----------------------------------------
     List<int> allDrawNumbersAsNumber = [];
-    getLongestAndShortestDelays(drawsAsNumberResponse);
+
     for (final DrawResult draw in drawsAsNumberResponse) {
       allDrawNumbersAsNumber
           .addAll(draw.winningNumbers.where((n) => n != checkingNumber));
@@ -151,6 +182,11 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
     if (checkingNumber <= 20) {
       drawsAsTzokerResponse = res[2] as List<DrawResult>;
     }
+
+    getLongestAndShortestDelays(
+      drawsAsNumber: drawsAsNumberResponse,
+      drawsAsTzoker: drawsAsTzokerResponse,
+    );
 
     List<int> allDrawNumbersAsTzoker = [];
 
@@ -272,12 +308,171 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                           ),
                         ),
                       if (checkingNumber <= 20) ...[
-                        Text(
-                            'Appeared in ${drawsAsTzokerResponse.length} draws'),
-                        Text(
-                            'Most common number found together is $mostCommonNumberAsTzoker found in $mostCommonNumberCountAsTzoker  draws'),
-                        Text(
-                            'Least common number found together is $leastCommonNumberAsTzoker  found in $leastCommonNumberCountAsTzoker  draws'),
+                        RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              const TextSpan(
+                                text: 'Appeared in ',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '${drawsAsTzokerResponse.length}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const TextSpan(
+                                text: ' draws out of total ',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '${stats!.header.drawCount}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              const TextSpan(
+                                text: 'Total consecutive draws ',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              TextSpan(
+                                text:
+                                    '${drawDelaysAsTzoker.where((d) => d.delay == 1).length}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              const TextSpan(
+                                text: 'Longest delay was for ',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '${drawDelaysAsTzoker.last.delay}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const TextSpan(
+                                text: ' draws',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        ...drawDelaysAsTzoker
+                            .where(
+                                (d) => d.delay == drawDelaysAsTzoker.last.delay)
+                            .map(
+                              (e) => Text(
+                                '${DateFormat("dd-MM-yyyy").format(e.from)} - ${DateFormat("dd-MM-yyyy").format(e.to)}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ),
+                        RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              const TextSpan(
+                                text: 'Most common number found together is ',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '$mostCommonNumberAsTzoker',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const TextSpan(
+                                text: ' found in ',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '$mostCommonNumberCountAsTzoker',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const TextSpan(
+                                text: ' draws',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              const TextSpan(
+                                text: 'Least common number found together is ',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '$leastCommonNumberAsTzoker',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const TextSpan(
+                                text: ' found in ',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '$leastCommonNumberCountAsTzoker',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const TextSpan(
+                                text: ' draws',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         const SizedBox(
                           width: 350,
                           child: Divider(

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:tzoker_generator/screens/all_time_stats.dart';
+import 'package:tzoker_generator/screens/generate_numbers.dart';
 import 'package:tzoker_generator/screens/landing_page.dart';
 import 'package:tzoker_generator/screens/number_stats.dart';
-import 'package:tzoker_generator/screens/statistics.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 Future<void> main() async {
@@ -33,14 +34,22 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/',
           page: () => const LandingPage(),
+          transition: Transition.fadeIn,
+        ),
+        GetPage(
+          name: '/generate',
+          page: () => const GenerateNumbersScreen(),
+          transition: Transition.fadeIn,
         ),
         GetPage(
           name: '/stats',
-          page: () => const StatsScreen(),
+          page: () => const AllTimeStats(),
+          transition: Transition.fadeIn,
         ),
         GetPage(
           name: '/numberStats',
           page: () => const NumberStatsScreen(),
+          transition: Transition.fadeIn,
         ),
       ],
     );

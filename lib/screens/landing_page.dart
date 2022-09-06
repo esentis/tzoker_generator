@@ -7,7 +7,6 @@ import 'package:slide_countdown/slide_countdown.dart';
 import 'package:tzoker_generator/constants.dart';
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/statistics.dart';
-import 'package:tzoker_generator/screens/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
 
@@ -180,10 +179,24 @@ class _LandingPageState extends State<LandingPage> {
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
           ),
           SliverAppBar(
-            flexibleSpace: Hero(
-              tag: 'logo',
-              child: Image.asset(
-                'assets/tzoker_generator.png',
+            leading: Get.currentRoute != '/'
+                ? IconButton(
+                    icon: const Icon(Icons.back_hand),
+                    onPressed: Get.back,
+                  )
+                : null,
+            flexibleSpace: Center(
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: (() => Get.offAllNamed('/')),
+                  child: Hero(
+                    tag: 'logo',
+                    child: Image.asset(
+                      'assets/tzoker_generator.png',
+                    ),
+                  ),
+                ),
               ),
             ),
             toolbarHeight: 100,
@@ -194,7 +207,19 @@ class _LandingPageState extends State<LandingPage> {
                 padding: const EdgeInsets.only(right: 25.0),
                 child: IconButton(
                   padding: EdgeInsets.zero,
-                  onPressed: () => Get.to(() => const StatsScreen()),
+                  onPressed: () => Get.toNamed('/generate'),
+                  icon: const Icon(
+                    Icons.settings,
+                    color: Colors.red,
+                    size: 45,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 25.0),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () => Get.toNamed('/stats'),
                   icon: const Icon(
                     Icons.add,
                     color: Colors.red,

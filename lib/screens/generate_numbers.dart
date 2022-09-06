@@ -9,16 +9,15 @@ import 'package:tzoker_generator/models/generated_numbers.dart';
 import 'package:tzoker_generator/models/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
-import 'package:tzoker_generator/widgets/tzoker_stats.dart';
 
-class StatsScreen extends StatefulWidget {
-  const StatsScreen({Key? key}) : super(key: key);
+class GenerateNumbersScreen extends StatefulWidget {
+  const GenerateNumbersScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatsScreen> createState() => _StatsScreenScreenState();
+  State<GenerateNumbersScreen> createState() => _StatsScreenScreenState();
 }
 
-class _StatsScreenScreenState extends State<StatsScreen> {
+class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
   Statistics? stats;
   bool loading = true;
 
@@ -83,7 +82,7 @@ class _StatsScreenScreenState extends State<StatsScreen> {
     });
   }
 
-  void _generatedNumbers() {
+  void _generateNumbers() {
     List<Number> numbers = [];
 
     int randomHighDelay = 0;
@@ -97,6 +96,10 @@ class _StatsScreenScreenState extends State<StatsScreen> {
       randomSmallDelay = Random().nextInt(smallDelayedNumbers!.length);
       randomNoDelay = Random().nextInt(almostNotDelayedNumbers!.length);
 
+      if (!numbers.contains(almostNotDelayedNumbers!.toList()[randomNoDelay])) {
+        numbers.add(almostNotDelayedNumbers!.toList()[randomNoDelay]);
+        if (numbers.length == 5) break;
+      }
       if (!numbers.contains(highDelayedNumbers!.toList()[randomHighDelay])) {
         numbers.add(highDelayedNumbers!.toList()[randomHighDelay]);
         if (numbers.length == 5) break;
@@ -110,11 +113,6 @@ class _StatsScreenScreenState extends State<StatsScreen> {
 
       if (!numbers.contains(smallDelayedNumbers!.toList()[randomSmallDelay])) {
         numbers.add(smallDelayedNumbers!.toList()[randomSmallDelay]);
-        if (numbers.length == 5) break;
-      }
-
-      if (!numbers.contains(almostNotDelayedNumbers!.toList()[randomNoDelay])) {
-        numbers.add(almostNotDelayedNumbers!.toList()[randomNoDelay]);
         if (numbers.length == 5) break;
       }
     }
@@ -135,9 +133,31 @@ class _StatsScreenScreenState extends State<StatsScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        leading: const SizedBox(),
+        leading: Get.currentRoute != '/'
+            ? IconButton(
+                color: Colors.black,
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.black,
+                  size: 45,
+                ),
+                onPressed: (() => Get.offAllNamed('/')),
+              )
+            : null,
         backgroundColor: Colors.white,
-        toolbarHeight: 0,
+        flexibleSpace: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: (() => Get.offAllNamed('/')),
+            child: Hero(
+              tag: 'logo',
+              child: Image.asset(
+                'assets/tzoker_generator.png',
+              ),
+            ),
+          ),
+        ),
+        toolbarHeight: 100,
       ),
       body: loading
           ? Center(
@@ -149,19 +169,6 @@ class _StatsScreenScreenState extends State<StatsScreen> {
               children: [
                 const SizedBox(
                   height: 10,
-                ),
-                MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () => Get.offAllNamed('/'),
-                    child: Hero(
-                      tag: 'logo',
-                      child: Image.asset(
-                        'assets/tzoker_generator.png',
-                        height: 100,
-                      ),
-                    ),
-                  ),
                 ),
                 if (!loading) ...[
                   SizedBox(
@@ -245,46 +252,13 @@ class _StatsScreenScreenState extends State<StatsScreen> {
                   child: Center(
                     child: TextButton(
                       onPressed: () {
-                        _generatedNumbers();
+                        _generateNumbers();
                       },
                       child: Text(
                         'Generate',
                         style: kStyleDefault,
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height - 350,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 15.0,
-                            right: 5,
-                          ),
-                          child: TzokerStats(
-                            numbers: stats!.numbers,
-                            drawCount: stats!.header.drawCount,
-                            title: 'Numbers',
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            right: 15.0,
-                            left: 5,
-                          ),
-                          child: TzokerStats(
-                            numbers: stats!.bonusNumbers,
-                            drawCount: stats!.header.drawCount,
-                            title: 'Tzokers',
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ],

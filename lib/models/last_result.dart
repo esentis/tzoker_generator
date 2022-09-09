@@ -13,7 +13,7 @@ class DrawResult {
   final List<int> winningNumbers;
   final int tzoker;
   final int drawCount;
-  final List sortedWinningNumbers;
+  final List<int> sortedWinningNumbers;
 
   factory DrawResult.fromDraw(Draw draw) {
     return DrawResult(

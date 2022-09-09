@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tzoker_generator/models/statistics.dart';
@@ -8,7 +6,7 @@ import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_stats.dart';
 
 class AllTimeStats extends StatefulWidget {
-  const AllTimeStats({Key? key}) : super(key: key);
+  const AllTimeStats({super.key});
 
   @override
   State<AllTimeStats> createState() => _AllTimeStatsState();
@@ -46,13 +44,13 @@ class _AllTimeStatsState extends State<AllTimeStats> {
                   color: Colors.black,
                   size: 45,
                 ),
-                onPressed: (() => Get.offAllNamed('/')),
+                onPressed: () => Get.offAllNamed('/'),
               )
             : null,
         flexibleSpace: MouseRegion(
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
-            onTap: (() => Get.offAllNamed('/')),
+            onTap: () => Get.offAllNamed('/'),
             child: Hero(
               tag: 'logo',
               child: Image.asset(
@@ -64,7 +62,6 @@ class _AllTimeStatsState extends State<AllTimeStats> {
         toolbarHeight: 100,
         backgroundColor: Colors.white,
         elevation: 0,
-        primary: true,
       ),
       body: isLoading
           ? Center(

@@ -12,8 +12,8 @@ import 'package:tzoker_generator/widgets/tzoker_ball.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<LandingPage> createState() => _LandingPageState();
@@ -189,7 +189,7 @@ class _LandingPageState extends State<LandingPage> {
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
-                  onTap: (() => Get.offAllNamed('/')),
+                  onTap: () => Get.offAllNamed('/'),
                   child: Hero(
                     tag: 'logo',
                     child: Image.asset(
@@ -201,7 +201,6 @@ class _LandingPageState extends State<LandingPage> {
             ),
             toolbarHeight: 100,
             backgroundColor: Colors.white,
-            primary: true,
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 25.0),
@@ -248,7 +247,6 @@ class _LandingPageState extends State<LandingPage> {
             SliverToBoxAdapter(
               child: Center(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(
@@ -344,7 +342,6 @@ class _LandingPageState extends State<LandingPage> {
             SliverToBoxAdapter(
               child: Center(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     TextButton(
                       onPressed: latestDraw == currentDraw
@@ -478,7 +475,7 @@ class _LandingPageState extends State<LandingPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
+                          DecoratedBox(
                             decoration: const BoxDecoration(
                               color: Color(0xfff8b828),
                               shape: BoxShape.circle,
@@ -488,10 +485,12 @@ class _LandingPageState extends State<LandingPage> {
                               child: GestureDetector(
                                 onTap: () {
                                   kLog.wtf(
-                                      'Tapped on tzoker ${showingDraw!.tzoker}');
+                                    'Tapped on tzoker ${showingDraw!.tzoker}',
+                                  );
 
                                   Get.toNamed(
-                                      '/numberStats?number=${showingDraw!.tzoker}');
+                                    '/numberStats?number=${showingDraw!.tzoker}',
+                                  );
                                 },
                                 child: TzokerBall(
                                   color: Tzoker.instance
@@ -591,55 +590,54 @@ class _LandingPageState extends State<LandingPage> {
                               width: 20,
                             ),
                             Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (_loadingNewDraw) ...[
-                                    Shimmer.fromColors(
-                                      baseColor: Colors.white,
-                                      highlightColor:
-                                          Colors.black.withOpacity(0.6),
-                                      child: Container(
-                                        width: 200,
-                                        height: 25,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(7),
-                                        ),
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (_loadingNewDraw) ...[
+                                  Shimmer.fromColors(
+                                    baseColor: Colors.white,
+                                    highlightColor:
+                                        Colors.black.withOpacity(0.6),
+                                    child: Container(
+                                      width: 200,
+                                      height: 25,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(7),
                                       ),
                                     ),
-                                    const SizedBox(
-                                      height: 5,
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Shimmer.fromColors(
+                                    baseColor: Colors.white,
+                                    highlightColor: const Color(0xff8d0d46)
+                                        .withOpacity(0.6),
+                                    child: Container(
+                                      width: 250,
+                                      height: 18,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(7),
+                                      ),
                                     ),
-                                    Shimmer.fromColors(
-                                      baseColor: Colors.white,
-                                      highlightColor: const Color(0xff8d0d46)
+                                  ),
+                                ] else ...[
+                                  Text(
+                                    'Appeared after ${latestResultStatistics?.numbers.firstWhere((n) => n.number == e).delays} delays',
+                                    style: kStyleDefault,
+                                  ),
+                                  Text(
+                                    'Had ${((latestResultStatistics!.numbers.firstWhere((n) => n.number == e).occurrences * 100) / (showingDraw!.drawCount - 1)).toStringAsFixed(2)}% total appearence chance',
+                                    style: kStyleDefault.copyWith(
+                                      fontSize: 16,
+                                      color: const Color(0xff8d0d46)
                                           .withOpacity(0.6),
-                                      child: Container(
-                                        width: 250,
-                                        height: 18,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(7),
-                                        ),
-                                      ),
                                     ),
-                                  ] else ...[
-                                    Text(
-                                      'Appeared after ${latestResultStatistics?.numbers.firstWhere((n) => n.number == e).delays} delays',
-                                      style: kStyleDefault,
-                                    ),
-                                    Text(
-                                      'Had ${((latestResultStatistics!.numbers.firstWhere((n) => n.number == e).occurrences * 100) / (showingDraw!.drawCount - 1)).toStringAsFixed(2)}% total appearence chance',
-                                      style: kStyleDefault.copyWith(
-                                        fontSize: 16,
-                                        color: const Color(0xff8d0d46)
-                                            .withOpacity(0.6),
-                                      ),
-                                    ),
-                                  ],
-                                ]),
+                                  ),
+                                ],
+                              ],
+                            ),
                           ],
                         ),
                       ),

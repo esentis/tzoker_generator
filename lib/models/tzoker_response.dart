@@ -94,7 +94,8 @@ class Draw {
         pricePoints: PricePoints.fromJson(json["pricePoints"]),
         winningNumbers: WinningNumbers.fromJson(json["winningNumbers"]),
         prizeCategories: List<PrizeCategory>.from(
-            json["prizeCategories"].map((x) => PrizeCategory.fromJson(x))),
+          json["prizeCategories"].map((x) => PrizeCategory.fromJson(x)),
+        ),
         wagerStatistics: WagerStatistics.fromJson(json["wagerStatistics"]),
         drawDate: DateTime.fromMillisecondsSinceEpoch(json["drawTime"]),
       );

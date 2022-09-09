@@ -11,7 +11,7 @@ import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
 
 class GenerateNumbersScreen extends StatefulWidget {
-  const GenerateNumbersScreen({Key? key}) : super(key: key);
+  const GenerateNumbersScreen({super.key});
 
   @override
   State<GenerateNumbersScreen> createState() => _StatsScreenScreenState();
@@ -55,27 +55,27 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
 
     await Tzoker.instance.updateStats(stats!.header.drawCount, stats!.toJson());
 
-    highDelayedNumbers = stats?.numbers.where(((n) => n.delays > 20));
+    highDelayedNumbers = stats?.numbers.where((n) => n.delays > 20);
 
     mediumDelayedNumbers =
-        stats?.numbers.where(((n) => (n.delays <= 20) && (n.delays > 10)));
+        stats?.numbers.where((n) => (n.delays <= 20) && (n.delays > 10));
 
     smallDelayedNumbers =
-        stats?.numbers.where(((n) => (n.delays <= 10) && (n.delays > 4)));
+        stats?.numbers.where((n) => (n.delays <= 10) && (n.delays > 4));
 
     almostNotDelayedNumbers =
-        stats?.numbers.where(((n) => (n.delays <= 4) && (n.delays > 0)));
+        stats?.numbers.where((n) => (n.delays <= 4) && (n.delays > 0));
 
-    highDelayedTzokers = stats?.bonusNumbers.where(((n) => n.delays >= 10));
+    highDelayedTzokers = stats?.bonusNumbers.where((n) => n.delays >= 10);
 
     mediumDelayedTzokers =
-        stats?.bonusNumbers.where(((n) => (n.delays <= 20) && (n.delays > 10)));
+        stats?.bonusNumbers.where((n) => (n.delays <= 20) && (n.delays > 10));
 
     smallDelayedTzokers =
-        stats?.bonusNumbers.where(((n) => (n.delays <= 10) && (n.delays > 4)));
+        stats?.bonusNumbers.where((n) => (n.delays <= 10) && (n.delays > 4));
 
     almostNotDelayedTzokers =
-        stats?.bonusNumbers.where(((n) => (n.delays <= 4) && (n.delays > 0)));
+        stats?.bonusNumbers.where((n) => (n.delays <= 4) && (n.delays > 0));
 
     setState(() {
       loading = false;
@@ -83,7 +83,7 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
   }
 
   void _generateNumbers() {
-    List<Number> numbers = [];
+    final List<Number> numbers = [];
 
     int randomHighDelay = 0;
     int randomMediumDelay = 0;
@@ -141,14 +141,14 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
                   color: Colors.black,
                   size: 45,
                 ),
-                onPressed: (() => Get.offAllNamed('/')),
+                onPressed: () => Get.offAllNamed('/'),
               )
             : null,
         backgroundColor: Colors.white,
         flexibleSpace: MouseRegion(
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
-            onTap: (() => Get.offAllNamed('/')),
+            onTap: () => Get.offAllNamed('/'),
             child: Hero(
               tag: 'logo',
               child: Image.asset(
@@ -201,7 +201,7 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
                               right: 6.0,
                               top: 12,
                             ),
-                            child: Container(
+                            child: DecoratedBox(
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Color(0xfff8b828),

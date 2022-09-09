@@ -54,12 +54,13 @@ class Tzoker {
 
     final data = jsonDecode(response.body);
 
-    List<int> winningNumbers = List<int>.generate(
-        data['last']['winningNumbers']['list'].length,
-        (index) => data['last']['winningNumbers']['list'][index]);
+    final List<int> winningNumbers = List<int>.generate(
+      data['last']['winningNumbers']['list'].length,
+      (index) => data['last']['winningNumbers']['list'][index],
+    );
 
-    int tzoker = data['last']['winningNumbers']['bonus'].first;
-    DateTime drawDate =
+    final int tzoker = data['last']['winningNumbers']['bonus'].first;
+    final DateTime drawDate =
         DateTime.fromMillisecondsSinceEpoch(data['last']['drawTime']);
 
     return DrawResult(
@@ -93,7 +94,7 @@ class Tzoker {
         .eq('drawCount', drawCount)
         .execute();
 
-    Statistics stats =
+    final Statistics stats =
         Statistics.fromJson(jsonDecode(response.data[0]['stats']));
 
     return stats;
@@ -166,12 +167,14 @@ class Tzoker {
     return Draw.fromJson(data);
   }
 
-  Future<List<DrawResult>> getDrawsOfSpecificSequence(
-      {List<int>? nums, int? tzoker}) async {
-    String normalizedNums =
+  Future<List<DrawResult>> getDrawsOfSpecificSequence({
+    List<int>? nums,
+    int? tzoker,
+  }) async {
+    final String normalizedNums =
         "{${nums?.map((e) => e)}}".replaceAll("(", '').replaceAll(')', '');
 
-    PostgrestResponse response;
+    PostgrestResponse<dynamic> response;
 
     if (tzoker != null) {
       if (nums != null) {

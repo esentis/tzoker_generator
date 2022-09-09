@@ -8,8 +8,8 @@ class TzokerBall extends StatelessWidget {
     required this.isLoading,
     this.height,
     this.width,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final int number;
   final Color color;
@@ -33,9 +33,10 @@ class TzokerBall extends StatelessWidget {
               color: Colors.black.withOpacity(0.6),
             ),
             BoxShadow(
-                blurRadius: 5,
-                offset: const Offset(0, 5),
-                color: Colors.grey.shade400)
+              blurRadius: 5,
+              offset: const Offset(0, 5),
+              color: Colors.grey.shade400,
+            )
           ],
         ),
         child: Center(

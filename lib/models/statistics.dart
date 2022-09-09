@@ -25,7 +25,8 @@ class Statistics {
         numbers:
             List<Number>.from(json["numbers"].map((x) => Number.fromJson(x))),
         bonusNumbers: List<Number>.from(
-            json["bonusNumbers"].map((x) => Number.fromJson(x))),
+          json["bonusNumbers"].map((x) => Number.fromJson(x)),
+        ),
       );
 
   Map<String, dynamic> toJson() => {

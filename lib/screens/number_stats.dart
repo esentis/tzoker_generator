@@ -25,7 +25,7 @@ class NumberDelayStat {
 }
 
 class NumberStatsScreen extends StatefulWidget {
-  const NumberStatsScreen({Key? key}) : super(key: key);
+  const NumberStatsScreen({super.key});
 
   @override
   State<NumberStatsScreen> createState() => _NumberStatsScreenState();
@@ -64,7 +64,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
     drawDelaysAsNumber = [];
     drawDelaysAsTzoker = [];
 
-    List<DrawResult> sortedDrawsAsNumber = drawsAsNumber
+    final List<DrawResult> sortedDrawsAsNumber = drawsAsNumber
       ..sort(
         (a, b) => a.drawCount.compareTo(b.drawCount),
       );
@@ -91,7 +91,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
     kLog.wtf(drawDelaysAsNumber.last.delay);
 
     if (drawsAsTzoker.isNotEmpty) {
-      List<DrawResult> sortedDrawsAsTzoker = drawsAsTzoker
+      final List<DrawResult> sortedDrawsAsTzoker = drawsAsTzoker
         ..sort(
           (a, b) => a.drawCount.compareTo(b.drawCount),
         );
@@ -135,7 +135,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
     stats = res[1] as Statistics;
 
 //  Generating stats for number when it appears as a number ----------------------------------------
-    List<int> allDrawNumbersAsNumber = [];
+    final List<int> allDrawNumbersAsNumber = [];
 
     for (final DrawResult draw in drawsAsNumberResponse) {
       allDrawNumbersAsNumber
@@ -188,7 +188,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
       drawsAsTzoker: drawsAsTzokerResponse,
     );
 
-    List<int> allDrawNumbersAsTzoker = [];
+    final List<int> allDrawNumbersAsTzoker = [];
 
     if (drawsAsTzokerResponse.isNotEmpty) {
       for (final DrawResult draw in drawsAsTzokerResponse) {
@@ -261,7 +261,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                       color: Colors.black,
                       size: 45,
                     ),
-                    onPressed: (() => Get.offAllNamed('/')),
+                    onPressed: () => Get.offAllNamed('/'),
                   )
                 : null,
             flexibleSpace: GestureDetector(
@@ -278,7 +278,6 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
             ),
             toolbarHeight: 100,
             backgroundColor: Colors.white,
-            primary: true,
           ),
           if (!loading)
             SliverToBoxAdapter(
@@ -304,7 +303,8 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                           Text(
                             stats?.bonusNumbers
                                         .firstWhere(
-                                            (n) => n.number == checkingNumber)
+                                          (n) => n.number == checkingNumber,
+                                        )
                                         .delays ==
                                     0
                                 ? 'Appeared on last draw as Tzoker'
@@ -398,8 +398,9 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                             ),
                           ),
                           ...drawDelaysAsTzoker
-                              .where((d) =>
-                                  d.delay == drawDelaysAsTzoker.last.delay)
+                              .where(
+                                (d) => d.delay == drawDelaysAsTzoker.last.delay,
+                              )
                               .map(
                                 (e) => Text(
                                   '${DateFormat("dd-MM-yyyy").format(e.from)} - ${DateFormat("dd-MM-yyyy").format(e.to)}',
@@ -496,7 +497,8 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                         Text(
                           stats?.numbers
                                       .firstWhere(
-                                          (n) => n.number == checkingNumber)
+                                        (n) => n.number == checkingNumber,
+                                      )
                                       .delays ==
                                   0
                               ? 'Appeared on last draw as number'
@@ -511,11 +513,14 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                           ),
                         ),
                         Text(
-                            'Appeared in ${drawsAsNumberResponse.length} draws'),
+                          'Appeared in ${drawsAsNumberResponse.length} draws',
+                        ),
                         Text(
-                            'Most common number found together is $mostCommonNumberAsNumber found in $mostCommonNumberCountAsNumber draws'),
+                          'Most common number found together is $mostCommonNumberAsNumber found in $mostCommonNumberCountAsNumber draws',
+                        ),
                         Text(
-                            'Least common number found together is $leastCommonNumberAsNumber found in $leastCommonNumberCountAsNumber draws'),
+                          'Least common number found together is $leastCommonNumberAsNumber found in $leastCommonNumberCountAsNumber draws',
+                        ),
                       ],
                     ),
                   ],

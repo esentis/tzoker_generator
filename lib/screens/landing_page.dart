@@ -226,6 +226,18 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(right: 25.0),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () => Get.toNamed('/search'),
+                  icon: const Icon(
+                    Icons.search,
+                    color: Colors.red,
+                    size: 45,
+                  ),
+                ),
+              ),
             ],
           ),
           if (_loading)
@@ -277,7 +289,7 @@ class _LandingPageState extends State<LandingPage> {
                       duration: nextDraw!.difference(DateTime.now()),
                       separatorType: SeparatorType.title,
                       textStyle: kStyleDefault.copyWith(
-                        color: const Color(0xff0a85c9).withOpacity(0.7),
+                        color: Colors.black.withOpacity(0.7),
                       ),
                     ),
                   ],

@@ -5,6 +5,7 @@ import 'package:tzoker_generator/screens/all_time_stats.dart';
 import 'package:tzoker_generator/screens/generate_numbers.dart';
 import 'package:tzoker_generator/screens/landing_page.dart';
 import 'package:tzoker_generator/screens/number_stats.dart';
+import 'package:tzoker_generator/screens/search.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 Future<void> main() async {
@@ -49,6 +50,11 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/numberStats',
           page: () => const NumberStatsScreen(),
+          transition: Transition.fadeIn,
+        ),
+        GetPage(
+          name: '/search',
+          page: () => const SearchScreen(),
           transition: Transition.fadeIn,
         ),
       ],

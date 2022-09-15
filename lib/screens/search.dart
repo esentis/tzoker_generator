@@ -13,8 +13,8 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  List<int> _selectedNumbers = [];
-  List<int> _selectedTzokers = [];
+  final List<int> _selectedNumbers = [];
+  final List<int> _selectedTzokers = [];
 
   List<DrawResult> foundDraws = [];
 

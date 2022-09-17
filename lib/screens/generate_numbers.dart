@@ -129,140 +129,140 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        leading: Get.currentRoute != '/'
-            ? IconButton(
-                color: Colors.black,
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
-                  size: 45,
-                ),
-                onPressed: () => Get.offAllNamed('/'),
-              )
-            : null,
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: Colors.white,
-        flexibleSpace: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: GestureDetector(
-            onTap: () => Get.offAllNamed('/'),
-            child: Hero(
-              tag: 'logo',
-              child: Image.asset(
-                'assets/tzoker_generator.png',
-              ),
-            ),
-          ),
-        ),
-        toolbarHeight: 100,
-      ),
-      body: loading
-          ? Center(
-              child: Lottie.asset(
-                'assets/tzoker.json',
-              ),
-            )
-          : ListView(
-              children: [
-                const SizedBox(
-                  height: 10,
+        body: loading
+            ? Center(
+                child: Lottie.asset(
+                  'assets/tzoker.json',
                 ),
-                if (!loading) ...[
-                  SizedBox(
-                    height: 100,
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          'Total draws ${stats?.header.drawCount}',
-                          style: kStyleDefault,
-                        ),
-                        Text(
-                          '${DateFormat("dd/MM/yyyy").format(DateTime.fromMillisecondsSinceEpoch(stats!.header.dateFrom * 1000))} - ${DateFormat("dd/MM/yyyy").format(DateTime.fromMillisecondsSinceEpoch(stats!.header.dateTo * 1000))}',
-                          style: kStyleDefault,
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-                SizedBox(
-                  height: 80,
-                  child: Center(
-                    child: Wrap(
-                      children: [
-                        if (generatedNumbers != null) ...[
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 6.0,
-                              top: 12,
-                            ),
-                            child: DecoratedBox(
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xfff8b828),
-                              ),
-                              child: TzokerBall(
-                                color: Tzoker.instance
-                                    .getColor(generatedNumbers!.tzoker.number),
-                                number: generatedNumbers!.tzoker.number,
-                                isLoading: false,
+              )
+            : CustomScrollView(
+                slivers: [
+                  if (!loading) ...[
+                    SliverAppBar(
+                      leading: Get.currentRoute != '/'
+                          ? IconButton(
+                              icon: const Icon(Icons.arrow_back),
+                              onPressed: Get.back,
+                              color: Colors.black,
+                            )
+                          : null,
+                      flexibleSpace: Center(
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            onTap: () => Get.offAllNamed('/'),
+                            child: Hero(
+                              tag: 'logo',
+                              child: Image.asset(
+                                'assets/tzoker_generator.png',
                               ),
                             ),
                           ),
-                          ...generatedNumbers!.numbers.map(
-                            (e) => Padding(
-                              padding: const EdgeInsets.only(
-                                right: 6.0,
-                                top: 12,
-                              ),
-                              child: TzokerBall(
-                                height: 60,
-                                width: 60,
-                                color: Tzoker.instance.getColor(e.number),
-                                number: e.number,
-                                isLoading: false,
-                              ),
-                            ),
-                          ),
-                        ] else
-                          SizedBox(
-                            height: 70,
-                            child: Text(
-                              'Generate numbers & tzoker based on highest delays',
-                              textAlign: TextAlign.center,
-                              style: kStyleDefault.copyWith(
-                                fontSize: 20,
-                              ),
-                            ),
-                          )
-                      ],
+                        ),
+                      ),
+                      toolbarHeight: 100,
+                      backgroundColor: Colors.white,
                     ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  height: 50,
-                  child: Center(
-                    child: TextButton(
-                      onPressed: () {
-                        _generateNumbers();
-                      },
-                      child: Text(
-                        'Generate',
-                        style: kStyleDefault,
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 100,
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Text(
+                              'Total draws ${stats?.header.drawCount}',
+                              style: kStyleDefault,
+                            ),
+                            Text(
+                              '${DateFormat("dd/MM/yyyy").format(DateTime.fromMillisecondsSinceEpoch(stats!.header.dateFrom * 1000))} - ${DateFormat("dd/MM/yyyy").format(DateTime.fromMillisecondsSinceEpoch(stats!.header.dateTo * 1000))}',
+                              style: kStyleDefault,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 80,
+                      child: Center(
+                        child: Wrap(
+                          children: [
+                            if (generatedNumbers != null) ...[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  right: 6.0,
+                                  top: 12,
+                                ),
+                                child: DecoratedBox(
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color(0xfff8b828),
+                                  ),
+                                  child: TzokerBall(
+                                    color: Tzoker.instance.getColor(
+                                      generatedNumbers!.tzoker.number,
+                                    ),
+                                    number: generatedNumbers!.tzoker.number,
+                                    isLoading: false,
+                                  ),
+                                ),
+                              ),
+                              ...generatedNumbers!.numbers.map(
+                                (e) => Padding(
+                                  padding: const EdgeInsets.only(
+                                    right: 6.0,
+                                    top: 12,
+                                  ),
+                                  child: TzokerBall(
+                                    height: 60,
+                                    width: 60,
+                                    color: Tzoker.instance.getColor(e.number),
+                                    number: e.number,
+                                    isLoading: false,
+                                  ),
+                                ),
+                              ),
+                            ] else
+                              SizedBox(
+                                height: 70,
+                                child: Text(
+                                  'Generate numbers & tzoker based on highest delays',
+                                  textAlign: TextAlign.center,
+                                  style: kStyleDefault.copyWith(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              )
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 50,
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () {
+                            _generateNumbers();
+                          },
+                          child: Text(
+                            'Generate',
+                            style: kStyleDefault,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+      ),
     );
   }
 }

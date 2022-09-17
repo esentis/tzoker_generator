@@ -246,294 +246,367 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-          ),
-          SliverAppBar(
-            leading: Get.currentRoute != '/'
-                ? IconButton(
-                    color: Colors.black,
-                    icon: const Icon(
-                      Icons.arrow_back,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              leading: Get.currentRoute != '/'
+                  ? IconButton(
                       color: Colors.black,
-                      size: 45,
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.black,
+                        size: 45,
+                      ),
+                      onPressed: () => Get.offAllNamed('/'),
+                    )
+                  : null,
+              flexibleSpace: GestureDetector(
+                onTap: () => Get.offAllNamed('/'),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Hero(
+                    tag: 'logo',
+                    child: Image.asset(
+                      'assets/tzoker_generator.png',
                     ),
-                    onPressed: () => Get.offAllNamed('/'),
-                  )
-                : null,
-            flexibleSpace: GestureDetector(
-              onTap: () => Get.offAllNamed('/'),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: Hero(
-                  tag: 'logo',
-                  child: Image.asset(
-                    'assets/tzoker_generator.png',
                   ),
                 ),
               ),
+              toolbarHeight: 100,
+              backgroundColor: Colors.white,
             ),
-            toolbarHeight: 100,
-            backgroundColor: Colors.white,
-          ),
-          if (!loading)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 25.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TzokerBall(
-                      color: Tzoker.instance.getColor(checkingNumber),
-                      height: 100,
-                      width: 100,
-                      number: checkingNumber,
-                      isLoading: false,
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (checkingNumber <= 20)
-                          Text(
-                            stats?.bonusNumbers
-                                        .firstWhere(
-                                          (n) => n.number == checkingNumber,
-                                        )
-                                        .delays ==
-                                    0
-                                ? 'Appeared on last draw as Tzoker'
-                                : 'As a Tzoker has ${stats?.bonusNumbers.firstWhere((n) => n.number == checkingNumber).delays} delays',
-                            style: kStyleDefault,
-                          ),
-                        if (checkingNumber <= 20)
-                          Text(
-                            'Total appearence percentage ${((stats!.bonusNumbers.firstWhere((n) => n.number == checkingNumber).occurrences * 100) / (stats!.header.drawCount - 1)).toStringAsFixed(2)}% ',
-                            style: kStyleDefault.copyWith(
-                              fontSize: 16,
-                              color: const Color(0xff8d0d46).withOpacity(0.6),
-                            ),
-                          ),
-                        if (checkingNumber <= 20) ...[
-                          RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                const TextSpan(
-                                  text: 'Appeared in ',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: '${drawsAsTzokerResponse.length}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                const TextSpan(
-                                  text: ' draws out of total ',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: '${stats!.header.drawCount}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                const TextSpan(
-                                  text: 'Total consecutive draws ',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text:
-                                      '${drawDelaysAsTzoker.where((d) => d.delay == 1).length}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                const TextSpan(
-                                  text: 'Longest delay was for ',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: '${drawDelaysAsTzoker.last.delay}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                const TextSpan(
-                                  text: ' draws',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ...drawDelaysAsTzoker
-                              .where(
-                                (d) => d.delay == drawDelaysAsTzoker.last.delay,
-                              )
-                              .map(
-                                (e) => Text(
-                                  '${DateFormat("dd-MM-yyyy").format(e.from)} - ${DateFormat("dd-MM-yyyy").format(e.to)}',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey[600],
-                                  ),
+            if (!loading)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 25.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TzokerBall(
+                        color: Tzoker.instance.getColor(checkingNumber),
+                        height: 100,
+                        width: 100,
+                        number: checkingNumber,
+                        isLoading: false,
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (checkingNumber <= 20)
+                              Text(
+                                stats?.bonusNumbers
+                                            .firstWhere(
+                                              (n) => n.number == checkingNumber,
+                                            )
+                                            .delays ==
+                                        0
+                                    ? 'Appeared on last draw as Tzoker'
+                                    : 'As a Tzoker has ${stats?.bonusNumbers.firstWhere((n) => n.number == checkingNumber).delays} delays',
+                                style: kStyleDefault,
+                              ),
+                            if (checkingNumber <= 20)
+                              Text(
+                                'Total appearence percentage ${((stats!.bonusNumbers.firstWhere((n) => n.number == checkingNumber).occurrences * 100) / (stats!.header.drawCount - 1)).toStringAsFixed(2)}% ',
+                                style: kStyleDefault.copyWith(
+                                  fontSize: 16,
+                                  color: Colors.red,
                                 ),
                               ),
-                          RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                const TextSpan(
-                                  text: 'Most common number found together is ',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
+                            if (checkingNumber <= 20) ...[
+                              // Total appearances
+                              RichText(
+                                text: TextSpan(
+                                  children: <TextSpan>[
+                                    const TextSpan(
+                                      text: 'Appeared in ',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '${drawsAsTzokerResponse.length}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    const TextSpan(
+                                      text: ' draws out of total ',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '${stats!.header.drawCount}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      ),
+                                    )
+                                  ],
                                 ),
-                                TextSpan(
-                                  text: '$mostCommonNumberAsTzoker',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              const SizedBox(
+                                width: 350,
+                                child: Divider(
+                                  color: Colors.red,
                                 ),
-                                const TextSpan(
-                                  text: ' found in ',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              // Total consecutive draws
+                              RichText(
+                                text: TextSpan(
+                                  children: <TextSpan>[
+                                    const TextSpan(
+                                      text: 'Total consecutive draws ',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text:
+                                          '${drawDelaysAsTzoker.where((d) => d.delay == 1).length}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                TextSpan(
-                                  text: '$mostCommonNumberCountAsTzoker',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
+                              ),
+
+                              ...drawDelaysAsTzoker
+                                  .where((d) => d.delay == 1)
+                                  .map(
+                                    (e) => Text(
+                                      '${DateFormat("dd-MM-yyyy").format(e.from)} - ${DateFormat("dd-MM-yyyy").format(e.to)}',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
                                   ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              const SizedBox(
+                                width: 350,
+                                child: Divider(
+                                  color: Colors.red,
                                 ),
-                                const TextSpan(
-                                  text: ' draws',
-                                  style: TextStyle(
-                                    fontSize: 18,
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              // Longest delay
+                              RichText(
+                                text: TextSpan(
+                                  children: <TextSpan>[
+                                    const TextSpan(
+                                      text: 'Longest delay was for ',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '${drawDelaysAsTzoker.last.delay}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    const TextSpan(
+                                      text: ' draws',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              ...drawDelaysAsTzoker
+                                  .where(
+                                    (d) =>
+                                        d.delay ==
+                                        drawDelaysAsTzoker.last.delay,
+                                  )
+                                  .map(
+                                    (e) => Text(
+                                      '${DateFormat("dd-MM-yyyy").format(e.from)} - ${DateFormat("dd-MM-yyyy").format(e.to)}',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
                                   ),
+
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              const SizedBox(
+                                width: 350,
+                                child: Divider(
+                                  color: Colors.red,
                                 ),
-                              ],
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  children: <TextSpan>[
+                                    const TextSpan(
+                                      text:
+                                          'Most common number found together is ',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '$mostCommonNumberAsTzoker',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    const TextSpan(
+                                      text: ' found in ',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '$mostCommonNumberCountAsTzoker',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    const TextSpan(
+                                      text: ' draws',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 4.0),
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  children: <TextSpan>[
+                                    const TextSpan(
+                                      text:
+                                          'Least common number found together is ',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '$leastCommonNumberAsTzoker',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    const TextSpan(
+                                      text: ' found in ',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '$leastCommonNumberCountAsTzoker',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    const TextSpan(
+                                      text: ' draws',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                            Text(
+                              stats?.numbers
+                                          .firstWhere(
+                                            (n) => n.number == checkingNumber,
+                                          )
+                                          .delays ==
+                                      0
+                                  ? 'Appeared on last draw as number'
+                                  : 'As a Number has ${stats?.numbers.firstWhere((n) => n.number == checkingNumber).delays} delays',
+                              style: kStyleDefault,
                             ),
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                const TextSpan(
-                                  text:
-                                      'Least common number found together is ',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: '$leastCommonNumberAsTzoker',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                const TextSpan(
-                                  text: ' found in ',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: '$leastCommonNumberCountAsTzoker',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                const TextSpan(
-                                  text: ' draws',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              'Total appearence percentage ${((stats!.numbers.firstWhere((n) => n.number == checkingNumber).occurrences * 100) / (stats!.header.drawCount - 1)).toStringAsFixed(2)}% ',
+                              style: kStyleDefault.copyWith(
+                                fontSize: 16,
+                                color: const Color(0xff8d0d46).withOpacity(0.6),
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 350,
-                            child: Divider(
-                              color: Color(0xfff8b828),
+                            Text(
+                              'Appeared in ${drawsAsNumberResponse.length} draws',
                             ),
-                          ),
-                        ],
-                        Text(
-                          stats?.numbers
-                                      .firstWhere(
-                                        (n) => n.number == checkingNumber,
-                                      )
-                                      .delays ==
-                                  0
-                              ? 'Appeared on last draw as number'
-                              : 'As a Number has ${stats?.numbers.firstWhere((n) => n.number == checkingNumber).delays} delays',
-                          style: kStyleDefault,
+                            Text(
+                              'Most common number found together is $mostCommonNumberAsNumber found in $mostCommonNumberCountAsNumber draws',
+                            ),
+                            Text(
+                              'Least common number found together is $leastCommonNumberAsNumber found in $leastCommonNumberCountAsNumber draws',
+                            ),
+                          ],
                         ),
-                        Text(
-                          'Total appearence percentage ${((stats!.numbers.firstWhere((n) => n.number == checkingNumber).occurrences * 100) / (stats!.header.drawCount - 1)).toStringAsFixed(2)}% ',
-                          style: kStyleDefault.copyWith(
-                            fontSize: 16,
-                            color: const Color(0xff8d0d46).withOpacity(0.6),
-                          ),
-                        ),
-                        Text(
-                          'Appeared in ${drawsAsNumberResponse.length} draws',
-                        ),
-                        Text(
-                          'Most common number found together is $mostCommonNumberAsNumber found in $mostCommonNumberCountAsNumber draws',
-                        ),
-                        Text(
-                          'Least common number found together is $leastCommonNumberAsNumber found in $leastCommonNumberCountAsNumber draws',
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            )
-          else
-            SliverFillRemaining(
-              child: Lottie.asset(
-                'assets/tzoker.json',
-              ),
-            )
-        ],
+              )
+            else
+              SliverFillRemaining(
+                child: Lottie.asset(
+                  'assets/tzoker.json',
+                ),
+              )
+          ],
+        ),
       ),
     );
   }

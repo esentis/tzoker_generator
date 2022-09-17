@@ -30,11 +30,11 @@ class _SearchScreenState extends State<SearchScreen> {
       tzoker: _selectedTzokers.isNotEmpty ? _selectedTzokers.first : null,
     );
     foundDraws = res;
-    if (foundDraws.isNotEmpty) {
-      res.forEach((d) => kLog.wtf(d.toJson()));
-    } else {
-      kLog.w('No drawas found with the specific numbers');
-    }
+    // if (foundDraws.isNotEmpty) {
+    //   res.forEach((d) => kLog.wtf(d.toJson()));
+    // } else {
+    //   kLog.w('No drawas found with the specific numbers');
+    // }
 
     setState(() {
       isLoading = false;

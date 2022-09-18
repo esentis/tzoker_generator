@@ -205,37 +205,45 @@ class _LandingPageState extends State<LandingPage> {
               //pinned: true,
               floating: true,
               backgroundColor: Colors.white,
-              flexibleSpace: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              flexibleSpace: Center(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TextButton(
-                      onPressed: () => Get.toNamed('/generate'),
-                      style: TextButton.styleFrom(
-                        backgroundColor: const Color(0xfff8b828),
-                        textStyle: kStyleDefault,
-                        elevation: 6,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: TextButton(
+                        onPressed: () => Get.toNamed('/generate'),
+                        style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xfff8b828),
+                          textStyle: kStyleDefault,
+                          elevation: 6,
+                        ),
+                        child: const Text('Generate'),
                       ),
-                      child: const Text('Generate'),
                     ),
-                    TextButton(
-                      onPressed: () => Get.toNamed('/stats'),
-                      style: TextButton.styleFrom(
-                        backgroundColor: const Color(0xfff8b828),
-                        textStyle: kStyleDefault,
-                        elevation: 6,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: TextButton(
+                        onPressed: () => Get.toNamed('/stats'),
+                        style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xfff8b828),
+                          textStyle: kStyleDefault,
+                          elevation: 6,
+                        ),
+                        child: const Text('Stats'),
                       ),
-                      child: const Text('Stats'),
                     ),
-                    TextButton(
-                      onPressed: () => Get.toNamed('/search'),
-                      style: TextButton.styleFrom(
-                        backgroundColor: const Color(0xfff8b828),
-                        textStyle: kStyleDefault,
-                        elevation: 6,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: TextButton(
+                        onPressed: () => Get.toNamed('/search'),
+                        style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xfff8b828),
+                          textStyle: kStyleDefault,
+                          elevation: 6,
+                        ),
+                        child: const Text('Search'),
                       ),
-                      child: const Text('Search'),
                     )
                   ],
                 ),

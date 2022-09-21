@@ -37,7 +37,7 @@ dependencies:
   intl: ^0.17.0
   lottie: ^1.4.1
   http: ^0.13.5
-  slide_countdown: ^0.2.12
+  slide_countdown: ^0.3.4
   get: ^4.6.5
   supabase_flutter: ^0.3.3
   shimmer: ^2.0.0

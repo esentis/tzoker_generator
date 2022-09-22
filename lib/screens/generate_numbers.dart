@@ -91,29 +91,42 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
     int randomNoDelay = 0;
 
     while (numbers.length < 5) {
-      randomHighDelay = Random().nextInt(highDelayedNumbers!.length);
+      kLog.wtf(highDelayedNumbers!.length);
+
+      if (highDelayedNumbers?.isNotEmpty ?? false) {
+        randomHighDelay = Random().nextInt(highDelayedNumbers!.length);
+      }
+
       randomMediumDelay = Random().nextInt(mediumDelayedNumbers!.length);
       randomSmallDelay = Random().nextInt(smallDelayedNumbers!.length);
       randomNoDelay = Random().nextInt(almostNotDelayedNumbers!.length);
 
+//
       if (!numbers.contains(almostNotDelayedNumbers!.toList()[randomNoDelay])) {
         numbers.add(almostNotDelayedNumbers!.toList()[randomNoDelay]);
         if (numbers.length == 5) break;
       }
-      if (!numbers.contains(highDelayedNumbers!.toList()[randomHighDelay])) {
-        numbers.add(highDelayedNumbers!.toList()[randomHighDelay]);
-        if (numbers.length == 5) break;
+
+      if (highDelayedNumbers?.isNotEmpty ?? false) {
+        if (!numbers.contains(highDelayedNumbers!.toList()[randomHighDelay])) {
+          numbers.add(highDelayedNumbers!.toList()[randomHighDelay]);
+          if (numbers.length == 5) break;
+        }
       }
 
-      if (!numbers
-          .contains(mediumDelayedNumbers!.toList()[randomMediumDelay])) {
-        numbers.add(mediumDelayedNumbers!.toList()[randomMediumDelay]);
-        if (numbers.length == 5) break;
+      if (mediumDelayedNumbers?.isNotEmpty ?? false) {
+        if (!numbers
+            .contains(mediumDelayedNumbers!.toList()[randomMediumDelay])) {
+          numbers.add(mediumDelayedNumbers!.toList()[randomMediumDelay]);
+          if (numbers.length == 5) break;
+        }
       }
-
-      if (!numbers.contains(smallDelayedNumbers!.toList()[randomSmallDelay])) {
-        numbers.add(smallDelayedNumbers!.toList()[randomSmallDelay]);
-        if (numbers.length == 5) break;
+      if (smallDelayedNumbers?.isNotEmpty ?? false) {
+        if (!numbers
+            .contains(smallDelayedNumbers!.toList()[randomSmallDelay])) {
+          numbers.add(smallDelayedNumbers!.toList()[randomSmallDelay]);
+          if (numbers.length == 5) break;
+        }
       }
     }
 

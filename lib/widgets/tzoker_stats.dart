@@ -268,24 +268,13 @@ class _TzokerStatsState extends State<TzokerStats> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-              (context, i) => DecoratedBox(
-                decoration: BoxDecoration(border: Border.all()),
-                child: ListTile(
-                  tileColor: Tzoker.instance
-                      .getColorOccurence(widget.numbers[i].delays),
-                  leading: TzokerBall(
-                    color: Tzoker.instance.getColor(i + 1),
-                    number: widget.numbers[i].number,
-                    isLoading: false,
-                  ),
-                  title: Text(
-                    'Delays ${widget.numbers[i].delays}',
-                    style: kStyleDefault,
-                  ),
-                  subtitle: Text(
-                    'Occurences ${widget.numbers[i].occurrences}\nPercentage ${((widget.numbers[i].occurrences * 100) / widget.drawCount).toStringAsFixed(2)}%',
-                    style: kStyleDefault,
-                  ),
+              (context, i) => Container(
+                color:
+                    Tzoker.instance.getColorOccurence(widget.numbers[i].delays),
+                child: TzokerBall(
+                  color: Tzoker.instance.getColor(i + 1),
+                  number: widget.numbers[i].number,
+                  isLoading: false,
                 ),
               ),
               childCount: widget.numbers.length,
@@ -296,3 +285,11 @@ class _TzokerStatsState extends State<TzokerStats> {
     );
   }
 }
+                  // title: Text(
+                  //   'Delays ${widget.numbers[i].delays}',
+                  //   style: kStyleDefault,
+                  // ),
+                  // subtitle: Text(
+                  //   'Occurences ${widget.numbers[i].occurrences}\nPercentage ${((widget.numbers[i].occurrences * 100) / widget.drawCount).toStringAsFixed(2)}%',
+                  //   style: kStyleDefault,
+                  // ),

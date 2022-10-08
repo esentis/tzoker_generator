@@ -159,6 +159,7 @@ class Tzoker {
     kLog.wtf(response.data);
   }
 
+  /// Returns a [Draw] provided a [drawId]. This call searchs OPAP webservices.
   Future<Draw> getDraw(int drawId) async {
     final response =
         await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/$drawId'));
@@ -167,6 +168,7 @@ class Tzoker {
     return Draw.fromJson(data);
   }
 
+  /// Searchs for draws provided [nums] and/or [tzoker]. Returns a [List] of [Draw].
   Future<List<DrawResult>> getDrawsOfSpecificSequence({
     List<int>? nums,
     int? tzoker,

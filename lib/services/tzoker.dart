@@ -38,6 +38,7 @@ class Tzoker {
     return data.first['prizeCategories'][0]['minimumDistributed'];
   }
 
+  /// Returns the [DateTime] of the upcoming draw.
   Future<DateTime> getUpcomingDrawDate() async {
     final response =
         await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/upcoming/1'));
@@ -233,6 +234,7 @@ class Tzoker {
     return true;
   }
 
+  /// Saves a [DrawResult] after first checking if it already exists.
   Future<void> saveDraw(DrawResult draw) async {
     if (await checkIfDrawExist(draw.drawCount)) {
       kLog.w('Draw ${draw.drawCount} is already saved');
@@ -248,6 +250,7 @@ class Tzoker {
     }
   }
 
+  /// Returns the color associated with the number.
   Color getColor(int num) {
     if (num >= 1 && num <= 10) {
       return const Color(0xff344ed6);
@@ -267,6 +270,7 @@ class Tzoker {
     return Colors.red;
   }
 
+  /// Returns the color to indicate how long is the delay for a number.
   Color getColorOccurence(int delays) {
     if (delays >= 0 && delays <= 2) {
       return const Color(0xff5FD068);

@@ -30,8 +30,7 @@ class Tzoker {
 
   /// Returns the current minimum amount distributed for 5 + 1.
   Future<double> getJackpot() async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/last/1'));
+    final response = await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/last/1'));
 
     final List<dynamic> data = jsonDecode(response.body);
 
@@ -40,8 +39,7 @@ class Tzoker {
 
   /// Returns the [DateTime] of the upcoming draw.
   Future<DateTime> getUpcomingDrawDate() async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/upcoming/1'));
+    final response = await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/upcoming/1'));
 
     final List<dynamic> data = jsonDecode(response.body);
 
@@ -50,8 +48,7 @@ class Tzoker {
 
   /// Returns the latest draw result.
   Future<DrawResult> getLastResult() async {
-    final response = await http
-        .get(Uri.parse('$baseUrl/draws/v3.0/5104/last-result-and-active'));
+    final response = await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/last-result-and-active'));
 
     final data = jsonDecode(response.body);
 
@@ -61,8 +58,7 @@ class Tzoker {
     );
 
     final int tzoker = data['last']['winningNumbers']['bonus'].first;
-    final DateTime drawDate =
-        DateTime.fromMillisecondsSinceEpoch(data['last']['drawTime']);
+    final DateTime drawDate = DateTime.fromMillisecondsSinceEpoch(data['last']['drawTime']);
 
     return DrawResult(
       date: drawDate,
@@ -75,8 +71,7 @@ class Tzoker {
 
   /// Returns the stats from the OPAP services.
   Future<Statistics> getStatistics() async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/games/v1.0/5104/statistics'));
+    final response = await http.get(Uri.parse('$baseUrl/games/v1.0/5104/statistics'));
     final Map<String, dynamic> data = jsonDecode(response.body);
     final stats = Statistics.fromJson(data);
 
@@ -90,13 +85,18 @@ class Tzoker {
     kLog.wtf('Looking stats for $drawCount');
 
     response = await Supabase.instance.client
-        .from('StatHistory')
+        .from(
+          'StatHistory',
+        )
         .select()
         .eq('drawCount', drawCount)
         .execute();
 
-    final Statistics stats =
-        Statistics.fromJson(jsonDecode(response.data[0]['stats']));
+    final Statistics stats = Statistics.fromJson(
+      jsonDecode(
+        response.data[0]['stats'],
+      ),
+    );
 
     return stats;
   }
@@ -122,11 +122,7 @@ class Tzoker {
   Future<bool> checkIfStatsExist(int drawCount) async {
     PostgrestResponse<dynamic> response;
 
-    response = await Supabase.instance.client
-        .from('StatHistory')
-        .select()
-        .eq('drawCount', drawCount)
-        .execute();
+    response = await Supabase.instance.client.from('StatHistory').select().eq('drawCount', drawCount).execute();
 
     if (response.data == null || response.data.isEmpty) {
       return false;
@@ -154,16 +150,14 @@ class Tzoker {
   Future<void> getAllStatsHistory() async {
     PostgrestResponse<dynamic> response;
 
-    response =
-        await Supabase.instance.client.from('StatHistory').select().execute();
+    response = await Supabase.instance.client.from('StatHistory').select().execute();
 
     kLog.wtf(response.data);
   }
 
   /// Returns a [Draw] provided a [drawId]. This call searchs OPAP webservices.
   Future<Draw> getDraw(int drawId) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/$drawId'));
+    final response = await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/$drawId'));
     final Map<String, dynamic> data = jsonDecode(response.body);
 
     return Draw.fromJson(data);
@@ -174,33 +168,19 @@ class Tzoker {
     List<int>? nums,
     int? tzoker,
   }) async {
-    final String normalizedNums =
-        "{${nums?.map((e) => e)}}".replaceAll("(", '').replaceAll(')', '');
+    final String normalizedNums = "{${nums?.map((e) => e)}}".replaceAll("(", '').replaceAll(')', '');
 
     PostgrestResponse<dynamic> response;
 
     if (tzoker != null) {
       if (nums != null) {
-        response = await Supabase.instance.client
-            .from('Draws')
-            .select()
-            .contains('numbers', normalizedNums)
-            .eq('tzoker', '$tzoker')
-            .execute();
+        response = await Supabase.instance.client.from('Draws').select().contains('numbers', normalizedNums).eq('tzoker', '$tzoker').execute();
       } else {
-        response = await Supabase.instance.client
-            .from('Draws')
-            .select()
-            .eq('tzoker', '$tzoker')
-            .execute();
+        response = await Supabase.instance.client.from('Draws').select().eq('tzoker', '$tzoker').execute();
       }
     } else {
       if (nums != null) {
-        response = await Supabase.instance.client
-            .from('Draws')
-            .select()
-            .contains('numbers', normalizedNums)
-            .execute();
+        response = await Supabase.instance.client.from('Draws').select().contains('numbers', normalizedNums).execute();
       } else {
         response = const PostgrestResponse(data: []);
       }
@@ -222,11 +202,7 @@ class Tzoker {
   Future<bool> checkIfDrawExist(int id) async {
     PostgrestResponse<dynamic> response;
 
-    response = await Supabase.instance.client
-        .from('Draws')
-        .select()
-        .eq('id', id)
-        .execute();
+    response = await Supabase.instance.client.from('Draws').select().eq('id', id).execute();
 
     if (response.data == null || response.data.isEmpty) {
       return false;

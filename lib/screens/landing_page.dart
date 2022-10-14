@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:slide_countdown/slide_countdown.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tzoker_generator/constants.dart';
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/statistics.dart';
@@ -84,7 +85,7 @@ class _LandingPageState extends State<LandingPage> {
     final res = await Tzoker.instance.getJackpot();
 
     //Tzoker.instance.getStats();
-    updateDatabase();
+    // updateDatabase();
     // await Tzoker.instance.getSpecificStat();
 
     showingDraw = await Tzoker.instance.getLastResult();
@@ -94,8 +95,7 @@ class _LandingPageState extends State<LandingPage> {
 
     await Tzoker.instance.saveDraw(showingDraw!);
 
-    latestResultStatistics = await Tzoker.instance
-        .getStatsForDrawCount((showingDraw?.drawCount ?? 0) - 1);
+    latestResultStatistics = await Tzoker.instance.getStatsForDrawCount((showingDraw?.drawCount ?? 0) - 1);
 
     nextDraw = await Tzoker.instance.getUpcomingDrawDate();
 
@@ -106,60 +106,51 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   Future<void> updateDatabase() async {
-    // final response = await Tzoker.instance.getDrawsOfSpecificSequence(
-    //   [2, 24],
-    // );
+    // Get the latest saved stats from Database
+    final tempStats = await Tzoker.instance.getStatsForDrawCount(2502).then((value) => value.toJson());
+    const int startingDraw = 2503;
+    const int latestDraw = 2504;
 
-    // if (response.isNotEmpty) {
-    //   response.forEach((d) {
-    //     kLog.wtf(d.toJson());
-    //   });
-    // }
+    // We iterate the range of draws we want the stats saved.
+    for (int i = startingDraw; i <= latestDraw; i++) {
+      final draw = await Tzoker.instance.getDraw(i);
 
-    // tempStats = await Tzoker.instance
-    //     .getStatsForDrawCount(2043)
-    //     .then((value) => value.toJson());
+      final res = await Supabase.instance.client.from('Draws').insert({
+        'id': draw.drawId,
+        'drawDate': draw.drawDate.toIso8601String(),
+        'tzoker': draw.winningNumbers.tzoker.first,
+        'numbers': draw.winningNumbers.numbers,
+      }).execute();
 
-    // for (int i = 3; i <= 2486; i++) {
-    // final draw = await Tzoker.instance.getDraw(i);
+      if (res.error != null) {
+        kLog.e(res.error);
+      } else {
+        kLog.i('Draw $i added in the database.');
+      }
+      for (final Map<String, dynamic> stat in tempStats['numbers']) {
+        if (draw.winningNumbers.numbers.contains(stat['number'])) {
+          stat['occurrences']++;
+          stat['delays'] = 0;
+        } else {
+          stat['delays']++;
+        }
+      }
 
-    // final res = await Supabase.instance.client.from('Draws').insert({
-    //   'id': draw.drawId,
-    //   'drawDate': draw.drawDate.toIso8601String(),
-    //   'tzoker': draw.winningNumbers.tzoker.first,
-    //   'numbers': draw.winningNumbers.numbers,
-    // }).execute();
+      for (final Map<String, dynamic> stat in tempStats['bonusNumbers']) {
+        if (draw.winningNumbers.tzoker.contains(stat['number'])) {
+          stat['occurrences']++;
+          stat['delays'] = 0;
+        } else {
+          stat['delays']++;
+        }
+      }
 
-    //   if (res.error != null) {
-    //     kLog.e(res.error);
-    //   } else {
-    //     kLog.i('Draw $i added in the database.');
-    //   }
-    // for (Map<String, dynamic> stat in tempStats['numbers']) {
-    //   if (draw.winningNumbers.numbers.contains(stat['number'])) {
-    //     stat['occurrences']++;
-    //     stat['delays'] = 0;
-    //   } else {
-    //     stat['delays']++;
-    //   }
-    // }
+      tempStats['header']['dateTo'] = draw.drawDate.millisecondsSinceEpoch / 1000;
 
-    // for (Map<String, dynamic> stat in tempStats['bonusNumbers']) {
-    //   if (draw.winningNumbers.tzoker.contains(stat['number'])) {
-    //     stat['occurrences']++;
-    //     stat['delays'] = 0;
-    //   } else {
-    //     stat['delays']++;
-    //   }
-    // }
+      tempStats['header']['drawCount'] = i;
 
-    // tempStats['header']['dateTo'] =
-    //     draw.drawDate.millisecondsSinceEpoch / 1000;
-
-    // tempStats['header']['drawCount'] = i;
-
-    // await Tzoker.instance.updateStats(i, tempStats);
-    // }
+      await Tzoker.instance.updateStats(i, tempStats);
+    }
   }
 
   @override
@@ -373,27 +364,21 @@ class _LandingPageState extends State<LandingPage> {
                                   currentDraw = latestDraw;
                                 });
 
-                                final draw =
-                                    await Tzoker.instance.getDraw(currentDraw);
+                                final draw = await Tzoker.instance.getDraw(currentDraw);
 
                                 showingDraw = DrawResult.fromDraw(draw);
 
-                                latestResultStatistics = await Tzoker.instance
-                                    .getStatsForDrawCount(currentDraw - 1);
+                                latestResultStatistics = await Tzoker.instance.getStatsForDrawCount(currentDraw - 1);
 
                                 setState(() {
                                   _loadingNewDraw = false;
                                 });
                               },
                         child: Text(
-                          latestDraw == currentDraw
-                              ? 'Latest draw'
-                              : 'Go to the latest draw',
+                          latestDraw == currentDraw ? 'Latest draw' : 'Go to the latest draw',
                           style: kStyleDefault.copyWith(
                             fontSize: 20,
-                            color: latestDraw != currentDraw
-                                ? Colors.blue
-                                : Colors.grey[400],
+                            color: latestDraw != currentDraw ? Colors.blue : Colors.grey[400],
                           ),
                         ),
                       ),
@@ -409,13 +394,11 @@ class _LandingPageState extends State<LandingPage> {
                                   _loadingNewDraw = true;
                                 });
                                 currentDraw--;
-                                final draw =
-                                    await Tzoker.instance.getDraw(currentDraw);
+                                final draw = await Tzoker.instance.getDraw(currentDraw);
 
                                 showingDraw = DrawResult.fromDraw(draw);
 
-                                latestResultStatistics = await Tzoker.instance
-                                    .getStatsForDrawCount(currentDraw - 1);
+                                latestResultStatistics = await Tzoker.instance.getStatsForDrawCount(currentDraw - 1);
 
                                 setState(() {
                                   _loadingNewDraw = false;
@@ -423,9 +406,7 @@ class _LandingPageState extends State<LandingPage> {
                               },
                               icon: Icon(
                                 Icons.arrow_back,
-                                color: currentDraw == 1
-                                    ? Colors.grey
-                                    : Colors.blue,
+                                color: currentDraw == 1 ? Colors.grey : Colors.blue,
                                 size: 45,
                               ),
                             ),
@@ -445,14 +426,11 @@ class _LandingPageState extends State<LandingPage> {
                                         _loadingNewDraw = true;
                                       });
                                       currentDraw++;
-                                      final draw = await Tzoker.instance
-                                          .getDraw(currentDraw);
+                                      final draw = await Tzoker.instance.getDraw(currentDraw);
 
                                       showingDraw = DrawResult.fromDraw(draw);
 
-                                      latestResultStatistics = await Tzoker
-                                          .instance
-                                          .getStatsForDrawCount(
+                                      latestResultStatistics = await Tzoker.instance.getStatsForDrawCount(
                                         currentDraw - 1,
                                       );
 
@@ -463,17 +441,14 @@ class _LandingPageState extends State<LandingPage> {
                               icon: Icon(
                                 Icons.arrow_forward,
                                 size: 45,
-                                color: currentDraw == latestDraw
-                                    ? Colors.grey
-                                    : Colors.blue,
+                                color: currentDraw == latestDraw ? Colors.grey : Colors.blue,
                               ),
                             ),
                           ],
                         ),
                       ),
                       Text(
-                        DateFormat("dd MMMM yyyy, HH:ss")
-                            .format(showingDraw!.date),
+                        DateFormat("dd MMMM yyyy, HH:ss").format(showingDraw!.date),
                         style: kStyleDefault.copyWith(
                           fontSize: 18,
                           color: const Color(0xff3b6250).withOpacity(0.6),
@@ -517,8 +492,7 @@ class _LandingPageState extends State<LandingPage> {
                                     );
                                   },
                                   child: TzokerBall(
-                                    color: Tzoker.instance
-                                        .getColor(showingDraw!.tzoker),
+                                    color: Tzoker.instance.getColor(showingDraw!.tzoker),
                                     height: 50,
                                     width: 50,
                                     number: showingDraw!.tzoker,
@@ -537,8 +511,7 @@ class _LandingPageState extends State<LandingPage> {
                                 if (_loadingNewDraw) ...[
                                   Shimmer.fromColors(
                                     baseColor: Colors.white,
-                                    highlightColor:
-                                        Colors.black.withOpacity(0.6),
+                                    highlightColor: Colors.black.withOpacity(0.6),
                                     child: Container(
                                       width: 200,
                                       height: 25,
@@ -553,8 +526,7 @@ class _LandingPageState extends State<LandingPage> {
                                   ),
                                   Shimmer.fromColors(
                                     baseColor: Colors.white,
-                                    highlightColor: const Color(0xff8d0d46)
-                                        .withOpacity(0.6),
+                                    highlightColor: const Color(0xff8d0d46).withOpacity(0.6),
                                     child: Container(
                                       width: 250,
                                       height: 18,
@@ -573,8 +545,7 @@ class _LandingPageState extends State<LandingPage> {
                                     'Had ${((latestResultStatistics!.bonusNumbers.firstWhere((n) => n.number == showingDraw!.tzoker).occurrences * 100) / (showingDraw!.drawCount - 1)).toStringAsFixed(2)}% total appearence chance',
                                     style: kStyleDefault.copyWith(
                                       fontSize: 16,
-                                      color: const Color(0xff8d0d46)
-                                          .withOpacity(0.6),
+                                      color: const Color(0xff8d0d46).withOpacity(0.6),
                                     ),
                                   ),
                                 ],
@@ -600,8 +571,7 @@ class _LandingPageState extends State<LandingPage> {
                               MouseRegion(
                                 cursor: SystemMouseCursors.click,
                                 child: GestureDetector(
-                                  onTap: () =>
-                                      Get.toNamed('/numberStats?number=$e'),
+                                  onTap: () => Get.toNamed('/numberStats?number=$e'),
                                   child: TzokerBall(
                                     color: Tzoker.instance.getColor(e),
                                     height: 50,
@@ -620,15 +590,13 @@ class _LandingPageState extends State<LandingPage> {
                                   if (_loadingNewDraw) ...[
                                     Shimmer.fromColors(
                                       baseColor: Colors.white,
-                                      highlightColor:
-                                          Colors.black.withOpacity(0.6),
+                                      highlightColor: Colors.black.withOpacity(0.6),
                                       child: Container(
                                         width: 200,
                                         height: 25,
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(7),
+                                          borderRadius: BorderRadius.circular(7),
                                         ),
                                       ),
                                     ),
@@ -637,15 +605,13 @@ class _LandingPageState extends State<LandingPage> {
                                     ),
                                     Shimmer.fromColors(
                                       baseColor: Colors.white,
-                                      highlightColor: const Color(0xff8d0d46)
-                                          .withOpacity(0.6),
+                                      highlightColor: const Color(0xff8d0d46).withOpacity(0.6),
                                       child: Container(
                                         width: 250,
                                         height: 18,
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(7),
+                                          borderRadius: BorderRadius.circular(7),
                                         ),
                                       ),
                                     ),
@@ -658,8 +624,7 @@ class _LandingPageState extends State<LandingPage> {
                                       'Had ${((latestResultStatistics!.numbers.firstWhere((n) => n.number == e).occurrences * 100) / (showingDraw!.drawCount - 1)).toStringAsFixed(2)}% total appearence chance',
                                       style: kStyleDefault.copyWith(
                                         fontSize: 16,
-                                        color: const Color(0xff8d0d46)
-                                            .withOpacity(0.6),
+                                        color: const Color(0xff8d0d46).withOpacity(0.6),
                                       ),
                                     ),
                                   ],

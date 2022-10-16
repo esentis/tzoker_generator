@@ -226,6 +226,55 @@ class Tzoker {
     }
   }
 
+  /// Updates Supabase database with missing draws, also updates the stats history of each draw.
+  ///
+  /// Provide [start] and [end] (both included) draw id (draw count).
+  Future<void> updateDatabase({required int start, required int end}) async {
+    // Get the latest saved stats from Database
+    final tempStats = await getStatsForDrawCount(start - 1).then((value) => value.toJson());
+
+    // We iterate the range of draws we want the stats saved.
+    for (int i = start; i <= end; i++) {
+      final draw = await getDraw(i);
+
+      final res = await Supabase.instance.client.from('Draws').insert({
+        'id': draw.drawId,
+        'drawDate': draw.drawDate.toIso8601String(),
+        'tzoker': draw.winningNumbers.tzoker.first,
+        'numbers': draw.winningNumbers.numbers,
+      }).execute();
+
+      if (res.error != null) {
+        kLog.e(res.error);
+      } else {
+        kLog.i('Draw $i added in the database.');
+      }
+      for (final Map<String, dynamic> stat in tempStats['numbers']) {
+        if (draw.winningNumbers.numbers.contains(stat['number'])) {
+          stat['occurrences']++;
+          stat['delays'] = 0;
+        } else {
+          stat['delays']++;
+        }
+      }
+
+      for (final Map<String, dynamic> stat in tempStats['bonusNumbers']) {
+        if (draw.winningNumbers.tzoker.contains(stat['number'])) {
+          stat['occurrences']++;
+          stat['delays'] = 0;
+        } else {
+          stat['delays']++;
+        }
+      }
+
+      tempStats['header']['dateTo'] = draw.drawDate.millisecondsSinceEpoch / 1000;
+
+      tempStats['header']['drawCount'] = i;
+
+      await updateStats(i, tempStats);
+    }
+  }
+
   /// Returns the color associated with the number.
   Color getColor(int num) {
     if (num >= 1 && num <= 10) {

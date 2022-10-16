@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:slide_countdown/slide_countdown.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tzoker_generator/constants.dart';
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/statistics.dart';
@@ -103,54 +102,6 @@ class _LandingPageState extends State<LandingPage> {
     setState(() {
       _loading = false;
     });
-  }
-
-  Future<void> updateDatabase() async {
-    // Get the latest saved stats from Database
-    final tempStats = await Tzoker.instance.getStatsForDrawCount(2502).then((value) => value.toJson());
-    const int startingDraw = 2503;
-    const int latestDraw = 2504;
-
-    // We iterate the range of draws we want the stats saved.
-    for (int i = startingDraw; i <= latestDraw; i++) {
-      final draw = await Tzoker.instance.getDraw(i);
-
-      final res = await Supabase.instance.client.from('Draws').insert({
-        'id': draw.drawId,
-        'drawDate': draw.drawDate.toIso8601String(),
-        'tzoker': draw.winningNumbers.tzoker.first,
-        'numbers': draw.winningNumbers.numbers,
-      }).execute();
-
-      if (res.error != null) {
-        kLog.e(res.error);
-      } else {
-        kLog.i('Draw $i added in the database.');
-      }
-      for (final Map<String, dynamic> stat in tempStats['numbers']) {
-        if (draw.winningNumbers.numbers.contains(stat['number'])) {
-          stat['occurrences']++;
-          stat['delays'] = 0;
-        } else {
-          stat['delays']++;
-        }
-      }
-
-      for (final Map<String, dynamic> stat in tempStats['bonusNumbers']) {
-        if (draw.winningNumbers.tzoker.contains(stat['number'])) {
-          stat['occurrences']++;
-          stat['delays'] = 0;
-        } else {
-          stat['delays']++;
-        }
-      }
-
-      tempStats['header']['dateTo'] = draw.drawDate.millisecondsSinceEpoch / 1000;
-
-      tempStats['header']['drawCount'] = i;
-
-      await Tzoker.instance.updateStats(i, tempStats);
-    }
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tzoker_generator/constants.dart';
+import 'package:tzoker_generator/helpers/assets.dart';
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
@@ -76,8 +77,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
           to: sortedDrawsAsNumber[i + 1].date,
           fromDrawCount: sortedDrawsAsNumber[i].drawCount,
           toDrawCount: sortedDrawsAsNumber[i + 1].drawCount,
-          delay: sortedDrawsAsNumber[i + 1].drawCount -
-              sortedDrawsAsNumber[i].drawCount,
+          delay: sortedDrawsAsNumber[i + 1].drawCount - sortedDrawsAsNumber[i].drawCount,
         ),
       );
     }
@@ -103,8 +103,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
             to: sortedDrawsAsTzoker[i + 1].date,
             fromDrawCount: sortedDrawsAsTzoker[i].drawCount,
             toDrawCount: sortedDrawsAsTzoker[i + 1].drawCount,
-            delay: sortedDrawsAsTzoker[i + 1].drawCount -
-                sortedDrawsAsTzoker[i].drawCount,
+            delay: sortedDrawsAsTzoker[i + 1].drawCount - sortedDrawsAsTzoker[i].drawCount,
           ),
         );
       }
@@ -126,8 +125,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
     final res = await Future.wait([
       Tzoker.instance.getDrawsOfSpecificSequence(nums: [checkingNumber]),
       Tzoker.instance.getStatistics(),
-      if (checkingNumber <= 20)
-        Tzoker.instance.getDrawsOfSpecificSequence(tzoker: checkingNumber),
+      if (checkingNumber <= 20) Tzoker.instance.getDrawsOfSpecificSequence(tzoker: checkingNumber),
     ]);
 
     drawsAsNumberResponse = res[0] as List<DrawResult>;
@@ -138,16 +136,14 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
     final List<int> allDrawNumbersAsNumber = [];
 
     for (final DrawResult draw in drawsAsNumberResponse) {
-      allDrawNumbersAsNumber
-          .addAll(draw.winningNumbers.where((n) => n != checkingNumber));
+      allDrawNumbersAsNumber.addAll(draw.winningNumbers.where((n) => n != checkingNumber));
     }
 
     for (final int num in allDrawNumbersAsNumber) {
       if (allNumberOccurencesAsNumber[num] == null) {
         allNumberOccurencesAsNumber[num] = 1;
       } else {
-        allNumberOccurencesAsNumber[num] =
-            allNumberOccurencesAsNumber[num]! + 1;
+        allNumberOccurencesAsNumber[num] = allNumberOccurencesAsNumber[num]! + 1;
       }
     }
     // Biggest occurence
@@ -169,15 +165,9 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
       }
       return leastCommonNumberCountAsNumber;
     });
-    mostCommonNumberAsNumber = allNumberOccurencesAsNumber
-        .whereValue((v) => v == mostCommonNumberCountAsNumber)
-        .keys
-        .first;
+    mostCommonNumberAsNumber = allNumberOccurencesAsNumber.whereValue((v) => v == mostCommonNumberCountAsNumber).keys.first;
 
-    leastCommonNumberAsNumber = allNumberOccurencesAsNumber
-        .whereValue((v) => v == leastCommonNumberCountAsNumber)
-        .keys
-        .first;
+    leastCommonNumberAsNumber = allNumberOccurencesAsNumber.whereValue((v) => v == leastCommonNumberCountAsNumber).keys.first;
 // -------------------------------------------------------------------------------------------------
     if (checkingNumber <= 20) {
       drawsAsTzokerResponse = res[2] as List<DrawResult>;
@@ -199,8 +189,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
         if (allNumberOccurencesAsTzoker[num] == null) {
           allNumberOccurencesAsTzoker[num] = 1;
         } else {
-          allNumberOccurencesAsTzoker[num] =
-              allNumberOccurencesAsTzoker[num]! + 1;
+          allNumberOccurencesAsTzoker[num] = allNumberOccurencesAsTzoker[num]! + 1;
         }
       }
       // Biggest occurence
@@ -222,15 +211,9 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
         }
         return leastCommonNumberCountAsTzoker;
       });
-      mostCommonNumberAsTzoker = allNumberOccurencesAsTzoker
-          .whereValue((v) => v == mostCommonNumberCountAsTzoker)
-          .keys
-          .first;
+      mostCommonNumberAsTzoker = allNumberOccurencesAsTzoker.whereValue((v) => v == mostCommonNumberCountAsTzoker).keys.first;
 
-      leastCommonNumberAsTzoker = allNumberOccurencesAsTzoker
-          .whereValue((v) => v == leastCommonNumberCountAsTzoker)
-          .keys
-          .first;
+      leastCommonNumberAsTzoker = allNumberOccurencesAsTzoker.whereValue((v) => v == leastCommonNumberCountAsTzoker).keys.first;
     }
     setState(() {
       loading = false;
@@ -270,7 +253,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                   child: Hero(
                     tag: 'logo',
                     child: Image.asset(
-                      'assets/tzoker_generator.png',
+                      Assets.logo,
                     ),
                   ),
                 ),
@@ -381,8 +364,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                                       ),
                                     ),
                                     TextSpan(
-                                      text:
-                                          '${drawDelaysAsTzoker.where((d) => d.delay == 1).length}',
+                                      text: '${drawDelaysAsTzoker.where((d) => d.delay == 1).length}',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
@@ -393,9 +375,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                                 ),
                               ),
 
-                              ...drawDelaysAsTzoker
-                                  .where((d) => d.delay == 1)
-                                  .map(
+                              ...drawDelaysAsTzoker.where((d) => d.delay == 1).map(
                                     (e) => Text(
                                       '${DateFormat("dd-MM-yyyy").format(e.from)} - ${DateFormat("dd-MM-yyyy").format(e.to)}',
                                       style: TextStyle(
@@ -447,9 +427,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                               ),
                               ...drawDelaysAsTzoker
                                   .where(
-                                    (d) =>
-                                        d.delay ==
-                                        drawDelaysAsTzoker.last.delay,
+                                    (d) => d.delay == drawDelaysAsTzoker.last.delay,
                                   )
                                   .map(
                                     (e) => Text(
@@ -477,8 +455,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                                 text: TextSpan(
                                   children: <TextSpan>[
                                     const TextSpan(
-                                      text:
-                                          'Most common number found together is ',
+                                      text: 'Most common number found together is ',
                                       style: TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -524,8 +501,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                                 text: TextSpan(
                                   children: <TextSpan>[
                                     const TextSpan(
-                                      text:
-                                          'Least common number found together is ',
+                                      text: 'Least common number found together is ',
                                       style: TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -602,7 +578,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
             else
               SliverFillRemaining(
                 child: Lottie.asset(
-                  'assets/tzoker.json',
+                  Assets.loading,
                 ),
               )
           ],

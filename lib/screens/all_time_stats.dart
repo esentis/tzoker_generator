@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:tzoker_generator/helpers/assets.dart';
 import 'package:tzoker_generator/models/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_stats.dart';
@@ -54,7 +55,7 @@ class _AllTimeStatsState extends State<AllTimeStats> {
             child: Hero(
               tag: 'logo',
               child: Image.asset(
-                'assets/tzoker_generator.png',
+                Assets.logo,
               ),
             ),
           ),
@@ -66,7 +67,7 @@ class _AllTimeStatsState extends State<AllTimeStats> {
       body: isLoading
           ? Center(
               child: Lottie.asset(
-                'assets/tzoker.json',
+                Assets.loading,
               ),
             )
           : SizedBox(

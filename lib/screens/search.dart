@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:tzoker_generator/constants.dart';
+import 'package:tzoker_generator/helpers/assets.dart';
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
@@ -93,7 +94,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: Hero(
                     tag: 'logo',
                     child: Image.asset(
-                      'assets/tzoker_generator.png',
+                      Assets.logo,
                     ),
                   ),
                 ),
@@ -140,9 +141,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 },
                                 child: DecoratedBox(
                                   decoration: BoxDecoration(
-                                    color: _selectedNumbers.contains(index + 1)
-                                        ? Colors.red
-                                        : null,
+                                    color: _selectedNumbers.contains(index + 1) ? Colors.red : null,
                                     shape: BoxShape.circle,
                                   ),
                                   child: TzokerBall(
@@ -194,9 +193,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 },
                                 child: DecoratedBox(
                                   decoration: BoxDecoration(
-                                    color: _selectedTzokers.contains(index + 1)
-                                        ? Colors.red
-                                        : null,
+                                    color: _selectedTzokers.contains(index + 1) ? Colors.red : null,
                                     shape: BoxShape.circle,
                                   ),
                                   child: TzokerBall(
@@ -223,8 +220,7 @@ class _SearchScreenState extends State<SearchScreen> {
               (context, index) {
                 foundDraws[index].winningNumbers.sort();
                 return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       border: Border.all(
@@ -244,10 +240,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               decoration: BoxDecoration(
                                 color: const Color(0xfff8b828),
                                 shape: BoxShape.circle,
-                                border: _selectedTzokers
-                                        .contains(foundDraws[index].tzoker)
-                                    ? Border.all(color: Colors.red, width: 5)
-                                    : null,
+                                border: _selectedTzokers.contains(foundDraws[index].tzoker) ? Border.all(color: Colors.red, width: 5) : null,
                               ),
                               child: Center(
                                 child: Text(
@@ -300,16 +293,12 @@ class _SearchScreenState extends State<SearchScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  DateFormat("dd/MM/yyyy")
-                                      .format(foundDraws[index].date),
+                                  DateFormat("dd/MM/yyyy").format(foundDraws[index].date),
                                   style: kStyleDefault,
                                 ),
                                 Text(
                                   formatDifference(
-                                    foundDraws[index]
-                                        .date
-                                        .difference(foundDraws[index - 1].date)
-                                        .inDays,
+                                    foundDraws[index].date.difference(foundDraws[index - 1].date).inDays,
                                   ),
                                   style: kStyleDefault.copyWith(
                                     fontSize: 16,
@@ -320,8 +309,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             )
                           : Center(
                               child: Text(
-                                DateFormat("dd/MM/yyyy")
-                                    .format(foundDraws[index].date),
+                                DateFormat("dd/MM/yyyy").format(foundDraws[index].date),
                                 style: kStyleDefault,
                               ),
                             ),

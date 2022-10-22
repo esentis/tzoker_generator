@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 import 'package:tzoker_generator/constants.dart';
+import 'package:tzoker_generator/helpers/assets.dart';
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
@@ -133,7 +134,7 @@ class _LandingPageState extends State<LandingPage> {
                     child: Hero(
                       tag: 'logo',
                       child: Image.asset(
-                        'assets/tzoker_generator.png',
+                        Assets.logo,
                       ),
                     ),
                   ),
@@ -196,7 +197,7 @@ class _LandingPageState extends State<LandingPage> {
                 child: Column(
                   children: [
                     Lottie.asset(
-                      'assets/tzoker.json',
+                      Assets.loading,
                     ),
                     if (loadingPercentage != 0)
                       Text(

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tzoker_generator/constants.dart';
+import 'package:tzoker_generator/helpers/assets.dart';
 import 'package:tzoker_generator/models/generated_numbers.dart';
 import 'package:tzoker_generator/models/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
@@ -57,25 +58,19 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
 
     highDelayedNumbers = stats?.numbers.where((n) => n.delays > 20);
 
-    mediumDelayedNumbers =
-        stats?.numbers.where((n) => (n.delays <= 20) && (n.delays > 10));
+    mediumDelayedNumbers = stats?.numbers.where((n) => (n.delays <= 20) && (n.delays > 10));
 
-    smallDelayedNumbers =
-        stats?.numbers.where((n) => (n.delays <= 10) && (n.delays > 4));
+    smallDelayedNumbers = stats?.numbers.where((n) => (n.delays <= 10) && (n.delays > 4));
 
-    almostNotDelayedNumbers =
-        stats?.numbers.where((n) => (n.delays <= 4) && (n.delays > 0));
+    almostNotDelayedNumbers = stats?.numbers.where((n) => (n.delays <= 4) && (n.delays > 0));
 
     highDelayedTzokers = stats?.bonusNumbers.where((n) => n.delays >= 10);
 
-    mediumDelayedTzokers =
-        stats?.bonusNumbers.where((n) => (n.delays <= 20) && (n.delays > 10));
+    mediumDelayedTzokers = stats?.bonusNumbers.where((n) => (n.delays <= 20) && (n.delays > 10));
 
-    smallDelayedTzokers =
-        stats?.bonusNumbers.where((n) => (n.delays <= 10) && (n.delays > 4));
+    smallDelayedTzokers = stats?.bonusNumbers.where((n) => (n.delays <= 10) && (n.delays > 4));
 
-    almostNotDelayedTzokers =
-        stats?.bonusNumbers.where((n) => (n.delays <= 4) && (n.delays > 0));
+    almostNotDelayedTzokers = stats?.bonusNumbers.where((n) => (n.delays <= 4) && (n.delays > 0));
 
     setState(() {
       loading = false;
@@ -115,15 +110,13 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
       }
 
       if (mediumDelayedNumbers?.isNotEmpty ?? false) {
-        if (!numbers
-            .contains(mediumDelayedNumbers!.toList()[randomMediumDelay])) {
+        if (!numbers.contains(mediumDelayedNumbers!.toList()[randomMediumDelay])) {
           numbers.add(mediumDelayedNumbers!.toList()[randomMediumDelay]);
           if (numbers.length == 5) break;
         }
       }
       if (smallDelayedNumbers?.isNotEmpty ?? false) {
-        if (!numbers
-            .contains(smallDelayedNumbers!.toList()[randomSmallDelay])) {
+        if (!numbers.contains(smallDelayedNumbers!.toList()[randomSmallDelay])) {
           numbers.add(smallDelayedNumbers!.toList()[randomSmallDelay]);
           if (numbers.length == 5) break;
         }
@@ -132,8 +125,7 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
 
     generatedNumbers = GeneratedNumbers(
       numbers: numbers,
-      tzoker: highDelayedTzokers!
-          .toList()[Random().nextInt(highDelayedTzokers!.length)],
+      tzoker: highDelayedTzokers!.toList()[Random().nextInt(highDelayedTzokers!.length)],
     );
 
     kLog.wtf(generatedNumbers?.toJson());
@@ -148,7 +140,7 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
         body: loading
             ? Center(
                 child: Lottie.asset(
-                  'assets/tzoker.json',
+                  Assets.loading,
                 ),
               )
             : CustomScrollView(
@@ -170,7 +162,7 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
                             child: Hero(
                               tag: 'logo',
                               child: Image.asset(
-                                'assets/tzoker_generator.png',
+                                Assets.logo,
                               ),
                             ),
                           ),

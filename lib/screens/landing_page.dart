@@ -108,7 +108,7 @@ class _LandingPageState extends State<LandingPage> {
   @override
   void initState() {
     super.initState();
-
+    // Tzoker.instance.updateDatabase(start: 2509, end: 2509);
     _prepareLandingPage();
   }
 

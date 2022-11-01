@@ -13,6 +13,10 @@ String baseUrl = 'https://api.opap.gr';
 class Tzoker {
   Tzoker._private();
   static final Tzoker instance = Tzoker._private();
+  final supabase = SupabaseClient(
+    'https://qvliopsxcffejpcxxmfb.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2bGlvcHN4Y2ZmZWpwY3h4bWZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjAzMjk3MzksImV4cCI6MTk3NTkwNTczOX0.OshaOvSwzZ2Fgtj9kAqL_COmgTfBlnGHmV43EAyDja4',
+  );
 
   /// Returns the draws in a range of dates.
   ///
@@ -80,21 +84,20 @@ class Tzoker {
 
   /// Returns the stats for a specific draw.
   Future<Statistics> getStatsForDrawCount(int drawCount) async {
-    PostgrestResponse<dynamic> response;
+    dynamic response;
 
     kLog.wtf('Looking stats for $drawCount');
 
-    response = await Supabase.instance.client
+    response = await supabase
         .from(
           'StatHistory',
         )
         .select()
-        .eq('drawCount', drawCount)
-        .execute();
-
+        .eq('drawCount', drawCount);
+    kLog.wtf(response);
     final Statistics stats = Statistics.fromJson(
       jsonDecode(
-        response.data[0]['stats'],
+        response[0]['stats'],
       ),
     );
 
@@ -120,11 +123,11 @@ class Tzoker {
 
   /// Checks whether the stats are already saved in the database.
   Future<bool> checkIfStatsExist(int drawCount) async {
-    PostgrestResponse<dynamic> response;
+    dynamic response;
 
-    response = await Supabase.instance.client.from('StatHistory').select().eq('drawCount', drawCount).execute();
+    response = await supabase.from('StatHistory').select().eq('drawCount', drawCount);
 
-    if (response.data == null || response.data.isEmpty) {
+    if (response == null || response.isEmpty) {
       return false;
     }
     return true;
@@ -137,10 +140,10 @@ class Tzoker {
     if (exists) {
       kLog.w('The current stats are already saved.');
     } else {
-      await Supabase.instance.client.from('StatHistory').insert({
+      await supabase.from('StatHistory').insert({
         'stats': jsonEncode(json),
         'drawCount': drawCount,
-      }).execute();
+      });
 
       kLog.i('Stats for latest draw has been saved.');
     }
@@ -148,11 +151,11 @@ class Tzoker {
 
   /// Returns all stats from the database.
   Future<void> getAllStatsHistory() async {
-    PostgrestResponse<dynamic> response;
+    dynamic response;
 
-    response = await Supabase.instance.client.from('StatHistory').select().execute();
+    response = await supabase.from('StatHistory').select();
 
-    kLog.wtf(response.data);
+    kLog.wtf(response);
   }
 
   /// Returns a [Draw] provided a [drawId]. This call searchs OPAP webservices.
@@ -170,27 +173,27 @@ class Tzoker {
   }) async {
     final String normalizedNums = "{${nums?.map((e) => e)}}".replaceAll("(", '').replaceAll(')', '');
 
-    PostgrestResponse<dynamic> response;
+    dynamic response;
 
     if (tzoker != null) {
       if (nums != null) {
-        response = await Supabase.instance.client.from('Draws').select().contains('numbers', normalizedNums).eq('tzoker', '$tzoker').execute();
+        response = await supabase.from('Draws').select().contains('numbers', normalizedNums).eq('tzoker', '$tzoker');
       } else {
-        response = await Supabase.instance.client.from('Draws').select().eq('tzoker', '$tzoker').execute();
+        response = await supabase.from('Draws').select().eq('tzoker', '$tzoker');
       }
     } else {
       if (nums != null) {
-        response = await Supabase.instance.client.from('Draws').select().contains('numbers', normalizedNums).execute();
+        response = await supabase.from('Draws').select().contains('numbers', normalizedNums);
       } else {
-        response = const PostgrestResponse(data: []);
+        response = const PostgrestResponse(data: [], status: 404);
       }
     }
-
-    if (response.data.isNotEmpty) {
+    kLog.wtf(response);
+    if (response.isNotEmpty) {
       return List<DrawResult>.generate(
-        response.data.length,
+        response.length,
         (index) => DrawResult.fromJson(
-          response.data[index],
+          response[index],
         ),
       );
     } else {
@@ -200,11 +203,12 @@ class Tzoker {
 
   /// Checks whether the stats are already saved in the database.
   Future<bool> checkIfDrawExist(int id) async {
-    PostgrestResponse<dynamic> response;
+    dynamic response;
 
-    response = await Supabase.instance.client.from('Draws').select().eq('id', id).execute();
+    response = await supabase.from('Draws').select().eq('id', id);
+    kLog.wtf(response);
 
-    if (response.data == null || response.data.isEmpty) {
+    if (response == null || response.isEmpty) {
       return false;
     }
     return true;
@@ -215,12 +219,12 @@ class Tzoker {
     if (await checkIfDrawExist(draw.drawCount)) {
       kLog.w('Draw ${draw.drawCount} is already saved');
     } else {
-      await Supabase.instance.client.from('Draws').insert({
+      await supabase.from('Draws').insert({
         'id': draw.drawCount,
         'drawDate': draw.date.toIso8601String(),
         'tzoker': draw.tzoker,
         'numbers': draw.winningNumbers,
-      }).execute();
+      });
 
       kLog.i('Draw ${draw.drawCount} successfully saved');
     }
@@ -237,12 +241,12 @@ class Tzoker {
     for (int i = start; i <= end; i++) {
       final draw = await getDraw(i);
 
-      final res = await Supabase.instance.client.from('Draws').insert({
+      final res = await supabase.from('Draws').insert({
         'id': draw.drawId,
         'drawDate': draw.drawDate.toIso8601String(),
         'tzoker': draw.winningNumbers.tzoker.first,
         'numbers': draw.winningNumbers.numbers,
-      }).execute();
+      });
 
       if (res.error != null) {
         kLog.e(res.error);

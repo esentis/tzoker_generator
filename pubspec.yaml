@@ -39,7 +39,7 @@ dependencies:
   http: ^0.13.5
   slide_countdown: ^0.3.4
   get: ^4.6.5
-  supabase_flutter: ^0.3.3
+  supabase_flutter: ^1.0.1
   shimmer: ^2.0.0
   url_strategy: ^0.2.0
   lint: ^1.10.0

@@ -35,7 +35,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   logger: ^1.1.0
   intl: ^0.17.0
-  lottie: ^1.4.1
+  lottie: ^2.0.0
   http: ^0.13.5
   slide_countdown: ^0.3.4
   get: ^4.6.5

@@ -84,10 +84,6 @@ class _LandingPageState extends State<LandingPage> {
     kLog.i('Preparing landing page');
     final res = await Tzoker.instance.getJackpot();
 
-    //Tzoker.instance.getStats();
-    // updateDatabase();
-    // await Tzoker.instance.getSpecificStat();
-
     showingDraw = await Tzoker.instance.getLastResult();
 
     currentDraw = showingDraw!.drawCount;
@@ -108,7 +104,7 @@ class _LandingPageState extends State<LandingPage> {
   @override
   void initState() {
     super.initState();
-    // Tzoker.instance.updateDatabase(start: 2509, end: 2509);
+    // Tzoker.instance.updateDatabase(start: 2513, end: 2519);
     _prepareLandingPage();
   }
 

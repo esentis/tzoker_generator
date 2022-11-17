@@ -94,7 +94,7 @@ class Tzoker {
         )
         .select()
         .eq('drawCount', drawCount);
-    kLog.wtf(response);
+
     final Statistics stats = Statistics.fromJson(
       jsonDecode(
         response[0]['stats'],
@@ -206,7 +206,6 @@ class Tzoker {
     dynamic response;
 
     response = await supabase.from('Draws').select().eq('id', id);
-    kLog.wtf(response);
 
     if (response == null || response.isEmpty) {
       return false;
@@ -215,18 +214,23 @@ class Tzoker {
   }
 
   /// Saves a [DrawResult] after first checking if it already exists.
-  Future<void> saveDraw(DrawResult draw) async {
+  Future<dynamic> saveDraw(DrawResult draw) async {
     if (await checkIfDrawExist(draw.drawCount)) {
       kLog.w('Draw ${draw.drawCount} is already saved');
     } else {
-      await supabase.from('Draws').insert({
+      kLog.wtf('Saving draw ${draw.drawCount}');
+      final res = await supabase.from('Draws').insert({
         'id': draw.drawCount,
         'drawDate': draw.date.toIso8601String(),
         'tzoker': draw.tzoker,
         'numbers': draw.winningNumbers,
       });
-
-      kLog.i('Draw ${draw.drawCount} successfully saved');
+      if (res.error != null) {
+        kLog.e(res.error);
+      } else {
+        kLog.i('Draw ${draw.drawCount} added in the database.');
+      }
+      return res;
     }
   }
 
@@ -241,18 +245,8 @@ class Tzoker {
     for (int i = start; i <= end; i++) {
       final draw = await getDraw(i);
 
-      final res = await supabase.from('Draws').insert({
-        'id': draw.drawId,
-        'drawDate': draw.drawDate.toIso8601String(),
-        'tzoker': draw.winningNumbers.tzoker.first,
-        'numbers': draw.winningNumbers.numbers,
-      });
+      await saveDraw(DrawResult.fromDraw(draw));
 
-      if (res.error != null) {
-        kLog.e(res.error);
-      } else {
-        kLog.i('Draw $i added in the database.');
-      }
       for (final Map<String, dynamic> stat in tempStats['numbers']) {
         if (draw.winningNumbers.numbers.contains(stat['number'])) {
           stat['occurrences']++;

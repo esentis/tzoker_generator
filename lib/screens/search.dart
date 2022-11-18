@@ -141,7 +141,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                 },
                                 child: DecoratedBox(
                                   decoration: BoxDecoration(
-                                    color: _selectedNumbers.contains(index + 1) ? Colors.red : null,
+                                    color: _selectedNumbers.contains(index + 1)
+                                        ? Colors.red
+                                        : null,
                                     shape: BoxShape.circle,
                                   ),
                                   child: TzokerBall(
@@ -193,7 +195,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                 },
                                 child: DecoratedBox(
                                   decoration: BoxDecoration(
-                                    color: _selectedTzokers.contains(index + 1) ? Colors.red : null,
+                                    color: _selectedTzokers.contains(index + 1)
+                                        ? Colors.red
+                                        : null,
                                     shape: BoxShape.circle,
                                   ),
                                   child: TzokerBall(
@@ -220,7 +224,8 @@ class _SearchScreenState extends State<SearchScreen> {
               (context, index) {
                 foundDraws[index].winningNumbers.sort();
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       border: Border.all(
@@ -229,76 +234,87 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                     child: ListTile(
                       contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Container(
-                              height: 45,
-                              width: 45,
-                              decoration: BoxDecoration(
-                                color: const Color(0xfff8b828),
-                                shape: BoxShape.circle,
-                                border: _selectedTzokers.contains(foundDraws[index].tzoker) ? Border.all(color: Colors.red, width: 5) : null,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '${foundDraws[index].tzoker}',
-                                  style: kStyleDefault.copyWith(
-                                    fontSize: 20,
-                                    color: const Color(0xff2c345b),
+                      title: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xfff8b828),
+                                  shape: BoxShape.circle,
+                                  border: _selectedTzokers
+                                          .contains(foundDraws[index].tzoker)
+                                      ? Border.all(color: Colors.red, width: 5)
+                                      : null,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${foundDraws[index].tzoker}',
+                                    style: kStyleDefault.copyWith(
+                                      fontSize: 20,
+                                      color: const Color(0xff2c345b),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          Wrap(
-                            children: foundDraws[index]
-                                .winningNumbers
-                                .map(
-                                  (e) => Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: Container(
-                                      height: 45,
-                                      width: 45,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xff2c345b),
-                                        shape: BoxShape.circle,
-                                        border: _selectedNumbers.contains(e)
-                                            ? Border.all(
-                                                color: Colors.red,
-                                                width: 5,
-                                              )
-                                            : null,
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          '$e',
-                                          style: kStyleDefault.copyWith(
-                                            fontSize: 20,
-                                            color: const Color(0xffc0e051),
+                            Wrap(
+                              children: foundDraws[index]
+                                  .winningNumbers
+                                  .map(
+                                    (e) => Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
+                                      child: Container(
+                                        height: 45,
+                                        width: 45,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xff2c345b),
+                                          shape: BoxShape.circle,
+                                          border: _selectedNumbers.contains(e)
+                                              ? Border.all(
+                                                  color: Colors.red,
+                                                  width: 5,
+                                                )
+                                              : null,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            '$e',
+                                            style: kStyleDefault.copyWith(
+                                              fontSize: 20,
+                                              color: const Color(0xffc0e051),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                )
-                                .toList(),
-                          ),
-                        ],
+                                  )
+                                  .toList(),
+                            ),
+                          ],
+                        ),
                       ),
                       subtitle: index != 0
                           ? Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  DateFormat("dd/MM/yyyy").format(foundDraws[index].date),
+                                  DateFormat("dd/MM/yyyy")
+                                      .format(foundDraws[index].date),
                                   style: kStyleDefault,
                                 ),
                                 Text(
                                   formatDifference(
-                                    foundDraws[index].date.difference(foundDraws[index - 1].date).inDays,
+                                    foundDraws[index]
+                                        .date
+                                        .difference(foundDraws[index - 1].date)
+                                        .inDays,
                                   ),
                                   style: kStyleDefault.copyWith(
                                     fontSize: 16,
@@ -309,7 +325,8 @@ class _SearchScreenState extends State<SearchScreen> {
                             )
                           : Center(
                               child: Text(
-                                DateFormat("dd/MM/yyyy").format(foundDraws[index].date),
+                                DateFormat("dd/MM/yyyy")
+                                    .format(foundDraws[index].date),
                                 style: kStyleDefault,
                               ),
                             ),

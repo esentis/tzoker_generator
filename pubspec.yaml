@@ -43,6 +43,7 @@ dependencies:
   shimmer: ^2.0.0
   url_strategy: ^0.2.0
   lint: ^1.10.0
+  package_info_plus: ^3.0.2
 
 dev_dependencies:
   flutter_test:
@@ -74,9 +75,11 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Anton
+    - family: JosefinSans
       fonts:
-        - asset: fonts/Anton-Regular.ttf
+        - asset: fonts/JosefinSans-Regular.ttf
+        - asset: fonts/JosefinSans-Italic.ttf
+          style: italic
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

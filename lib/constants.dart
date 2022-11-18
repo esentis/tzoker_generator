@@ -14,4 +14,7 @@ extension DetailedWhere<K, V> on Map<K, V> {
       {...where((key, value) => f(value))};
 }
 
-TextStyle kStyleDefault = const TextStyle(fontFamily: 'Anton', fontSize: 20);
+TextStyle kStyleDefault =
+    const TextStyle(fontFamily: 'JosefinSans', fontSize: 20);
+
+Color kColorOrange = const Color(0xfff8b828);

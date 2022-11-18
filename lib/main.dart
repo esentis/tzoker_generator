@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:tzoker_generator/helpers/utils.dart';
 import 'package:tzoker_generator/screens/all_time_stats.dart';
 import 'package:tzoker_generator/screens/generate_numbers.dart';
 import 'package:tzoker_generator/screens/landing_page.dart';
@@ -10,14 +12,9 @@ import 'package:url_strategy/url_strategy.dart';
 
 Future<void> main() async {
   setPathUrlStrategy();
-  // await Supabase.initialize(
-  //   url: 'https://qvliopsxcffejpcxxmfb.supabase.co',
-  //   anonKey:
-  //       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2bGlvcHN4Y2ZmZWpwY3h4bWZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjAzMjk3MzksImV4cCI6MTk3NTkwNTczOX0.OshaOvSwzZ2Fgtj9kAqL_COmgTfBlnGHmV43EAyDja4',
-  //   // authCallbackUrlHostname: 'login-callback', // optional
-  //   debug: true // optional
-  //   ,
-  // );
+  final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+  Utils.version = packageInfo.version;
 
   runApp(const MyApp());
 }

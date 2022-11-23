@@ -7,6 +7,7 @@ import 'package:tzoker_generator/helpers/assets.dart';
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
+import 'package:tzoker_generator/widgets/stats_divider.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
 
 class NumberDelayStat {
@@ -77,7 +78,8 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
           to: sortedDrawsAsNumber[i + 1].date,
           fromDrawCount: sortedDrawsAsNumber[i].drawCount,
           toDrawCount: sortedDrawsAsNumber[i + 1].drawCount,
-          delay: sortedDrawsAsNumber[i + 1].drawCount - sortedDrawsAsNumber[i].drawCount,
+          delay: sortedDrawsAsNumber[i + 1].drawCount -
+              sortedDrawsAsNumber[i].drawCount,
         ),
       );
     }
@@ -103,7 +105,8 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
             to: sortedDrawsAsTzoker[i + 1].date,
             fromDrawCount: sortedDrawsAsTzoker[i].drawCount,
             toDrawCount: sortedDrawsAsTzoker[i + 1].drawCount,
-            delay: sortedDrawsAsTzoker[i + 1].drawCount - sortedDrawsAsTzoker[i].drawCount,
+            delay: sortedDrawsAsTzoker[i + 1].drawCount -
+                sortedDrawsAsTzoker[i].drawCount,
           ),
         );
       }
@@ -125,7 +128,8 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
     final res = await Future.wait([
       Tzoker.instance.getDrawsOfSpecificSequence(nums: [checkingNumber]),
       Tzoker.instance.getStatistics(),
-      if (checkingNumber <= 20) Tzoker.instance.getDrawsOfSpecificSequence(tzoker: checkingNumber),
+      if (checkingNumber <= 20)
+        Tzoker.instance.getDrawsOfSpecificSequence(tzoker: checkingNumber),
     ]);
 
     drawsAsNumberResponse = res[0] as List<DrawResult>;
@@ -136,14 +140,16 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
     final List<int> allDrawNumbersAsNumber = [];
 
     for (final DrawResult draw in drawsAsNumberResponse) {
-      allDrawNumbersAsNumber.addAll(draw.winningNumbers.where((n) => n != checkingNumber));
+      allDrawNumbersAsNumber
+          .addAll(draw.winningNumbers.where((n) => n != checkingNumber));
     }
 
     for (final int num in allDrawNumbersAsNumber) {
       if (allNumberOccurencesAsNumber[num] == null) {
         allNumberOccurencesAsNumber[num] = 1;
       } else {
-        allNumberOccurencesAsNumber[num] = allNumberOccurencesAsNumber[num]! + 1;
+        allNumberOccurencesAsNumber[num] =
+            allNumberOccurencesAsNumber[num]! + 1;
       }
     }
     // Biggest occurence
@@ -165,9 +171,15 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
       }
       return leastCommonNumberCountAsNumber;
     });
-    mostCommonNumberAsNumber = allNumberOccurencesAsNumber.whereValue((v) => v == mostCommonNumberCountAsNumber).keys.first;
+    mostCommonNumberAsNumber = allNumberOccurencesAsNumber
+        .whereValue((v) => v == mostCommonNumberCountAsNumber)
+        .keys
+        .first;
 
-    leastCommonNumberAsNumber = allNumberOccurencesAsNumber.whereValue((v) => v == leastCommonNumberCountAsNumber).keys.first;
+    leastCommonNumberAsNumber = allNumberOccurencesAsNumber
+        .whereValue((v) => v == leastCommonNumberCountAsNumber)
+        .keys
+        .first;
 // -------------------------------------------------------------------------------------------------
     if (checkingNumber <= 20) {
       drawsAsTzokerResponse = res[2] as List<DrawResult>;
@@ -189,7 +201,8 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
         if (allNumberOccurencesAsTzoker[num] == null) {
           allNumberOccurencesAsTzoker[num] = 1;
         } else {
-          allNumberOccurencesAsTzoker[num] = allNumberOccurencesAsTzoker[num]! + 1;
+          allNumberOccurencesAsTzoker[num] =
+              allNumberOccurencesAsTzoker[num]! + 1;
         }
       }
       // Biggest occurence
@@ -211,9 +224,15 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
         }
         return leastCommonNumberCountAsTzoker;
       });
-      mostCommonNumberAsTzoker = allNumberOccurencesAsTzoker.whereValue((v) => v == mostCommonNumberCountAsTzoker).keys.first;
+      mostCommonNumberAsTzoker = allNumberOccurencesAsTzoker
+          .whereValue((v) => v == mostCommonNumberCountAsTzoker)
+          .keys
+          .first;
 
-      leastCommonNumberAsTzoker = allNumberOccurencesAsTzoker.whereValue((v) => v == leastCommonNumberCountAsTzoker).keys.first;
+      leastCommonNumberAsTzoker = allNumberOccurencesAsTzoker
+          .whereValue((v) => v == leastCommonNumberCountAsTzoker)
+          .keys
+          .first;
     }
     setState(() {
       loading = false;
@@ -282,6 +301,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            const StatsDivider(),
                             if (checkingNumber <= 20)
                               Text(
                                 stats?.bonusNumbers
@@ -304,189 +324,172 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                               ),
                             if (checkingNumber <= 20) ...[
                               // Total appearances
-                              RichText(
-                                text: TextSpan(
-                                  children: <TextSpan>[
-                                    const TextSpan(
-                                      text: 'Appeared in ',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black,
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5.0),
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: 'Appeared in ',
+                                        style: kStyleDefault.copyWith(
+                                          fontSize: 18,
+                                          color: Colors.black,
+                                        ),
                                       ),
-                                    ),
-                                    TextSpan(
-                                      text: '${drawsAsTzokerResponse.length}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                        color: Colors.red,
+                                      TextSpan(
+                                        text: '${drawsAsTzokerResponse.length}',
+                                        style: kStyleDefault.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: Colors.red,
+                                        ),
                                       ),
-                                    ),
-                                    const TextSpan(
-                                      text: ' draws out of total ',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black,
+                                      TextSpan(
+                                        text: ' draws out of total ',
+                                        style: kStyleDefault.copyWith(
+                                          fontSize: 18,
+                                          color: Colors.black,
+                                        ),
                                       ),
-                                    ),
-                                    TextSpan(
-                                      text: '${stats!.header.drawCount}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                        color: Colors.red,
-                                      ),
-                                    )
-                                  ],
+                                      TextSpan(
+                                        text: '${stats!.header.drawCount}',
+                                        style: kStyleDefault.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: Colors.red,
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              const SizedBox(
-                                width: 350,
-                                child: Divider(
-                                  color: Colors.red,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 4,
-                              ),
+                              const StatsDivider(),
                               // Total consecutive draws
-                              RichText(
-                                text: TextSpan(
-                                  children: <TextSpan>[
-                                    const TextSpan(
-                                      text: 'Total consecutive draws ',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black,
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 5.0),
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: 'Total consecutive draws ',
+                                        style: kStyleDefault.copyWith(
+                                          fontSize: 18,
+                                          color: Colors.black,
+                                        ),
                                       ),
-                                    ),
-                                    TextSpan(
-                                      text: '${drawDelaysAsTzoker.where((d) => d.delay == 1).length}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                        color: Colors.red,
+                                      TextSpan(
+                                        text:
+                                            '${drawDelaysAsTzoker.where((d) => d.delay == 1).length}',
+                                        style: kStyleDefault.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: Colors.red,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
 
-                              ...drawDelaysAsTzoker.where((d) => d.delay == 1).map(
+                              ...drawDelaysAsTzoker
+                                  .where((d) => d.delay == 1)
+                                  .map(
                                     (e) => Text(
                                       '${DateFormat("dd-MM-yyyy").format(e.from)} - ${DateFormat("dd-MM-yyyy").format(e.to)}',
-                                      style: TextStyle(
+                                      style: kStyleDefault.copyWith(
                                         fontSize: 14,
                                         color: Colors.grey[600],
                                       ),
                                     ),
                                   ),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              const SizedBox(
-                                width: 350,
-                                child: Divider(
-                                  color: Colors.red,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 4,
-                              ),
+                              const StatsDivider(),
                               // Longest delay
-                              RichText(
-                                text: TextSpan(
-                                  children: <TextSpan>[
-                                    const TextSpan(
-                                      text: 'Longest delay was for ',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black,
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: 'Longest delay was for ',
+                                        style: kStyleDefault.copyWith(
+                                          fontSize: 18,
+                                          color: Colors.black,
+                                        ),
                                       ),
-                                    ),
-                                    TextSpan(
-                                      text: '${drawDelaysAsTzoker.last.delay}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                        color: Colors.red,
+                                      TextSpan(
+                                        text:
+                                            '${drawDelaysAsTzoker.last.delay}',
+                                        style: kStyleDefault.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: Colors.red,
+                                        ),
                                       ),
-                                    ),
-                                    const TextSpan(
-                                      text: ' draws',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black,
+                                      TextSpan(
+                                        text: ' draws',
+                                        style: kStyleDefault.copyWith(
+                                          fontSize: 18,
+                                          color: Colors.black,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                               ...drawDelaysAsTzoker
                                   .where(
-                                    (d) => d.delay == drawDelaysAsTzoker.last.delay,
+                                    (d) =>
+                                        d.delay ==
+                                        drawDelaysAsTzoker.last.delay,
                                   )
                                   .map(
                                     (e) => Text(
                                       '${DateFormat("dd-MM-yyyy").format(e.from)} - ${DateFormat("dd-MM-yyyy").format(e.to)}',
-                                      style: TextStyle(
+                                      style: kStyleDefault.copyWith(
                                         fontSize: 14,
                                         color: Colors.grey[600],
                                       ),
                                     ),
                                   ),
 
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              const SizedBox(
-                                width: 350,
-                                child: Divider(
-                                  color: Colors.red,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 4,
-                              ),
+                              const StatsDivider(),
                               RichText(
                                 text: TextSpan(
                                   children: <TextSpan>[
-                                    const TextSpan(
-                                      text: 'Most common number found together is ',
-                                      style: TextStyle(
+                                    TextSpan(
+                                      text:
+                                          'Most common number found together is ',
+                                      style: kStyleDefault.copyWith(
                                         fontSize: 18,
                                         color: Colors.black,
                                       ),
                                     ),
                                     TextSpan(
                                       text: '$mostCommonNumberAsTzoker',
-                                      style: const TextStyle(
+                                      style: kStyleDefault.copyWith(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
                                         color: Colors.red,
                                       ),
                                     ),
-                                    const TextSpan(
+                                    TextSpan(
                                       text: ' found in ',
-                                      style: TextStyle(
+                                      style: kStyleDefault.copyWith(
                                         fontSize: 18,
                                         color: Colors.black,
                                       ),
                                     ),
                                     TextSpan(
                                       text: '$mostCommonNumberCountAsTzoker',
-                                      style: const TextStyle(
+                                      style: kStyleDefault.copyWith(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
                                         color: Colors.red,
                                       ),
                                     ),
-                                    const TextSpan(
+                                    TextSpan(
                                       text: ' draws',
-                                      style: TextStyle(
+                                      style: kStyleDefault.copyWith(
                                         fontSize: 18,
                                         color: Colors.black,
                                       ),
@@ -500,39 +503,40 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                               RichText(
                                 text: TextSpan(
                                   children: <TextSpan>[
-                                    const TextSpan(
-                                      text: 'Least common number found together is ',
-                                      style: TextStyle(
+                                    TextSpan(
+                                      text:
+                                          'Least common number found together is ',
+                                      style: kStyleDefault.copyWith(
                                         fontSize: 18,
                                         color: Colors.black,
                                       ),
                                     ),
                                     TextSpan(
                                       text: '$leastCommonNumberAsTzoker',
-                                      style: const TextStyle(
+                                      style: kStyleDefault.copyWith(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
                                         color: Colors.red,
                                       ),
                                     ),
-                                    const TextSpan(
+                                    TextSpan(
                                       text: ' found in ',
-                                      style: TextStyle(
+                                      style: kStyleDefault.copyWith(
                                         fontSize: 18,
                                         color: Colors.black,
                                       ),
                                     ),
                                     TextSpan(
                                       text: '$leastCommonNumberCountAsTzoker',
-                                      style: const TextStyle(
+                                      style: kStyleDefault.copyWith(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
                                         color: Colors.red,
                                       ),
                                     ),
-                                    const TextSpan(
+                                    TextSpan(
                                       text: ' draws',
-                                      style: TextStyle(
+                                      style: kStyleDefault.copyWith(
                                         fontSize: 18,
                                         color: Colors.black,
                                       ),
@@ -541,6 +545,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                                 ),
                               ),
                             ],
+                            const StatsDivider(),
                             Text(
                               stats?.numbers
                                           .firstWhere(
@@ -556,18 +561,141 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                               'Total appearence percentage ${((stats!.numbers.firstWhere((n) => n.number == checkingNumber).occurrences * 100) / (stats!.header.drawCount - 1)).toStringAsFixed(2)}% ',
                               style: kStyleDefault.copyWith(
                                 fontSize: 16,
-                                color: const Color(0xff8d0d46).withOpacity(0.6),
+                                color: Colors.red,
                               ),
                             ),
-                            Text(
-                              'Appeared in ${drawsAsNumberResponse.length} draws',
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5.0),
+                              child: RichText(
+                                text: TextSpan(
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: 'Appeared in ',
+                                      style: kStyleDefault.copyWith(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '${drawsAsNumberResponse.length}',
+                                      style: kStyleDefault.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: ' draws out of total ',
+                                      style: kStyleDefault.copyWith(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '${stats!.header.drawCount}',
+                                      style: kStyleDefault.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
-                            Text(
-                              'Most common number found together is $mostCommonNumberAsNumber found in $mostCommonNumberCountAsNumber draws',
+                            const StatsDivider(),
+                            RichText(
+                              text: TextSpan(
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text:
+                                        'Most common number found together is ',
+                                    style: kStyleDefault.copyWith(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: '$mostCommonNumberAsNumber',
+                                    style: kStyleDefault.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ' found in ',
+                                    style: kStyleDefault.copyWith(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: '$mostCommonNumberCountAsNumber',
+                                    style: kStyleDefault.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ' draws',
+                                    style: kStyleDefault.copyWith(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            Text(
-                              'Least common number found together is $leastCommonNumberAsNumber found in $leastCommonNumberCountAsNumber draws',
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 4.0),
                             ),
+                            RichText(
+                              text: TextSpan(
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text:
+                                        'Least common number found together is ',
+                                    style: kStyleDefault.copyWith(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: '$leastCommonNumberAsNumber',
+                                    style: kStyleDefault.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ' found in ',
+                                    style: kStyleDefault.copyWith(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: '$leastCommonNumberCountAsNumber',
+                                    style: kStyleDefault.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ' draws',
+                                    style: kStyleDefault.copyWith(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const StatsDivider(),
                           ],
                         ),
                       ),

@@ -58,19 +58,25 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
 
     highDelayedNumbers = stats?.numbers.where((n) => n.delays > 20);
 
-    mediumDelayedNumbers = stats?.numbers.where((n) => (n.delays <= 20) && (n.delays > 10));
+    mediumDelayedNumbers =
+        stats?.numbers.where((n) => (n.delays <= 20) && (n.delays > 10));
 
-    smallDelayedNumbers = stats?.numbers.where((n) => (n.delays <= 10) && (n.delays > 4));
+    smallDelayedNumbers =
+        stats?.numbers.where((n) => (n.delays <= 10) && (n.delays > 4));
 
-    almostNotDelayedNumbers = stats?.numbers.where((n) => (n.delays <= 4) && (n.delays > 0));
+    almostNotDelayedNumbers =
+        stats?.numbers.where((n) => (n.delays <= 4) && (n.delays > 0));
 
     highDelayedTzokers = stats?.bonusNumbers.where((n) => n.delays >= 10);
 
-    mediumDelayedTzokers = stats?.bonusNumbers.where((n) => (n.delays <= 20) && (n.delays > 10));
+    mediumDelayedTzokers =
+        stats?.bonusNumbers.where((n) => (n.delays <= 20) && (n.delays > 10));
 
-    smallDelayedTzokers = stats?.bonusNumbers.where((n) => (n.delays <= 10) && (n.delays > 4));
+    smallDelayedTzokers =
+        stats?.bonusNumbers.where((n) => (n.delays <= 10) && (n.delays > 4));
 
-    almostNotDelayedTzokers = stats?.bonusNumbers.where((n) => (n.delays <= 4) && (n.delays > 0));
+    almostNotDelayedTzokers =
+        stats?.bonusNumbers.where((n) => (n.delays <= 4) && (n.delays > 0));
 
     setState(() {
       loading = false;
@@ -110,13 +116,15 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
       }
 
       if (mediumDelayedNumbers?.isNotEmpty ?? false) {
-        if (!numbers.contains(mediumDelayedNumbers!.toList()[randomMediumDelay])) {
+        if (!numbers
+            .contains(mediumDelayedNumbers!.toList()[randomMediumDelay])) {
           numbers.add(mediumDelayedNumbers!.toList()[randomMediumDelay]);
           if (numbers.length == 5) break;
         }
       }
       if (smallDelayedNumbers?.isNotEmpty ?? false) {
-        if (!numbers.contains(smallDelayedNumbers!.toList()[randomSmallDelay])) {
+        if (!numbers
+            .contains(smallDelayedNumbers!.toList()[randomSmallDelay])) {
           numbers.add(smallDelayedNumbers!.toList()[randomSmallDelay]);
           if (numbers.length == 5) break;
         }
@@ -125,7 +133,8 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
 
     generatedNumbers = GeneratedNumbers(
       numbers: numbers,
-      tzoker: highDelayedTzokers!.toList()[Random().nextInt(highDelayedTzokers!.length)],
+      tzoker: highDelayedTzokers!
+          .toList()[Random().nextInt(highDelayedTzokers!.length)],
     );
 
     kLog.wtf(generatedNumbers?.toJson());
@@ -249,6 +258,9 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
                       ),
                     ),
                   ),
+                  const SliverPadding(
+                    padding: EdgeInsets.only(top: 50),
+                  ),
                   SliverToBoxAdapter(
                     child: SizedBox(
                       height: 50,
@@ -259,7 +271,9 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
                           },
                           child: Text(
                             'Generate',
-                            style: kStyleDefault,
+                            style: kStyleDefault.copyWith(
+                              fontSize: 30,
+                            ),
                           ),
                         ),
                       ),

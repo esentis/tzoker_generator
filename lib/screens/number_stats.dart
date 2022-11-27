@@ -544,8 +544,8 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                                   ],
                                 ),
                               ),
+                              const StatsDivider(),
                             ],
-                            const StatsDivider(),
                             Text(
                               stats?.numbers
                                           .firstWhere(

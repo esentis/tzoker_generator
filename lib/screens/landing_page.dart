@@ -11,6 +11,7 @@ import 'package:tzoker_generator/helpers/utils.dart';
 import 'package:tzoker_generator/models/last_result.dart';
 import 'package:tzoker_generator/models/statistics.dart';
 import 'package:tzoker_generator/services/tzoker.dart';
+import 'package:tzoker_generator/widgets/numbers_dialog.dart';
 import 'package:tzoker_generator/widgets/tzoker_ball.dart';
 
 class NumberStatsDialog extends Intent {
@@ -131,22 +132,8 @@ class _LandingPageState extends State<LandingPage> {
           actions: <Type, Action<Intent>>{
             NumberStatsDialog: CallbackAction<NumberStatsDialog>(
               onInvoke: (NumberStatsDialog intent) {
-                final FocusNode _focus = FocusNode();
                 return Get.dialog(
-                  Material(
-                    color: Colors.transparent,
-                    child: Center(
-                      child: Card(
-                        child: TextField(
-                          focusNode: _focus,
-                          onChanged: (string) {},
-                          onSubmitted: (string) {
-                            Get.back();
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
+                  const Center(child: NumbersDialog()),
                 );
               },
             ),
@@ -384,7 +371,8 @@ class _LandingPageState extends State<LandingPage> {
                                           latestResultStatistics = await Tzoker
                                               .instance
                                               .getStatsForDrawCount(
-                                                  currentDraw - 1);
+                                            currentDraw - 1,
+                                          );
 
                                           setState(() {
                                             _loadingNewDraw = false;
@@ -530,7 +518,8 @@ class _LandingPageState extends State<LandingPage> {
                                             },
                                             child: TzokerBall(
                                               color: Tzoker.instance.getColor(
-                                                  showingDraw!.tzoker),
+                                                showingDraw!.tzoker,
+                                              ),
                                               height: 50,
                                               width: 50,
                                               number: showingDraw!.tzoker,

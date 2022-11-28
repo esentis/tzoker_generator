@@ -69,7 +69,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return '';
   }
 
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +163,9 @@ class _SearchScreenState extends State<SearchScreen> {
                   foundDraws[index].winningNumbers.sort();
                   return Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 15),
+                      vertical: 8.0,
+                      horizontal: 15,
+                    ),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -189,7 +191,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                     border: _selectedTzokers
                                             .contains(foundDraws[index].tzoker)
                                         ? Border.all(
-                                            color: Colors.red, width: 5)
+                                            color: Colors.red,
+                                            width: 5,
+                                          )
                                         : null,
                                   ),
                                   child: Center(

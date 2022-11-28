@@ -188,7 +188,8 @@ class _LandingPageState extends State<LandingPage> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 15.0),
+                                  horizontal: 15.0,
+                                ),
                                 child: TextButton(
                                   onPressed: () => Get.toNamed('/generate'),
                                   style: TextButton.styleFrom(
@@ -214,7 +215,8 @@ class _LandingPageState extends State<LandingPage> {
                               // ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 15.0),
+                                  horizontal: 15.0,
+                                ),
                                 child: TextButton(
                                   onPressed: () => Get.toNamed('/search'),
                                   style: TextButton.styleFrom(
@@ -299,7 +301,8 @@ class _LandingPageState extends State<LandingPage> {
                                       child: Text(
                                         'Minimum distributed on next draw',
                                         style: kStyleDefault.copyWith(
-                                            fontSize: 25),
+                                          fontSize: 25,
+                                        ),
                                       ),
                                     ),
                                     if (currentJackpot == 0)
@@ -412,7 +415,8 @@ class _LandingPageState extends State<LandingPage> {
                                           latestResultStatistics = await Tzoker
                                               .instance
                                               .getStatsForDrawCount(
-                                                  currentDraw - 1);
+                                            currentDraw - 1,
+                                          );
 
                                           setState(() {
                                             _loadingNewDraw = false;
@@ -607,7 +611,8 @@ class _LandingPageState extends State<LandingPage> {
                                           cursor: SystemMouseCursors.click,
                                           child: GestureDetector(
                                             onTap: () => Get.toNamed(
-                                                '/numberStats?number=$e'),
+                                              '/numberStats?number=$e',
+                                            ),
                                             child: TzokerBall(
                                               color:
                                                   Tzoker.instance.getColor(e),
@@ -637,7 +642,8 @@ class _LandingPageState extends State<LandingPage> {
                                                     color: Colors.white,
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            7),
+                                                      7,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -656,7 +662,8 @@ class _LandingPageState extends State<LandingPage> {
                                                     color: Colors.white,
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            7),
+                                                      7,
+                                                    ),
                                                   ),
                                                 ),
                                               ),

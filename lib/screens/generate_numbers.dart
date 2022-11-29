@@ -92,8 +92,6 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
     int randomNoDelay = 0;
 
     while (numbers.length < 5) {
-      kLog.wtf(highDelayedNumbers!.length);
-
       if (highDelayedNumbers?.isNotEmpty ?? false) {
         randomHighDelay = Random().nextInt(highDelayedNumbers!.length);
       }
@@ -137,7 +135,6 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
           .toList()[Random().nextInt(highDelayedTzokers!.length)],
     );
 
-    kLog.wtf(generatedNumbers?.toJson());
     setState(() {});
   }
 

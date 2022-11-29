@@ -34,7 +34,8 @@ class Tzoker {
 
   /// Returns the current minimum amount distributed for 5 + 1.
   Future<double> getJackpot() async {
-    final response = await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/last/1'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/last/1'));
 
     final List<dynamic> data = jsonDecode(response.body);
 
@@ -43,7 +44,8 @@ class Tzoker {
 
   /// Returns the [DateTime] of the upcoming draw.
   Future<DateTime> getUpcomingDrawDate() async {
-    final response = await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/upcoming/1'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/upcoming/1'));
 
     final List<dynamic> data = jsonDecode(response.body);
 
@@ -52,7 +54,8 @@ class Tzoker {
 
   /// Returns the latest draw result.
   Future<DrawResult> getLastResult() async {
-    final response = await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/last-result-and-active'));
+    final response = await http
+        .get(Uri.parse('$baseUrl/draws/v3.0/5104/last-result-and-active'));
 
     final data = jsonDecode(response.body);
 
@@ -62,7 +65,8 @@ class Tzoker {
     );
 
     final int tzoker = data['last']['winningNumbers']['bonus'].first;
-    final DateTime drawDate = DateTime.fromMillisecondsSinceEpoch(data['last']['drawTime']);
+    final DateTime drawDate =
+        DateTime.fromMillisecondsSinceEpoch(data['last']['drawTime']);
 
     return DrawResult(
       date: drawDate,
@@ -75,7 +79,8 @@ class Tzoker {
 
   /// Returns the stats from the OPAP services.
   Future<Statistics> getStatistics() async {
-    final response = await http.get(Uri.parse('$baseUrl/games/v1.0/5104/statistics'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/games/v1.0/5104/statistics'));
     final Map<String, dynamic> data = jsonDecode(response.body);
     final stats = Statistics.fromJson(data);
 
@@ -125,7 +130,8 @@ class Tzoker {
   Future<bool> checkIfStatsExist(int drawCount) async {
     dynamic response;
 
-    response = await supabase.from('StatHistory').select().eq('drawCount', drawCount);
+    response =
+        await supabase.from('StatHistory').select().eq('drawCount', drawCount);
 
     if (response == null || response.isEmpty) {
       return false;
@@ -154,13 +160,12 @@ class Tzoker {
     dynamic response;
 
     response = await supabase.from('StatHistory').select();
-
-    kLog.wtf(response);
   }
 
   /// Returns a [Draw] provided a [drawId]. This call searchs OPAP webservices.
   Future<Draw> getDraw(int drawId) async {
-    final response = await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/$drawId'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/$drawId'));
     final Map<String, dynamic> data = jsonDecode(response.body);
 
     return Draw.fromJson(data);
@@ -171,24 +176,33 @@ class Tzoker {
     List<int>? nums,
     int? tzoker,
   }) async {
-    final String normalizedNums = "{${nums?.map((e) => e)}}".replaceAll("(", '').replaceAll(')', '');
+    final String normalizedNums =
+        "{${nums?.map((e) => e)}}".replaceAll("(", '').replaceAll(')', '');
 
     dynamic response;
 
     if (tzoker != null) {
       if (nums != null) {
-        response = await supabase.from('Draws').select().contains('numbers', normalizedNums).eq('tzoker', '$tzoker');
+        response = await supabase
+            .from('Draws')
+            .select()
+            .contains('numbers', normalizedNums)
+            .eq('tzoker', '$tzoker');
       } else {
-        response = await supabase.from('Draws').select().eq('tzoker', '$tzoker');
+        response =
+            await supabase.from('Draws').select().eq('tzoker', '$tzoker');
       }
     } else {
       if (nums != null) {
-        response = await supabase.from('Draws').select().contains('numbers', normalizedNums);
+        response = await supabase
+            .from('Draws')
+            .select()
+            .contains('numbers', normalizedNums);
       } else {
         response = const PostgrestResponse(data: [], status: 404);
       }
     }
-    kLog.wtf(response);
+
     if (response.isNotEmpty) {
       return List<DrawResult>.generate(
         response.length,
@@ -239,7 +253,8 @@ class Tzoker {
   /// Provide [start] and [end] (both included) draw id (draw count).
   Future<void> updateDatabase({required int start, required int end}) async {
     // Get the latest saved stats from Database
-    final tempStats = await getStatsForDrawCount(start - 1).then((value) => value.toJson());
+    final tempStats =
+        await getStatsForDrawCount(start - 1).then((value) => value.toJson());
 
     // We iterate the range of draws we want the stats saved.
     for (int i = start; i <= end; i++) {
@@ -265,7 +280,8 @@ class Tzoker {
         }
       }
 
-      tempStats['header']['dateTo'] = draw.drawDate.millisecondsSinceEpoch / 1000;
+      tempStats['header']['dateTo'] =
+          draw.drawDate.millisecondsSinceEpoch / 1000;
 
       tempStats['header']['drawCount'] = i;
 

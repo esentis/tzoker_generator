@@ -41,13 +41,6 @@ class _SearchScreenState extends State<SearchScreen> {
         (a, b) => a.drawCount.compareTo(b.drawCount),
       );
     }
-
-    // if (foundDraws.isNotEmpty) {
-    //   res.forEach((d) => kLog.wtf(d.toJson()));
-    // } else {
-    //   kLog.w('No drawas found with the specific numbers');
-    // }
-
     setState(() {
       isLoading = false;
     });

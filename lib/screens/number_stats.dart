@@ -88,10 +88,6 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
       (a, b) => a.delay.compareTo(b.delay),
     );
 
-    kLog.wtf(drawDelaysAsNumber.map((e) => '${e.from}-${e.to}'));
-    kLog.wtf(drawDelaysAsNumber.first.delay);
-    kLog.wtf(drawDelaysAsNumber.last.delay);
-
     if (drawsAsTzoker.isNotEmpty) {
       final List<DrawResult> sortedDrawsAsTzoker = drawsAsTzoker
         ..sort(
@@ -114,10 +110,6 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
       drawDelaysAsTzoker.sort(
         (a, b) => a.delay.compareTo(b.delay),
       );
-
-      kLog.wtf(drawDelaysAsTzoker.map((e) => '${e.from}-${e.to}'));
-      kLog.wtf(drawDelaysAsTzoker.first.delay);
-      kLog.wtf(drawDelaysAsTzoker.last.delay);
     }
   }
 

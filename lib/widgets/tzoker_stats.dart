@@ -62,7 +62,8 @@ class _TzokerStatsState extends State<TzokerStats> {
                     GestureDetector(
                       onTap: () {
                         if (_currentFilter == SortFilter.number) {
-                          if (widget.numbers[0].number > widget.numbers[1].number) {
+                          if (widget.numbers[0].number >
+                              widget.numbers[1].number) {
                             widget.numbers.sort(
                               (a, b) => a.number.compareTo(b.number),
                             );
@@ -88,7 +89,8 @@ class _TzokerStatsState extends State<TzokerStats> {
                             ),
                           ),
                           if (_currentFilter == SortFilter.number)
-                            if (widget.numbers[0].number > widget.numbers[1].number)
+                            if (widget.numbers[0].number >
+                                widget.numbers[1].number)
                               const Icon(
                                 Icons.arrow_upward,
                                 color: Colors.white,
@@ -130,7 +132,8 @@ class _TzokerStatsState extends State<TzokerStats> {
                             ),
                           ),
                           if (_currentFilter == SortFilter.delay)
-                            if (widget.numbers[0].delays > widget.numbers[1].delays)
+                            if (widget.numbers[0].delays >
+                                widget.numbers[1].delays)
                               const Icon(
                                 Icons.arrow_upward,
                                 color: Colors.white,
@@ -145,12 +148,9 @@ class _TzokerStatsState extends State<TzokerStats> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        kLog.wtf(
-                          widget.numbers[0].occurrences > widget.numbers[1].occurrences,
-                        );
-
                         if (_currentFilter == SortFilter.occurences) {
-                          if (widget.numbers[0].occurrences > widget.numbers[1].occurrences) {
+                          if (widget.numbers[0].occurrences >
+                              widget.numbers[1].occurrences) {
                             widget.numbers.sort(
                               (a, b) => a.occurrences.compareTo(b.occurrences),
                             );
@@ -177,7 +177,8 @@ class _TzokerStatsState extends State<TzokerStats> {
                             ),
                           ),
                           if (_currentFilter == SortFilter.occurences)
-                            if (widget.numbers[0].occurrences > widget.numbers[1].occurrences)
+                            if (widget.numbers[0].occurrences >
+                                widget.numbers[1].occurrences)
                               const Icon(
                                 Icons.arrow_upward,
                                 color: Colors.white,
@@ -192,27 +193,29 @@ class _TzokerStatsState extends State<TzokerStats> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        kLog.wtf(
-                          widget.numbers[0].occurrences > widget.numbers[1].occurrences,
-                        );
-
                         if (_currentFilter == SortFilter.percentage) {
-                          if (widget.numbers[0].occurrences > widget.numbers[1].occurrences) {
+                          if (widget.numbers[0].occurrences >
+                              widget.numbers[1].occurrences) {
                             widget.numbers.sort(
-                              (a, b) => (a.occurrences * 100 / (widget.drawCount)).compareTo(
+                              (a, b) =>
+                                  (a.occurrences * 100 / (widget.drawCount))
+                                      .compareTo(
                                 b.occurrences * 100 / (widget.drawCount),
                               ),
                             );
                           } else {
                             widget.numbers.sort(
-                              (a, b) => (b.occurrences * 100 / (widget.drawCount)).compareTo(
+                              (a, b) =>
+                                  (b.occurrences * 100 / (widget.drawCount))
+                                      .compareTo(
                                 a.occurrences * 100 / (widget.drawCount),
                               ),
                             );
                           }
                         } else {
                           widget.numbers.sort(
-                            (a, b) => (a.occurrences * 100 / (widget.drawCount)).compareTo(
+                            (a, b) => (a.occurrences * 100 / (widget.drawCount))
+                                .compareTo(
                               b.occurrences * 100 / (widget.drawCount),
                             ),
                           );
@@ -230,8 +233,10 @@ class _TzokerStatsState extends State<TzokerStats> {
                             ),
                           ),
                           if (_currentFilter == SortFilter.percentage)
-                            if (((widget.numbers[0].occurrences * 100) / widget.drawCount) >
-                                ((widget.numbers[1].occurrences * 100) / widget.drawCount))
+                            if (((widget.numbers[0].occurrences * 100) /
+                                    widget.drawCount) >
+                                ((widget.numbers[1].occurrences * 100) /
+                                    widget.drawCount))
                               const Icon(
                                 Icons.arrow_upward,
                                 color: Colors.white,
@@ -254,7 +259,8 @@ class _TzokerStatsState extends State<TzokerStats> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, i) => ColoredBox(
-                color: Tzoker.instance.getColorOccurence(widget.numbers[i].delays),
+                color:
+                    Tzoker.instance.getColorOccurence(widget.numbers[i].delays),
                 child: TzokerBall(
                   color: Tzoker.instance.getColor(i + 1),
                   number: widget.numbers[i].number,

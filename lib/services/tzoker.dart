@@ -156,10 +156,8 @@ class Tzoker {
   }
 
   /// Returns all stats from the database.
-  Future<void> getAllStatsHistory() async {
-    dynamic response;
-
-    response = await supabase.from('StatHistory').select();
+  Future<dynamic> getAllStatsHistory() async {
+    return await supabase.from('StatHistory').select();
   }
 
   /// Returns a [Draw] provided a [drawId]. This call searchs OPAP webservices.

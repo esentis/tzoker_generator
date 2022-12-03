@@ -151,7 +151,7 @@ class Tzoker {
         'drawCount': drawCount,
       });
 
-      kLog.i('Stats for latest draw has been saved.');
+      kLog.i('Stats for draw $drawCount has been saved.');
     }
   }
 

@@ -4,7 +4,8 @@
 
 import 'dart:convert';
 
-Statistics statisticsFromJson(String str) => Statistics.fromJson(json.decode(str));
+Statistics statisticsFromJson(String str) =>
+    Statistics.fromJson(json.decode(str));
 
 String statisticsToJson(Statistics data) => json.encode(data.toJson());
 
@@ -21,7 +22,8 @@ class Statistics {
 
   factory Statistics.fromJson(Map<String, dynamic> json) => Statistics(
         header: Header.fromJson(json["header"]),
-        numbers: List<Number>.from(json["numbers"].map((x) => Number.fromJson(x))),
+        numbers:
+            List<Number>.from(json["numbers"].map((x) => Number.fromJson(x))),
         bonusNumbers: List<Number>.from(
           json["bonusNumbers"].map((x) => Number.fromJson(x)),
         ),

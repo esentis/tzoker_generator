@@ -100,6 +100,16 @@ class Tzoker {
         .select()
         .eq('drawCount', drawCount);
 
+    if (response.isEmpty) {
+      await updateDatabase(start: drawCount, end: drawCount);
+      response = await supabase
+          .from(
+            'StatHistory',
+          )
+          .select()
+          .eq('drawCount', drawCount);
+    }
+
     final Statistics stats = Statistics.fromJson(
       jsonDecode(
         response[0]['stats'],

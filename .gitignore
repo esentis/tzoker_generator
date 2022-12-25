@@ -117,4 +117,9 @@ coverage/
 # Ignore code-workspaces
 *.code-workspace
 
+# Firebase Hosting
+.firebaserc
+firebase-debug.log
+.firebase/
+.firebase
 # End of https://www.toptal.com/developers/gitignore/api/dart,flutter,visualstudiocode

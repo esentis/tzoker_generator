@@ -52,7 +52,7 @@ class Tzoker {
     return DateTime.fromMillisecondsSinceEpoch(data.first['drawTime']);
   }
 
-  /// Returns the latest draw result.
+  /// Returns the latest draw result from OPAP services.
   Future<DrawResult> getLastResult() async {
     final response = await http
         .get(Uri.parse('$baseUrl/draws/v3.0/5104/last-result-and-active'));

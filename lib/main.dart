@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 import 'package:tzoker_generator/helpers/utils.dart';
 import 'package:tzoker_generator/screens/all_time_stats.dart';
 import 'package:tzoker_generator/screens/generate_numbers.dart';
 import 'package:tzoker_generator/screens/landing_page.dart';
 import 'package:tzoker_generator/screens/number_stats.dart';
 import 'package:tzoker_generator/screens/search.dart';
+import 'package:tzoker_generator/widgets/coming_soon.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 Future<void> main() async {
@@ -35,27 +37,52 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(
           name: '/',
-          page: () => const LandingPage(),
+          page: () => ScreenTypeLayout.builder(
+            mobile: (BuildContext context) => const ComingSoon(),
+            tablet: (BuildContext context) => const ComingSoon(),
+            desktop: (BuildContext context) => const LandingPage(),
+            watch: (BuildContext context) => const ComingSoon(),
+          ),
           transition: Transition.fadeIn,
         ),
         GetPage(
           name: '/generate',
-          page: () => const GenerateNumbersScreen(),
+          page: () => ScreenTypeLayout.builder(
+            mobile: (BuildContext context) => const ComingSoon(),
+            tablet: (BuildContext context) => const ComingSoon(),
+            desktop: (BuildContext context) => const GenerateNumbersScreen(),
+            watch: (BuildContext context) => const ComingSoon(),
+          ),
           transition: Transition.fadeIn,
         ),
         GetPage(
           name: '/stats',
-          page: () => const AllTimeStats(),
+          page: () => ScreenTypeLayout.builder(
+            mobile: (BuildContext context) => const ComingSoon(),
+            tablet: (BuildContext context) => const ComingSoon(),
+            desktop: (BuildContext context) => const AllTimeStats(),
+            watch: (BuildContext context) => const ComingSoon(),
+          ),
           transition: Transition.fadeIn,
         ),
         GetPage(
           name: '/numberStats',
-          page: () => const NumberStatsScreen(),
+          page: () => ScreenTypeLayout.builder(
+            mobile: (BuildContext context) => const ComingSoon(),
+            tablet: (BuildContext context) => const ComingSoon(),
+            desktop: (BuildContext context) => const NumberStatsScreen(),
+            watch: (BuildContext context) => const ComingSoon(),
+          ),
           transition: Transition.fadeIn,
         ),
         GetPage(
           name: '/search',
-          page: () => const SearchScreen(),
+          page: () => ScreenTypeLayout.builder(
+            mobile: (BuildContext context) => const ComingSoon(),
+            tablet: (BuildContext context) => const ComingSoon(),
+            desktop: (BuildContext context) => const SearchScreen(),
+            watch: (BuildContext context) => const ComingSoon(),
+          ),
           transition: Transition.fadeIn,
         ),
       ],

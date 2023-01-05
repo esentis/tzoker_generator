@@ -34,6 +34,7 @@ class ComingSoon extends StatelessWidget {
               Center(
                 child: Lottie.network(
                   'https://assets10.lottiefiles.com/packages/lf20_4fewfamh.json',
+                  frameRate: FrameRate.max,
                 ),
               ),
               Text(

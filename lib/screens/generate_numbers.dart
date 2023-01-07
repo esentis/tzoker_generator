@@ -95,12 +95,10 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
       if (highDelayedNumbers?.isNotEmpty ?? false) {
         randomHighDelay = Random().nextInt(highDelayedNumbers!.length);
       }
-
       randomMediumDelay = Random().nextInt(mediumDelayedNumbers!.length);
       randomSmallDelay = Random().nextInt(smallDelayedNumbers!.length);
       randomNoDelay = Random().nextInt(almostNotDelayedNumbers!.length);
 
-//
       if (!numbers.contains(almostNotDelayedNumbers!.toList()[randomNoDelay])) {
         numbers.add(almostNotDelayedNumbers!.toList()[randomNoDelay]);
         if (numbers.length == 5) break;

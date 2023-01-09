@@ -34,10 +34,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   logger: ^1.1.0
-  intl: ^0.17.0
+  intl: ^0.18.0
   lottie: ^2.0.0
   http: ^0.13.5
-  slide_countdown: ^0.3.4
+  slide_countdown: ^0.4.0
   get: ^4.6.5
   supabase_flutter: ^1.0.1
   shimmer: ^2.0.0

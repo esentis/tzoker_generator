@@ -45,13 +45,10 @@ class NumbersDialog extends StatelessWidget {
                         '/numberStats?number=${index + 1}',
                       );
                     },
-                    child: Card(
-                      color: kColorOrange,
-                      child: TzokerBall(
-                        color: Tzoker.instance.getColor(index + 1),
-                        number: index + 1,
-                        isLoading: false,
-                      ),
+                    child: TzokerBall(
+                      color: Tzoker.instance.getColor(index + 1),
+                      number: index + 1,
+                      isLoading: false,
                     ),
                   ),
                 ),

@@ -184,7 +184,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                       color: const Color(0xfff8b828),
                                       shape: BoxShape.circle,
                                       border: _selectedTzokers.contains(
-                                              foundDraws[index].tzoker)
+                                        foundDraws[index].tzoker,
+                                      )
                                           ? Border.all(
                                               color: Colors.red,
                                               width: 5,

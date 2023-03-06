@@ -56,14 +56,14 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
     stats = await Tzoker.instance.getStatistics();
 
     await Tzoker.instance.updateStats(stats!.header.drawCount, stats!.toJson());
+    setState(() {
+      loading = false;
+    });
 
     highDelayedNumbers = stats?.numbers.where((n) => n.delays > 20);
 
     mediumDelayedNumbers =
         stats?.numbers.where((n) => (n.delays <= 20) && (n.delays > 10));
-
-    smallDelayedNumbers =
-        stats?.numbers.where((n) => (n.delays <= 10) && (n.delays > 4));
 
     almostNotDelayedNumbers =
         stats?.numbers.where((n) => (n.delays <= 4) && (n.delays > 0));
@@ -74,14 +74,10 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
         stats?.bonusNumbers.where((n) => (n.delays <= 20) && (n.delays > 10));
 
     smallDelayedTzokers =
-        stats?.bonusNumbers.where((n) => (n.delays <= 10) && (n.delays > 4));
+        stats?.bonusNumbers.where((n) => (n.delays <= 10) && (n.delays > 5));
 
     almostNotDelayedTzokers =
-        stats?.bonusNumbers.where((n) => (n.delays <= 4) && (n.delays > 0));
-
-    setState(() {
-      loading = false;
-    });
+        stats?.bonusNumbers.where((n) => (n.delays <= 5) && (n.delays > 0));
   }
 
   void _generateNumbers() {
@@ -89,22 +85,32 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
 
     int randomHighDelay = 0;
     int randomMediumDelay = 0;
-    int randomSmallDelay = 0;
+
     int randomNoDelay = 0;
 
     while (numbers.length < 5) {
-      if (highDelayedNumbers?.isNotEmpty ?? false) {
-        randomHighDelay = Random().nextInt(highDelayedNumbers!.length);
+      if (almostNotDelayedTzokers?.isNotEmpty ?? false) {
+        randomHighDelay = Random().nextInt(almostNotDelayedTzokers!.length);
       }
       randomMediumDelay = Random().nextInt(mediumDelayedNumbers!.length);
-      randomSmallDelay = Random().nextInt(smallDelayedNumbers!.length);
+
       randomNoDelay = Random().nextInt(almostNotDelayedNumbers!.length);
 
       if (!numbers.contains(almostNotDelayedNumbers!.toList()[randomNoDelay])) {
-        numbers.add(almostNotDelayedNumbers!.toList()[randomNoDelay]);
+        if (!numbers
+            .contains(almostNotDelayedNumbers!.toList()[randomNoDelay])) {
+          numbers.add(almostNotDelayedNumbers!.toList()[randomNoDelay]);
+        }
         if (numbers.length == 5) break;
       }
 
+      if (almostNotDelayedNumbers?.isNotEmpty ?? false) {
+        if (!numbers
+            .contains(almostNotDelayedNumbers!.toList()[randomNoDelay])) {
+          numbers.add(almostNotDelayedNumbers!.toList()[randomNoDelay]);
+          if (numbers.length == 5) break;
+        }
+      }
       if (highDelayedNumbers?.isNotEmpty ?? false) {
         if (!numbers.contains(highDelayedNumbers!.toList()[randomHighDelay])) {
           numbers.add(highDelayedNumbers!.toList()[randomHighDelay]);
@@ -116,13 +122,6 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
         if (!numbers
             .contains(mediumDelayedNumbers!.toList()[randomMediumDelay])) {
           numbers.add(mediumDelayedNumbers!.toList()[randomMediumDelay]);
-          if (numbers.length == 5) break;
-        }
-      }
-      if (smallDelayedNumbers?.isNotEmpty ?? false) {
-        if (!numbers
-            .contains(smallDelayedNumbers!.toList()[randomSmallDelay])) {
-          numbers.add(smallDelayedNumbers!.toList()[randomSmallDelay]);
           if (numbers.length == 5) break;
         }
       }

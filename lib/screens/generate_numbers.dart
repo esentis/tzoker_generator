@@ -89,9 +89,8 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
     int randomNoDelay = 0;
 
     while (numbers.length < 5) {
-      if (almostNotDelayedTzokers?.isNotEmpty ?? false) {
-        randomHighDelay = Random().nextInt(almostNotDelayedTzokers!.length);
-      }
+      randomHighDelay = Random().nextInt(highDelayedNumbers!.length);
+
       randomMediumDelay = Random().nextInt(mediumDelayedNumbers!.length);
 
       randomNoDelay = Random().nextInt(almostNotDelayedNumbers!.length);

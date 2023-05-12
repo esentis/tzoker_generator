@@ -5,7 +5,7 @@
 import 'dart:convert';
 
 TzokerResponse tzokerResponseFromJson(String str) =>
-    TzokerResponse.fromJson(json.decode(str));
+    TzokerResponse.fromJson(json.decode(str) as Map<String, dynamic>);
 
 String tzokerResponseToJson(TzokerResponse data) => json.encode(data.toJson());
 
@@ -33,15 +33,21 @@ class TzokerResponse {
   int number;
 
   factory TzokerResponse.fromJson(Map<String, dynamic> json) => TzokerResponse(
-        draws: List<Draw>.from(json["content"].map((x) => Draw.fromJson(x))),
-        totalPages: json["totalPages"],
-        totalElements: json["totalElements"],
-        last: json["last"],
-        numberOfElements: json["numberOfElements"],
-        sort: List<Sort>.from(json["sort"].map((x) => Sort.fromJson(x))),
-        first: json["first"],
-        size: json["size"],
-        number: json["number"],
+        draws: List<Draw>.from(
+          (json["content"] as List)
+              .map((x) => Draw.fromJson(x as Map<String, dynamic>)),
+        ),
+        totalPages: json["totalPages"] as int,
+        totalElements: json["totalElements"] as int,
+        last: json["last"] as bool,
+        numberOfElements: json["numberOfElements"] as int,
+        sort: List<Sort>.from(
+          (json["sort"] as List)
+              .map((x) => Sort.fromJson(x as Map<String, dynamic>)),
+        ),
+        first: json["first"] as bool,
+        size: json["size"] as int,
+        number: json["number"] as int,
       );
 
   Map<String, dynamic> toJson() => {
@@ -85,19 +91,27 @@ class Draw {
   late DateTime drawDate;
 
   factory Draw.fromJson(Map<String, dynamic> json) => Draw(
-        gameId: json["gameId"],
-        drawId: json["drawId"],
-        drawTime: json["drawTime"],
+        gameId: json["gameId"] as int,
+        drawId: json["drawId"] as int,
+        drawTime: json["drawTime"] as int,
         status: statusValues.map[json["status"]],
-        drawBreak: json["drawBreak"],
-        visualDraw: json["visualDraw"],
-        pricePoints: PricePoints.fromJson(json["pricePoints"]),
-        winningNumbers: WinningNumbers.fromJson(json["winningNumbers"]),
-        prizeCategories: List<PrizeCategory>.from(
-          json["prizeCategories"].map((x) => PrizeCategory.fromJson(x)),
+        drawBreak: json["drawBreak"] as int,
+        visualDraw: json["visualDraw"] as int,
+        pricePoints:
+            PricePoints.fromJson(json["pricePoints"] as Map<String, dynamic>),
+        winningNumbers: WinningNumbers.fromJson(
+          json["winningNumbers"] as Map<String, dynamic>,
         ),
-        wagerStatistics: WagerStatistics.fromJson(json["wagerStatistics"]),
-        drawDate: DateTime.fromMillisecondsSinceEpoch(json["drawTime"]),
+        prizeCategories: List<PrizeCategory>.from(
+          (json["prizeCategories"] as List)
+              .map((x) => PrizeCategory.fromJson(x as Map<String, dynamic>)),
+        ),
+        wagerStatistics: WagerStatistics.fromJson(
+          json["wagerStatistics"] as Map<String, dynamic>,
+        ),
+        drawDate: DateTime.fromMillisecondsSinceEpoch(
+          (json["drawTime"] as int) * 1000,
+        ),
       );
 
   Map<String, dynamic> toJson() => {
@@ -124,7 +138,7 @@ class PricePoints {
   double amount;
 
   factory PricePoints.fromJson(Map<String, dynamic> json) => PricePoints(
-        amount: json["amount"].toDouble(),
+        amount: json["amount"] as double,
       );
 
   Map<String, dynamic> toJson() => {
@@ -156,16 +170,16 @@ class PrizeCategory {
   num? minimumDistributed;
 
   factory PrizeCategory.fromJson(Map<String, dynamic> json) => PrizeCategory(
-        id: json["id"],
-        divident: json["divident"].toDouble(),
-        winners: json["winners"],
-        distributed: json["distributed"].toDouble(),
-        jackpot: json["jackpot"].toDouble(),
-        fixed: json["fixed"].toDouble(),
-        categoryType: json["categoryType"],
-        gameType: json["gameType"],
-        minimumDistributed:
-            json["minimumDistributed"] ?? json["minimumDistributed"],
+        id: json["id"] as int,
+        divident: json["divident"] as double,
+        winners: json["winners"] as int,
+        distributed: json["distributed"] as double,
+        jackpot: json["jackpot"] as double,
+        fixed: json["fixed"] as double,
+        categoryType: json["categoryType"] as int,
+        gameType: json["gameType"] as String,
+        minimumDistributed: (json["minimumDistributed"] as num?) ??
+            json["minimumDistributed"] as num?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -198,9 +212,9 @@ class WagerStatistics {
 
   factory WagerStatistics.fromJson(Map<String, dynamic> json) =>
       WagerStatistics(
-        columns: json["columns"],
-        wagers: json["wagers"],
-        addOn: List<dynamic>.from(json["addOn"].map((x) => x)),
+        columns: json["columns"] as int,
+        wagers: json["wagers"] as int,
+        addOn: List<dynamic>.from((json["addOn"] as List).map((x) => x)),
       );
 
   Map<String, dynamic> toJson() => {
@@ -220,8 +234,8 @@ class WinningNumbers {
   List<int> tzoker;
 
   factory WinningNumbers.fromJson(Map<String, dynamic> json) => WinningNumbers(
-        numbers: List<int>.from(json["list"].map((x) => x)),
-        tzoker: List<int>.from(json["bonus"].map((x) => x)),
+        numbers: List<int>.from((json["list"] as List).map((x) => x as int)),
+        tzoker: List<int>.from((json["bonus"] as List).map((x) => x as int)),
       );
 
   Map<String, dynamic> toJson() => {
@@ -248,12 +262,12 @@ class Sort {
   bool ascending;
 
   factory Sort.fromJson(Map<String, dynamic> json) => Sort(
-        direction: json["direction"],
-        property: json["property"],
-        ignoreCase: json["ignoreCase"],
-        nullHandling: json["nullHandling"],
-        descending: json["descending"],
-        ascending: json["ascending"],
+        direction: json["direction"] as String,
+        property: json["property"] as String,
+        ignoreCase: json["ignoreCase"] as bool,
+        nullHandling: json["nullHandling"] as String,
+        descending: json["descending"] as bool,
+        ascending: json["ascending"] as bool,
       );
 
   Map<String, dynamic> toJson() => {

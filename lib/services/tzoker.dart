@@ -37,9 +37,9 @@ class Tzoker {
     final response =
         await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/last/1'));
 
-    final List<dynamic> data = jsonDecode(response.body);
+    final List<dynamic> data = jsonDecode(response.body) as List<dynamic>;
 
-    return data.first['prizeCategories'][0]['minimumDistributed'];
+    return data.first['prizeCategories'][0]['minimumDistributed'] as double;
   }
 
   /// Returns the [DateTime] of the upcoming draw.
@@ -47,9 +47,9 @@ class Tzoker {
     final response =
         await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/upcoming/1'));
 
-    final List<dynamic> data = jsonDecode(response.body);
+    final List<dynamic> data = jsonDecode(response.body) as List<dynamic>;
 
-    return DateTime.fromMillisecondsSinceEpoch(data.first['drawTime']);
+    return DateTime.fromMillisecondsSinceEpoch(data.first['drawTime'] as int);
   }
 
   /// Returns the latest draw result from OPAP services.
@@ -60,19 +60,19 @@ class Tzoker {
     final data = jsonDecode(response.body);
 
     final List<int> winningNumbers = List<int>.generate(
-      data['last']['winningNumbers']['list'].length,
-      (index) => data['last']['winningNumbers']['list'][index],
+      (data['last']['winningNumbers']['list'] as List).length,
+      (index) => data['last']['winningNumbers']['list'][index] as int,
     );
 
-    final int tzoker = data['last']['winningNumbers']['bonus'].first;
+    final int tzoker = data['last']['winningNumbers']['bonus'].first as int;
     final DateTime drawDate =
-        DateTime.fromMillisecondsSinceEpoch(data['last']['drawTime']);
+        DateTime.fromMillisecondsSinceEpoch(data['last']['drawTime'] as int);
 
     return DrawResult(
       date: drawDate,
       tzoker: tzoker,
       winningNumbers: winningNumbers,
-      drawCount: data['last']['drawId'],
+      drawCount: data['last']['drawId'] as int,
       sortedWinningNumbers: winningNumbers..sort(),
     );
   }
@@ -81,7 +81,8 @@ class Tzoker {
   Future<Statistics> getStatistics() async {
     final response =
         await http.get(Uri.parse('$baseUrl/games/v1.0/5104/statistics'));
-    final Map<String, dynamic> data = jsonDecode(response.body);
+    final Map<String, dynamic> data =
+        jsonDecode(response.body) as Map<String, dynamic>;
     final stats = Statistics.fromJson(data);
 
     return stats;
@@ -100,7 +101,7 @@ class Tzoker {
         .select()
         .eq('drawCount', drawCount);
 
-    if (response.isEmpty) {
+    if ((response as List).isEmpty) {
       await updateDatabase(start: drawCount, end: drawCount);
       response = await supabase
           .from(
@@ -112,8 +113,8 @@ class Tzoker {
 
     final Statistics stats = Statistics.fromJson(
       jsonDecode(
-        response[0]['stats'],
-      ),
+        response[0]['stats'] as String,
+      ) as Map<String, dynamic>,
     );
 
     return stats;
@@ -143,7 +144,7 @@ class Tzoker {
     response =
         await supabase.from('StatHistory').select().eq('drawCount', drawCount);
 
-    if (response == null || response.isEmpty) {
+    if (response == null || (response as List).isEmpty) {
       return false;
     }
     return true;
@@ -174,7 +175,8 @@ class Tzoker {
   Future<Draw> getDraw(int drawId) async {
     final response =
         await http.get(Uri.parse('$baseUrl/draws/v3.0/5104/$drawId'));
-    final Map<String, dynamic> data = jsonDecode(response.body);
+    final Map<String, dynamic> data =
+        jsonDecode(response.body) as Map<String, dynamic>;
 
     return Draw.fromJson(data);
   }
@@ -211,11 +213,11 @@ class Tzoker {
       }
     }
 
-    if (response.isNotEmpty) {
+    if ((response as List).isNotEmpty) {
       return List<DrawResult>.generate(
         response.length,
         (index) => DrawResult.fromJson(
-          response[index],
+          response[index] as Map<String, dynamic>,
         ),
       );
     } else {
@@ -229,7 +231,7 @@ class Tzoker {
 
     response = await supabase.from('Draws').select().eq('id', id);
 
-    if (response == null || response.isEmpty) {
+    if (response == null || (response as List).isEmpty) {
       return false;
     }
     return true;
@@ -270,7 +272,8 @@ class Tzoker {
 
       await saveDraw(DrawResult.fromDraw(draw));
 
-      for (final Map<String, dynamic> stat in tempStats['numbers']) {
+      for (final Map<String, dynamic> stat
+          in tempStats['numbers'] as List<Map<String, dynamic>>) {
         if (draw.winningNumbers.numbers.contains(stat['number'])) {
           stat['occurrences']++;
           stat['delays'] = 0;
@@ -279,7 +282,8 @@ class Tzoker {
         }
       }
 
-      for (final Map<String, dynamic> stat in tempStats['bonusNumbers']) {
+      for (final Map<String, dynamic> stat
+          in tempStats['bonusNumbers'] as List<Map<String, dynamic>>) {
         if (draw.winningNumbers.tzoker.contains(stat['number'])) {
           stat['occurrences']++;
           stat['delays'] = 0;

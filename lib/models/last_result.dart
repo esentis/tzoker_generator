@@ -21,21 +21,25 @@ class DrawResult {
       tzoker: draw.winningNumbers.tzoker.first,
       winningNumbers: draw.winningNumbers.numbers,
       sortedWinningNumbers: draw.winningNumbers.numbers
-        ..sort(((a, b) => a.compareTo(b))),
+        ..sort((a, b) => a.compareTo(b)),
       drawCount: draw.drawId,
     );
   }
 
   factory DrawResult.fromJson(Map<String, dynamic> draw) {
     return DrawResult(
-      date: DateTime.parse(draw['drawDate']),
-      tzoker: draw['tzoker'],
-      winningNumbers:
-          List<int>.generate(5, (index) => draw['numbers'][index]).toList(),
-      sortedWinningNumbers:
-          List<int>.generate(5, (index) => draw['numbers'][index]).toList()
-            ..sort(((a, b) => a.compareTo(b))),
-      drawCount: draw['id'],
+      date: DateTime.parse(draw['drawDate'] as String),
+      tzoker: draw['tzoker'] as int,
+      winningNumbers: List<int>.generate(
+        5,
+        (index) => (draw['numbers'] as List)[index] as int,
+      ).toList(),
+      sortedWinningNumbers: List<int>.generate(
+        5,
+        (index) => (draw['numbers'] as List)[index] as int,
+      ).toList()
+        ..sort((a, b) => a.compareTo(b)),
+      drawCount: draw['id'] as int,
     );
   }
   Map<String, dynamic> toJson() => {

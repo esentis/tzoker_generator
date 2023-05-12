@@ -5,7 +5,7 @@
 import 'dart:convert';
 
 Statistics statisticsFromJson(String str) =>
-    Statistics.fromJson(json.decode(str));
+    Statistics.fromJson(json.decode(str) as Map<String, dynamic>);
 
 String statisticsToJson(Statistics data) => json.encode(data.toJson());
 
@@ -21,11 +21,15 @@ class Statistics {
   List<Number> bonusNumbers;
 
   factory Statistics.fromJson(Map<String, dynamic> json) => Statistics(
-        header: Header.fromJson(json["header"]),
-        numbers:
-            List<Number>.from(json["numbers"].map((x) => Number.fromJson(x))),
+        header: Header.fromJson(json["header"] as Map<String, dynamic>),
+        numbers: List<Number>.from(
+          (json["numbers"] as List).map(
+            (x) => Number.fromJson(x as Map<String, dynamic>),
+          ),
+        ),
         bonusNumbers: List<Number>.from(
-          json["bonusNumbers"].map((x) => Number.fromJson(x)),
+          (json["bonusNumbers"] as List)
+              .map((x) => Number.fromJson(x as Map<String, dynamic>)),
         ),
       );
 
@@ -48,9 +52,9 @@ class Number {
   int number;
 
   factory Number.fromJson(Map<String, dynamic> json) => Number(
-        occurrences: json["occurrences"],
-        delays: json["delays"],
-        number: json["number"],
+        occurrences: json["occurrences"] as int,
+        delays: json["delays"] as int,
+        number: json["number"] as int,
       );
 
   Map<String, dynamic> toJson() => {
@@ -72,9 +76,9 @@ class Header {
   int drawCount;
 
   factory Header.fromJson(Map<String, dynamic> json) => Header(
-        dateFrom: json["dateFrom"],
-        dateTo: json["dateTo"].toInt(),
-        drawCount: json["drawCount"],
+        dateFrom: json["dateFrom"] as int,
+        dateTo: json["dateTo"] as int,
+        drawCount: json["drawCount"] as int,
       );
 
   Map<String, dynamic> toJson() => {

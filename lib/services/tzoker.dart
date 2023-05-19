@@ -272,8 +272,7 @@ class Tzoker {
 
       await saveDraw(DrawResult.fromDraw(draw));
 
-      for (final Map<String, dynamic> stat
-          in tempStats['numbers'] as List<Map<String, dynamic>>) {
+      for (final stat in tempStats['numbers'] as List<dynamic>) {
         if (draw.winningNumbers.numbers.contains(stat['number'])) {
           stat['occurrences']++;
           stat['delays'] = 0;
@@ -282,8 +281,7 @@ class Tzoker {
         }
       }
 
-      for (final Map<String, dynamic> stat
-          in tempStats['bonusNumbers'] as List<Map<String, dynamic>>) {
+      for (final stat in tempStats['bonusNumbers'] as List<dynamic>) {
         if (draw.winningNumbers.tzoker.contains(stat['number'])) {
           stat['occurrences']++;
           stat['delays'] = 0;

@@ -92,7 +92,7 @@ class Tzoker {
   Future<Statistics> getStatsForDrawCount(int drawCount) async {
     dynamic response;
 
-    kLog.wtf('Looking stats for $drawCount');
+    kLog.f('Looking stats for $drawCount');
 
     response = await supabase
         .from(
@@ -209,7 +209,7 @@ class Tzoker {
             .select()
             .contains('numbers', normalizedNums);
       } else {
-        response = const PostgrestResponse(data: [], status: 404);
+        response = const PostgrestResponse(data: [], count: 0);
       }
     }
 
@@ -242,7 +242,7 @@ class Tzoker {
     if (await checkIfDrawExist(draw.drawCount)) {
       kLog.w('Draw ${draw.drawCount} is already saved');
     } else {
-      kLog.wtf('Saving draw ${draw.drawCount}');
+      kLog.f('Saving draw ${draw.drawCount}');
       final res = await supabase.from('Draws').insert({
         'id': draw.drawCount,
         'drawDate': draw.date.toIso8601String(),

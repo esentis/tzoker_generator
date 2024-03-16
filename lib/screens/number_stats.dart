@@ -354,7 +354,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                                             fontSize: 18,
                                             color: Colors.red,
                                           ),
-                                        )
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -594,7 +594,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                                           fontSize: 18,
                                           color: Colors.red,
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -704,7 +704,7 @@ class _NumberStatsScreenState extends State<NumberStatsScreen> {
                   child: Lottie.asset(
                     Assets.loading,
                   ),
-                )
+                ),
             ],
           ),
         ),

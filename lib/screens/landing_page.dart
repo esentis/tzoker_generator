@@ -204,7 +204,7 @@ class _LandingPageState extends State<LandingPage> {
                             ),
                             child: const Text('Search'),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -220,7 +220,7 @@ class _LandingPageState extends State<LandingPage> {
                           Text(
                             '${loadingPercentage.toStringAsFixed(0)}%',
                             style: kStyleDefault,
-                          )
+                          ),
                       ],
                     ),
                   )
@@ -252,12 +252,12 @@ class _LandingPageState extends State<LandingPage> {
                                   color: Colors.grey[400]!,
                                   offset: const Offset(0, 3),
                                   spreadRadius: 1,
-                                )
+                                ),
                               ],
                             ),
                             duration: nextDraw!.difference(DateTime.now()),
                             separatorType: SeparatorType.title,
-                            textStyle: kStyleDefault.copyWith(
+                            style: kStyleDefault.copyWith(
                               color: Colors.black.withOpacity(0.7),
                             ),
                           ),
@@ -480,7 +480,7 @@ class _LandingPageState extends State<LandingPage> {
                                     cursor: SystemMouseCursors.click,
                                     child: GestureDetector(
                                       onTap: () {
-                                        kLog.wtf(
+                                        kLog.f(
                                           'Tapped on tzoker ${showingDraw!.tzoker}',
                                         );
 
@@ -665,7 +665,7 @@ class _LandingPageState extends State<LandingPage> {
                       ),
                     ),
                   ),
-                ]
+                ],
               ],
             ),
           ),

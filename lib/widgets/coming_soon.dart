@@ -40,7 +40,7 @@ class ComingSoon extends StatelessWidget {
               Text(
                 'Currently only on Desktop',
                 style: kStyleDefault,
-              )
+              ),
             ],
           ),
           Padding(

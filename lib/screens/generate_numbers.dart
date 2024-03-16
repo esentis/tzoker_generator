@@ -194,7 +194,7 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
                             ],
                           ),
                         ),
-                      )
+                      ),
                     ],
                     SliverToBoxAdapter(
                       child: SizedBox(
@@ -247,7 +247,7 @@ class _StatsScreenScreenState extends State<GenerateNumbersScreen> {
                                       fontSize: 20,
                                     ),
                                   ),
-                                )
+                                ),
                             ],
                           ),
                         ),

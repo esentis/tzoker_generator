@@ -99,7 +99,7 @@ class _TzokerStatsState extends State<TzokerStats> {
                               const Icon(
                                 Icons.arrow_downward,
                                 color: Colors.white,
-                              )
+                              ),
                         ],
                       ),
                     ),
@@ -142,7 +142,7 @@ class _TzokerStatsState extends State<TzokerStats> {
                               const Icon(
                                 Icons.arrow_downward,
                                 color: Colors.white,
-                              )
+                              ),
                         ],
                       ),
                     ),
@@ -187,7 +187,7 @@ class _TzokerStatsState extends State<TzokerStats> {
                               const Icon(
                                 Icons.arrow_downward,
                                 color: Colors.white,
-                              )
+                              ),
                         ],
                       ),
                     ),
@@ -245,7 +245,7 @@ class _TzokerStatsState extends State<TzokerStats> {
                               const Icon(
                                 Icons.arrow_downward,
                                 color: Colors.white,
-                              )
+                              ),
                         ],
                       ),
                     ),
@@ -269,7 +269,7 @@ class _TzokerStatsState extends State<TzokerStats> {
               ),
               childCount: widget.numbers.length,
             ),
-          )
+          ),
         ],
       ),
     );

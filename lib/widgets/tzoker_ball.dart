@@ -36,7 +36,7 @@ class TzokerBall extends StatelessWidget {
               blurRadius: 5,
               offset: const Offset(0, 5),
               color: Colors.grey.shade400,
-            )
+            ),
           ],
         ),
         child: Center(
